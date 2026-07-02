@@ -7,6 +7,7 @@ import { NetworkActivity } from '../components/NetworkActivity';
 import { SupportedAssets } from '../components/SupportedAssets';
 import { DeveloperSection } from '../components/DeveloperSection';
 import { CTAFooter } from '../components/CTAFooter';
+import { Footer } from '../components/Footer';
 
 export default function HomePage() {
   return (
@@ -20,8 +21,9 @@ export default function HomePage() {
         <NetworkActivity />
         <SupportedAssets />
         <DeveloperSection />
+        <CTAFooter />
       </main>
-      <CTAFooter />
+      <Footer />
     </div>
   );
 }

@@ -1,29 +1,47 @@
 import React from "react";
+import { ArrowUpRight } from "lucide-react";
 
 export function CTAFooter() {
   return (
-    <footer className="px-4 py-24 pb-32 max-w-7xl mx-auto w-full flex flex-col items-center">
-      <div className="relative w-full max-w-3xl">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[150%] bg-yellow-400/20 blur-[100px] rounded-[100%] pointer-events-none" />
+    <section className="px-4 py-20 pb-24 max-w-7xl mx-auto w-full">
+      <div className="cta-gradient-box relative overflow-hidden rounded-[2rem] lg:rounded-[2.5rem] min-h-[320px] lg:min-h-[360px] flex items-end">
+        <div className="gradient-hero-fallback rounded-[2rem] lg:rounded-[2.5rem]" aria-hidden="true" />
+        <div className="gradient-hero-wave gradient-hero-wave-1 rounded-[2rem] lg:rounded-[2.5rem]" aria-hidden="true" />
+        <div className="gradient-hero-wave gradient-hero-wave-2 rounded-[2rem] lg:rounded-[2.5rem]" aria-hidden="true" />
+        <div className="gradient-hero-wave gradient-hero-wave-3 rounded-[2rem] lg:rounded-[2.5rem]" aria-hidden="true" />
 
-        <div className="glass-panel border-white/80 rounded-[3rem] p-12 lg:p-20 text-center relative z-10 overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/40 blur-[50px] rounded-full mix-blend-overlay pointer-events-none" />
+        <div className="relative z-10 w-full px-8 lg:px-12 pb-10 lg:pb-12 pt-16">
+          <div className="max-w-xl">
+            <h2 className="text-[34px] md:text-[44px] lg:text-[50px] font-bold tracking-[-0.03em] text-[#16171C] leading-[1.05] mb-5">
+              Ready to stop
+              <br />
+              leaking alpha?
+            </h2>
 
-          <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-6 leading-tight relative z-10">
-            Ready to stop
-            <br />
-            leaking alpha?
-          </h2>
-          <p className="text-gray-500 font-medium text-sm lg:text-base max-w-sm mx-auto mb-10 relative z-10">
-            Subtle liquid glass mesh gradient with swirling light grey
-            scoreboard.
-          </p>
+            <p className="text-[#16171C]/80 text-sm md:text-[15px] leading-relaxed max-w-md mb-7">
+              Enter the next era of decentralized finance. Manage confidential
+              wrappers, encrypted airdrops, and onchain payroll — without leaking
+              a single number.
+            </p>
 
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold text-base px-8 py-4 rounded-full transition-colors shadow-[0_4px_20px_rgba(245,197,24,0.4)] hover:scale-105 transform-gpu relative z-10">
-            Connect Wallet
-          </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-5 py-3 rounded-lg transition-colors"
+              >
+                Connect Wallet
+                <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center border border-[#16171C]/25 hover:border-[#16171C]/45 bg-transparent text-[#16171C] font-semibold text-sm px-5 py-3 rounded-lg transition-colors"
+              >
+                Read Docs
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </footer>
+    </section>
   );
 }

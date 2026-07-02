@@ -1,91 +1,99 @@
 "use client";
 
-import React from 'react';
-import { motion } from 'motion/react';
-import { CoinPlaceholder } from './CoinPlaceholder';
+import React from "react";
+import Image from "next/image";
+import heroAsset from "../../assets/heroasset.png";
+import { FloatingEncryptedCard } from "./FloatingEncryptedCard";
+
+const FLOATING_CARDS = [
+  {
+    title: "Encrypted hex data",
+    className: "top-[6%] left-[-4%] md:left-[-10%] lg:left-[-12%]",
+    delay: 0,
+    fields: [
+      { label: "", value: "0x7a3f9c2e1b8d4f6a0e5c3b7d9f1a2e4" },
+      { label: "", value: "0xc4e8f2a1b9d6e3f7a0c5b8d2e6f9a1" },
+    ],
+  },
+  {
+    title: "Encrypted hex data",
+    className: "top-[4%] right-[-4%] md:right-[-8%] lg:right-[-10%]",
+    delay: 0.15,
+    fields: [
+      { label: "Title", value: "0x8f2a1c9e4b7d3f6a0e5" },
+      { label: "Amount", value: "0x3d7f1a9c2e8b4f6a0c5" },
+    ],
+  },
+  {
+    title: "Encryption",
+    className: "top-[42%] right-[-6%] md:right-[-12%] lg:right-[-14%]",
+    delay: 0.3,
+    fields: [
+      { label: "Control", value: "0x5a9c3e7f1b2d8a4e6f0" },
+      { label: "Amount", value: "0x1f8e4c2a9b7d3f6e0a5" },
+    ],
+  },
+  {
+    title: "Validation Meta",
+    className: "bottom-[14%] right-[-2%] md:right-[-6%] lg:right-[-8%]",
+    delay: 0.45,
+    fields: [
+      { label: "Qty", value: "0x9e2f4a8c1b7d3e6f0a5" },
+      { label: "Status", value: "0x6c1a9e3f7b2d8a4e0f5" },
+    ],
+  },
+  {
+    title: "Encrypted system",
+    className: "bottom-[10%] left-[-2%] md:left-[-8%] lg:left-[-10%]",
+    delay: 0.6,
+    fields: [
+      { label: "Source", value: "0x2b7f9a3e1c8d4f6a0e5" },
+      { label: "Amount", value: "0x4d8e1f3a9c2b7e6f0a5" },
+    ],
+  },
+];
 
 export function Hero() {
   return (
-    <section className="relative px-4 pt-32 pb-24 overflow-hidden flex flex-col items-center text-center">
-      {/* Background Glows */}
+    <section className="relative px-4 pt-10 pb-24 overflow-hidden flex flex-col items-center text-center">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-yellow-400/10 blur-[120px] rounded-full pointer-events-none" />
 
       <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-[1.1] mb-6 max-w-2xl mx-auto">
         Wrap. Shield. Distribute.
       </h1>
-      
+
       <p className="text-gray-500 font-medium text-sm md:text-base leading-relaxed max-w-[600px] mx-auto mb-16 px-4">
-        Enter the next era of decentralized finance. Manage ERC-20 to ERC-7984 confidential wrappers, run encrypted airdrops, and secure your onchain payroll without leaking a single number — all powered by Zama Protocol.
+        Enter the next era of decentralized finance. Manage ERC-20 to ERC-7984
+        confidential wrappers, run encrypted airdrops, and secure your onchain
+        payroll without leaking a single number — all powered by Zama Protocol.
       </p>
 
-      {/* Centerpiece: Pedestal and Coins */}
-      <div className="relative w-full max-w-lg mx-auto h-[320px] mb-12 flex justify-center items-end pb-8">
-        
-        {/* Glass Pedestal */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[280px] h-[80px] rounded-[100%] bg-white/40 backdrop-blur-xl border-t border-white/60 shadow-[0_10px_40px_rgba(0,0,0,0.1),_inset_0_-10px_20px_rgba(255,255,255,0.5)] z-0 flex items-center justify-center">
-          <div className="w-[200px] h-[40px] rounded-[100%] bg-yellow-400/30 blur-xl" />
-          <div className="absolute inset-0 rounded-[100%] border-[2px] border-white/30" />
-        </div>
+      <div className="relative w-full max-w-3xl mx-auto mb-12 px-2 sm:px-4 min-h-[340px] md:min-h-[420px]">
+        <div className="absolute inset-x-10 top-8 bottom-4 rounded-full bg-yellow-400/15 blur-[90px] pointer-events-none" />
 
-        {/* Floating Coins */}
-        <div className="absolute inset-0 z-10 perspective-[1000px]">
-          {/* Top Left Coin */}
-          <motion.div
-            animate={{ y: [0, -15, 0], rotateX: [10, 20, 10], rotateY: [-15, -5, -15] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-8 left-[15%]"
-          >
-            <CoinPlaceholder type="silver" size="lg" />
-          </motion.div>
+        {FLOATING_CARDS.map((card) => (
+          <FloatingEncryptedCard
+            key={card.title + card.className}
+            title={card.title}
+            fields={card.fields}
+            className={card.className}
+            delay={card.delay}
+          />
+        ))}
 
-          {/* Top Right Coin */}
-          <motion.div
-            animate={{ y: [0, -10, 0], rotateX: [-10, 5, -10], rotateY: [15, 25, 15] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-            className="absolute top-12 right-[15%]"
-          >
-            <CoinPlaceholder type="gold" size="lg" />
-          </motion.div>
-
-          {/* Bottom Center Coin */}
-          <motion.div
-            animate={{ y: [0, -8, 0], rotateZ: [-5, 5, -5] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-            className="absolute bottom-16 left-1/2 -translate-x-1/2 z-20 scale-125 origin-bottom"
-          >
-            <CoinPlaceholder type="silver" size="xl" />
-          </motion.div>
-        </div>
-
-        {/* Annotations */}
-        <div className="absolute top-20 left-0 hidden md:block">
-          <div className="glass-pill text-[10px] px-3 py-1 text-gray-600 font-mono flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
-            Encrypted flow data
-          </div>
-          <svg className="absolute top-full left-1/2 w-16 h-16 pointer-events-none stroke-gray-300 stroke-1 fill-none" style={{ strokeDasharray: '2,2' }}>
-            <path d="M 0 0 C 0 30, 40 30, 40 60" />
-          </svg>
-        </div>
-
-        <div className="absolute top-12 right-0 hidden md:block">
-          <div className="glass-pill text-[10px] px-3 py-1 text-gray-600 font-mono">
-            Encrypted data<br/>
-            <span className="text-gray-400">0x...83920</span>
-          </div>
-          <svg className="absolute top-full right-1/2 w-16 h-16 pointer-events-none stroke-gray-300 stroke-1 fill-none" style={{ strokeDasharray: '2,2' }}>
-            <path d="M 16 0 C 16 20, -20 30, -30 50" />
-          </svg>
-        </div>
-
-        <div className="absolute bottom-4 -right-4 z-20 hidden md:block">
-          <div className="glass-pill text-[10px] px-3 py-1 text-gray-600 font-mono">
-            Untrusted Data
-          </div>
+        <div className="relative flex justify-center">
+          <Image
+            src={heroAsset}
+            alt="Hero asset"
+            width={658}
+            height={689}
+            priority
+            sizes="(max-width: 768px) 82vw, 520px"
+            className="h-auto w-full max-w-[560px] object-contain relative z-10"
+          />
         </div>
       </div>
 
-      {/* CTAs */}
       <div className="flex items-center justify-center gap-4 relative z-30">
         <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold text-sm px-6 py-3 rounded-full transition-colors shadow-lg shadow-yellow-500/20">
           Launch App

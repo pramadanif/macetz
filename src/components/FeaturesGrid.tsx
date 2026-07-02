@@ -1,93 +1,121 @@
-import React from 'react';
-import { Search } from 'lucide-react';
+"use client";
+
+import React from "react";
+import Image from "next/image";
+import { Search } from "lucide-react";
+import faucetAsset from "../../assets/faucet2.png";
+import { RegistryToggle } from "./RegistryToggle";
 
 export function FeaturesGrid() {
   return (
-    <section className="px-4 py-20 max-w-7xl mx-auto">
+    <section className="features-bento px-4 py-20 max-w-[1100px] mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-4">
+        <p className="text-xs font-semibold text-[#8A8A8E] tracking-wide mb-3">
+          Features Grid (Wrapper Registry)
+        </p>
+        <h2 className="text-3xl lg:text-[38px] font-bold tracking-tight text-[#16171C] mb-4 leading-tight">
           The Official Zama Wrapper Registry
         </h2>
-        <p className="text-gray-500 font-medium text-sm lg:text-base max-w-xl mx-auto">
-          Asymmetrical Bento-box layout: distinct UI micro-interactions per feature.
+        <p className="text-[#6B7280] font-medium text-sm lg:text-[15px] max-w-[560px] mx-auto leading-relaxed">
+          Asymmetrical Bento-box layout: distinct UI micro-interactions based on
+          drivers of micro-interactions.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
-        {/* Card 1: Converter */}
-        <div className="emboss-card rounded-3xl p-6 lg:p-8 flex flex-col min-h-[300px]">
-          <div className="glass-pill self-start px-3 py-1.5 rounded-full flex items-center gap-2 mb-8">
-            <div className="w-5 h-3 bg-yellow-400 rounded-full flex items-center p-0.5">
-              <div className="w-2.5 h-2.5 bg-white rounded-full shadow-sm" />
+      <div className="bento-grid grid grid-cols-1 md:grid-cols-[minmax(0,34%)_minmax(168px,22%)_minmax(0,44%)] gap-4 md:gap-5 md:items-stretch md:min-h-[400px]">
+        {/* Left */}
+        <div className="bento-col flex flex-col gap-4 order-2 md:order-1 md:h-full">
+          <div className="bento-card rounded-[22px] px-5 py-3.5 shrink-0 flex items-center min-h-[52px]">
+            <div className="relative z-10 flex items-center gap-3 w-full">
+              <RegistryToggle />
+              <span className="text-sm font-semibold text-[#16171C] whitespace-nowrap">
+                ERC-20 ↔ ERC-7964
+              </span>
             </div>
-            <span className="text-xs font-semibold text-gray-800">ERC-20 ↔ ERC-7984</span>
           </div>
-          
-          <div className="mt-auto space-y-3">
-            <div className="liquid-glass-field rounded-xl p-3 flex items-center gap-2">
-              <Search className="w-4 h-4 text-gray-400" />
-              <input 
-                type="text" 
-                placeholder="Contract address..." 
-                className="bg-transparent border-none outline-none text-sm w-full placeholder-gray-400 font-mono"
-                readOnly
-              />
+
+          <div className="bento-card rounded-[28px] p-5 flex-1 flex flex-col min-h-[200px]">
+            <div className="relative z-10 flex flex-col gap-3 h-full">
+              <div className="bento-field rounded-2xl px-4 py-3 flex items-center gap-2.5 min-h-[44px]">
+                <Search className="w-4 h-4 text-[#9CA3AF] shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  readOnly
+                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                />
+              </div>
+              <div className="bento-field rounded-2xl px-4 py-3 flex items-center min-h-[44px]">
+                <input
+                  type="text"
+                  placeholder="Contract addresses..."
+                  readOnly
+                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                />
+              </div>
+              <div className="bento-field rounded-2xl px-4 py-3 flex items-center min-h-[44px]">
+                <input
+                  type="text"
+                  placeholder="Burned contract addresses..."
+                  readOnly
+                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                />
+              </div>
             </div>
-            <div className="liquid-glass-field rounded-xl p-3 flex items-center gap-2">
-              <input 
-                type="text" 
-                placeholder="Bonded contract addresses..." 
-                className="bg-transparent border-none outline-none text-sm w-full placeholder-gray-400 font-mono"
-                readOnly
-              />
-            </div>
-            <button className="glass-pill mt-4 px-4 py-2 text-sm font-medium text-gray-700 hover:text-black transition-colors self-start">
-              Explore Registry
-            </button>
           </div>
+
+          <button
+            type="button"
+            className="bento-explore-btn shrink-0 self-start rounded-full px-5 py-2.5 text-sm font-medium text-[#16171C]"
+          >
+            Explore Registry
+          </button>
         </div>
 
-        {/* Card 2: Faucet Illustration */}
-        <div className="emboss-card rounded-3xl p-6 lg:p-8 flex flex-col items-center justify-center min-h-[300px] relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-blue-50/50" />
-          {/* Abstract Faucet Graphic */}
-          <div className="relative z-10 w-24 h-24">
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full text-gray-400">
-              <path d="M70 40H30V50C30 50 30 60 40 60H50V70H45V80H55V70H50V60H60C70 60 70 50 70 50V40Z" fill="url(#metalGrad)" />
-              <path d="M50 85C50 85 45 90 45 95C45 97.7614 47.2386 100 50 100C52.7614 100 55 97.7614 55 95C55 90 50 85 50 85Z" fill="#9CA3AF" className="animate-pulse" />
-              <defs>
-                <linearGradient id="metalGrad" x1="30" y1="40" x2="70" y2="80" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#E5E7EB" />
-                  <stop offset="1" stopColor="#9CA3AF" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-        </div>
-
-        {/* Card 3: Decryption Search */}
-        <div className="emboss-card rounded-3xl p-6 lg:p-8 flex flex-col min-h-[300px]">
-          <div className="liquid-glass-field rounded-xl p-3 flex items-center gap-2 mb-6">
-            <Search className="w-4 h-4 text-gray-400" />
-            <input 
-              type="text" 
-              placeholder="Q Search" 
-              className="bg-transparent border-none outline-none text-sm w-full placeholder-gray-400"
-              readOnly
+        {/* Center — faucet fills entire card */}
+        <div className="bento-col order-1 md:order-2 flex md:h-full min-h-[320px]">
+          <div className="bento-card bento-faucet-card rounded-[28px] w-full h-full relative overflow-hidden">
+            <Image
+              src={faucetAsset}
+              alt="Faucet asset"
+              fill
+              sizes="(max-width: 768px) 90vw, 200px"
+              className="bento-faucet-image"
+              priority
             />
           </div>
+        </div>
 
-          {/* Skeleton List */}
-          <div className="space-y-3 mb-auto">
-            <div className="h-4 bg-gray-200/60 rounded-md w-full animate-pulse" />
-            <div className="h-4 bg-gray-200/60 rounded-md w-5/6 animate-pulse" />
-            <div className="h-4 bg-gray-200/60 rounded-md w-4/6 animate-pulse" />
+        {/* Right */}
+        <div className="bento-col flex flex-col gap-4 order-3 md:h-full">
+          <div className="bento-card rounded-[28px] p-5 flex-1 flex flex-col min-h-[200px]">
+            <div className="relative z-10 flex flex-col gap-4 h-full">
+              <div className="bento-field rounded-2xl px-4 py-3 flex items-center gap-2.5 min-h-[44px] shrink-0">
+                <Search className="w-4 h-4 text-[#9CA3AF] shrink-0" />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  readOnly
+                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                />
+              </div>
+
+              <div className="space-y-3 flex-1 flex flex-col justify-start pt-1">
+                <div className="bento-skeleton-line h-3 rounded-md w-full" />
+                <div className="bento-skeleton-line h-3 rounded-md w-[88%]" />
+                <div className="bento-skeleton-line h-3 rounded-md w-[72%]" />
+              </div>
+            </div>
           </div>
 
-          <div className="mt-8">
-            <div className="text-xs text-gray-500 font-medium mb-2">Decryption loading...</div>
-            <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-yellow-400 w-1/3 animate-pulse" />
+          <div className="bento-card rounded-[28px] px-5 py-5 shrink-0 min-h-[88px] flex items-center">
+            <div className="relative z-10 w-full">
+              <div className="text-xs text-[#6B7280] font-medium mb-3 text-center">
+                Decryption loading...
+              </div>
+              <div className="bento-progress-track h-1.5 w-full rounded-full overflow-hidden">
+                <div className="bento-progress-fill h-full rounded-full" />
+              </div>
             </div>
           </div>
         </div>

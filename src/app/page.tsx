@@ -1,11 +1,14 @@
 import { Header } from '../components/Header';
 import { Hero } from '../components/Hero';
-import { HowItWorks } from '../components/HowItWorks';
 import { FeaturesGrid } from '../components/FeaturesGrid';
+import { ExtensibilitySection } from '../components/ExtensibilitySection';
+import { UniversalDecryptSection } from '../components/UniversalDecryptSection';
 import { ConfidentialDistribution } from '../components/ConfidentialDistribution';
+import { HowItWorks } from '../components/HowItWorks';
 import { NetworkActivity } from '../components/NetworkActivity';
 import { SupportedAssets } from '../components/SupportedAssets';
 import { DeveloperSection } from '../components/DeveloperSection';
+import { KnownLimitations } from '../components/KnownLimitations';
 import { CTAFooter } from '../components/CTAFooter';
 import { Footer } from '../components/Footer';
 
@@ -15,12 +18,15 @@ export default function HomePage() {
       <Header />
       <main className="overflow-hidden">
         <Hero />
-        <HowItWorks />
         <FeaturesGrid />
+        <ExtensibilitySection />
+        <UniversalDecryptSection />
         <ConfidentialDistribution />
+        <HowItWorks />
         <NetworkActivity />
         <SupportedAssets />
         <DeveloperSection />
+        <KnownLimitations />
         <CTAFooter />
       </main>
       <Footer />

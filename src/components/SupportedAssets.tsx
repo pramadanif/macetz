@@ -31,9 +31,8 @@ export function SupportedAssets() {
           Supported Ecosystem Assets
         </h2>
         <p className="text-gray-500 font-medium text-sm leading-relaxed">
-          Based on zero-knowledge proofs, standard crypto assets pass through
-          &apos;shielding&apos; threshold, transforming into confidential
-          versions.
+          Every token below is sourced from the official Zama Wrappers Registry —
+          shielded into its confidential ERC-7984 form the moment you wrap it.
         </p>
       </div>
 

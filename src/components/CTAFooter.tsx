@@ -19,26 +19,17 @@ export function CTAFooter() {
             </h2>
 
             <p className="text-[#16171C]/80 text-sm md:text-[15px] leading-relaxed max-w-md mb-7">
-              Enter the next era of decentralized finance. Manage confidential
-              wrappers, encrypted airdrops, and onchain payroll — without leaking
-              a single number.
+              One registry to wrap from. One flow to distribute through. Zero
+              numbers exposed.
             </p>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-5 py-3 rounded-lg transition-colors"
-              >
-                Connect Wallet
-                <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
-              </button>
-              <button
-                type="button"
-                className="inline-flex items-center border border-[#16171C]/25 hover:border-[#16171C]/45 bg-transparent text-[#16171C] font-semibold text-sm px-5 py-3 rounded-lg transition-colors"
-              >
-                Read Docs
-              </button>
-            </div>
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-5 py-3 rounded-lg transition-colors"
+            >
+              Connect Wallet
+              <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
+            </button>
           </div>
         </div>
       </div>

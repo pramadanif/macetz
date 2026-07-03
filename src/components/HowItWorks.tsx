@@ -7,21 +7,21 @@ export function HowItWorks() {
     {
       id: 1,
       title: "1. Wrap Assets",
-      desc: "Embedded token standard swaps chained ERC-20 to ERC-7984.",
+      desc: "Convert any registry ERC-20 into its confidential ERC-7984 equivalent.",
       icon: <Layers className="w-5 h-5" />,
       coin: "silver",
     },
     {
       id: 2,
       title: "2. Define Allocations",
-      desc: "Define anonymized distribution addresses set as encrypted totals.",
+      desc: "Set encrypted distribution amounts for your recipients.",
       icon: <LayoutGrid className="w-5 h-5" />,
       coin: "silver",
     },
     {
       id: 3,
       title: "3. Execute Encrypted Payload",
-      desc: "Execute encrypted transactions and unrevealed encrypted content.",
+      desc: "Send it. Amounts stay encrypted onchain; only recipients decrypt their own.",
       icon: <Target className="w-5 h-5" />,
       coin: "gold",
     },
@@ -30,13 +30,9 @@ export function HowItWorks() {
   return (
     <section className="px-4 py-20 max-w-7xl mx-auto flex flex-col items-center">
       <div className="text-center mb-12 lg:mb-16">
-        <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-4">
+        <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-6">
           End-to-End Confidentiality in 3 Steps
         </h2>
-        <p className="text-gray-500 font-medium text-sm lg:text-base max-w-2xl mx-auto mb-6">
-          Enter the next decentralized finance era. Manages ERC-20 to ERC-7984
-          confidential wrappers, run encrypted airdrops in JetBrains Mono.
-        </p>
         <button className="glass-pill px-4 py-2 text-sm font-medium text-gray-700 hover:text-black transition-colors inline-flex items-center gap-1">
           Explore Registry <ArrowRight className="w-4 h-4" />
         </button>

@@ -108,6 +108,20 @@ export function Footer() {
             macetz
           </p>
         </div>
+
+        <div className="border-t border-[#e5e5e3] mt-2 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 relative z-10">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#16171C]">
+            {["Registry", "Decrypt", "Distribute", "Docs", "GitHub"].map((link) => (
+              <a key={link} href="#" className="hover:text-[#16171C]/70 transition-colors">
+                {link}
+              </a>
+            ))}
+          </div>
+          <p className="text-xs text-[#6B7280] max-w-xl leading-relaxed">
+            Open source · Unaudited · Built for Zama Developer Program Season 3 ·
+            Use at your own risk on Sepolia testnet
+          </p>
+        </div>
       </div>
     </footer>
   );

@@ -8,17 +8,21 @@ import { RegistryToggle } from "./RegistryToggle";
 
 export function FeaturesGrid() {
   return (
-    <section className="features-bento px-4 py-20 max-w-[1100px] mx-auto">
+    <section id="registry" className="features-bento px-4 py-20 max-w-[1100px] mx-auto">
       <div className="text-center mb-12">
-        <p className="text-xs font-semibold text-[#8A8A8E] tracking-wide mb-3">
-          Features Grid (Wrapper Registry)
+        <p className="text-xs font-semibold text-[#8A8A8E] tracking-[0.14em] uppercase mb-3">
+          The Official Zama Wrapper Registry
         </p>
         <h2 className="text-3xl lg:text-[38px] font-bold tracking-tight text-[#16171C] mb-4 leading-tight">
-          The Official Zama Wrapper Registry
+          One registry. Every confidential pair. Zero fragmentation.
         </h2>
-        <p className="text-[#6B7280] font-medium text-sm lg:text-[15px] max-w-[560px] mx-auto leading-relaxed">
-          Asymmetrical Bento-box layout: distinct UI micro-interactions based on
-          drivers of micro-interactions.
+        <p className="text-[#6B7280] font-medium text-sm lg:text-[15px] max-w-[640px] mx-auto leading-relaxed">
+          Today, developers spin up their own test tokens instead of using what
+          already exists in the official Zama Wrappers Registry — and the
+          ecosystem fragments because of it. Macetz reads the onchain registry
+          directly as its source of truth, so every ERC-20 ↔ ERC-7984 pair you
+          see here is the real, canonical one. No look-alikes. No guessing which
+          wrapped token is legitimate.
         </p>
       </div>
 
@@ -29,7 +33,7 @@ export function FeaturesGrid() {
             <div className="relative z-10 flex items-center gap-3 w-full">
               <RegistryToggle />
               <span className="text-sm font-semibold text-[#16171C] whitespace-nowrap">
-                ERC-20 ↔ ERC-7964
+                ERC-20 ↔ ERC-7984
               </span>
             </div>
           </div>
@@ -68,7 +72,7 @@ export function FeaturesGrid() {
             type="button"
             className="bento-explore-btn shrink-0 self-start rounded-full px-5 py-2.5 text-sm font-medium text-[#16171C]"
           >
-            Explore Registry
+            Explore the Full Registry →
           </button>
         </div>
 

@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { ERC20_ABI } from "@/lib/abis";
 import { formatWalletError } from "@/lib/errors";
+import { TokenIcon } from "@/components/app/TokenIcon";
 import type { TokenPair } from "@/lib/types";
 
 type Mode = "wrap" | "unwrap";
@@ -74,8 +75,8 @@ export function WrapUnwrapPanel() {
 
   if (pairsLoading) {
     return (
-      <div className="max-w-xl mx-auto">
-        <div className="glass-panel rounded-3xl p-8 animate-pulse">
+      <div className="max-w-lg mx-auto">
+        <div className="emboss-card rounded-3xl p-8 animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/3 mb-6" />
           <div className="h-12 bg-gray-200 rounded mb-4" />
           <div className="h-12 bg-gray-200 rounded mb-4" />
@@ -85,159 +86,207 @@ export function WrapUnwrapPanel() {
     );
   }
 
+  const inputSymbol = mode === "wrap" ? selectedPair?.erc20Symbol : selectedPair?.erc7984Symbol;
+  const outputSymbol = mode === "wrap" ? selectedPair?.erc7984Symbol : selectedPair?.erc20Symbol;
+  const inputDecimals = mode === "wrap" ? selectedPair?.erc20Decimals : selectedPair?.erc7984Decimals;
+  const outputDecimals = mode === "wrap" ? selectedPair?.erc7984Decimals : selectedPair?.erc20Decimals;
+  const inputBalance = mode === "wrap" ? erc20Balance : confidentialBalance;
+  const outputBalance = mode === "wrap" ? confidentialBalance : erc20Balance;
+
   return (
-    <div className="max-w-xl mx-auto space-y-6">
+    <div className="max-w-lg mx-auto space-y-5">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">
+        <h2 className="text-xl font-semibold tracking-tight">
           {mode === "wrap" ? "Shield Tokens" : "Unshield Tokens"}
         </h2>
         <p className="text-sm text-gray-500 mt-1">
           {mode === "wrap"
-            ? "Convert public ERC-20 tokens into their confidential ERC-7984 equivalent."
+            ? "Shield ERC-20 tokens into their confidential counterpart."
             : "Convert confidential tokens back to their public ERC-20 form."}
         </p>
       </div>
 
-      <div className="emboss-card rounded-3xl p-8">
-        <div className="relative z-10">
-          {/* Mode toggle */}
-          <div className="flex gap-1.5 mb-8 p-1 bg-gray-100/80 rounded-full">
-            <button
-              onClick={() => { setMode("wrap"); setSuccess(null); shield.reset(); unshield.reset(); }}
-              className={`flex-1 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                mode === "wrap"
-                  ? "bg-white shadow-md text-[#16171C]"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Wrap (Shield)
-            </button>
-            <button
-              onClick={() => { setMode("unwrap"); setSuccess(null); shield.reset(); unshield.reset(); }}
-              className={`flex-1 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                mode === "unwrap"
-                  ? "bg-white shadow-md text-[#16171C]"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Unwrap (Unshield)
-            </button>
+      {/* Mode toggle */}
+      <div className="flex gap-1 p-1 bg-gray-100/80 rounded-full">
+        <button
+          onClick={() => { setMode("wrap"); setSuccess(null); shield.reset(); unshield.reset(); }}
+          className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+            mode === "wrap"
+              ? "bg-white shadow-sm text-[#16171C]"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Shield
+        </button>
+        <button
+          onClick={() => { setMode("unwrap"); setSuccess(null); shield.reset(); unshield.reset(); }}
+          className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+            mode === "unwrap"
+              ? "bg-white shadow-sm text-[#16171C]"
+              : "text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Unshield
+        </button>
+      </div>
+
+      {/* Token selector */}
+      <div>
+        <select
+          value={selectedPair?.erc7984Address ?? ""}
+          onChange={(e) => {
+            const pair = pairs?.find((p) => p.erc7984Address === e.target.value);
+            setSelectedPair(pair ?? null);
+            setAmount("");
+            setSuccess(null);
+            shield.reset();
+            unshield.reset();
+          }}
+          className="w-full liquid-glass-field rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5C518]/40"
+        >
+          <option value="">Choose a token pair...</option>
+          {pairs?.map((pair) => (
+            <option key={pair.erc7984Address} value={pair.erc7984Address}>
+              {pair.erc20Symbol} → {pair.erc7984Symbol}
+              {pair.source === "local-dev" ? " [Dev]" : ""}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Connected two-card swap flow */}
+      <div className="relative">
+        {/* Input card — "You shield" / "You unshield" */}
+        <div className="emboss-card rounded-2xl p-5">
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {mode === "wrap" ? "You shield" : "You unshield"}
+              </span>
+              {selectedPair && inputSymbol && (
+                <span className="glass-pill flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full text-gray-600">
+                  <TokenIcon symbol={inputSymbol} size={18} />
+                  {inputSymbol}
+                </span>
+              )}
+            </div>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="w-full bg-transparent text-2xl font-mono font-semibold text-[#16171C] placeholder:text-gray-300 focus:outline-none"
+              disabled={!selectedPair}
+            />
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-[11px] text-gray-400">
+                {selectedPair && inputBalance !== undefined && inputDecimals !== undefined
+                  ? `Balance: ${formatUnits(inputBalance, inputDecimals)}`
+                  : selectedPair
+                    ? "Connect your wallet to see your balance"
+                    : ""}
+              </span>
+              {selectedPair && inputBalance !== undefined && inputDecimals !== undefined && inputBalance > 0n && (
+                <button
+                  onClick={() => setAmount(formatUnits(inputBalance, inputDecimals))}
+                  className="text-[11px] font-semibold text-[#d4a600] hover:text-[#b38f00] transition-colors"
+                >
+                  MAX
+                </button>
+              )}
+            </div>
           </div>
+        </div>
 
-          {/* Token selector */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Token Pair
-            </label>
-            <select
-              value={selectedPair?.erc7984Address ?? ""}
-              onChange={(e) => {
-                const pair = pairs?.find((p) => p.erc7984Address === e.target.value);
-                setSelectedPair(pair ?? null);
-                setAmount("");
-                setSuccess(null);
-                shield.reset();
-                unshield.reset();
-              }}
-              className="w-full liquid-glass-field rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5C518]/50 focus:border-[#F5C518]"
-            >
-              <option value="">Choose a token pair...</option>
-              {pairs?.map((pair) => (
-                <option key={pair.erc7984Address} value={pair.erc7984Address}>
-                  {pair.erc7984Symbol} ← {pair.erc20Symbol}
-                  {pair.source === "local-dev" ? " [Dev]" : ""}
-                </option>
-              ))}
-            </select>
+        {/* Arrow connector */}
+        <div className="flex justify-center -my-3 relative z-10">
+          <div className="w-8 h-8 rounded-full bg-[#F5F4F0] border-2 border-white shadow-sm flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+              <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
           </div>
+        </div>
 
-          {/* Balance + Amount */}
-          {selectedPair && (
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-sm font-medium text-gray-700">
-                  Amount ({mode === "wrap" ? selectedPair.erc20Symbol : selectedPair.erc7984Symbol})
-                </label>
-                <div className="text-xs space-x-3">
-                  {mode === "wrap" && erc20Balance !== undefined && (
-                    <button
-                      onClick={() => setAmount(formatUnits(erc20Balance, selectedPair.erc20Decimals))}
-                      className="text-[#d4a600] hover:text-[#b38f00] font-medium transition-colors"
-                    >
-                      Max: {formatUnits(erc20Balance, selectedPair.erc20Decimals)}
-                    </button>
-                  )}
-                  {mode === "unwrap" && confidentialBalance !== undefined && (
-                    <button
-                      onClick={() => setAmount(formatUnits(confidentialBalance, selectedPair.erc7984Decimals))}
-                      className="text-[#d4a600] hover:text-[#b38f00] font-medium transition-colors"
-                    >
-                      Max: {formatUnits(confidentialBalance, selectedPair.erc7984Decimals)}
-                    </button>
-                  )}
-                </div>
-              </div>
-              <input
-                type="text"
-                inputMode="decimal"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                className="w-full liquid-glass-field rounded-xl px-4 py-3.5 text-lg font-mono focus:outline-none focus:ring-2 focus:ring-[#F5C518]/50 focus:border-[#F5C518]"
-              />
+        {/* Output card — "You receive" */}
+        <div className="emboss-card rounded-2xl p-5">
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                You receive
+              </span>
+              {selectedPair && outputSymbol && (
+                <span className="glass-pill flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full text-gray-600">
+                  <TokenIcon symbol={outputSymbol} size={18} />
+                  {outputSymbol}
+                </span>
+              )}
             </div>
-          )}
-
-          {/* Status messages */}
-          {success && (
-            <div className="mb-6 p-4 rounded-xl text-sm bg-green-50/80 text-green-700 border border-green-200/60 backdrop-blur-sm">
-              {success}
-            </div>
-          )}
-
-          {error && (
-            <div className="mb-6 p-4 rounded-xl text-sm bg-red-50/80 text-red-700 border border-red-200/60 backdrop-blur-sm">
-              {formatWalletError(error)}
-            </div>
-          )}
-
-          {isPending && (
-            <div className="mb-6 p-4 rounded-xl text-sm bg-amber-50/80 text-amber-700 border border-amber-200/60 backdrop-blur-sm flex items-center gap-3">
-              <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin shrink-0" />
-              <div>
-                {shield.isPending && "Shielding tokens — approving ERC-20 spend and wrapping..."}
-                {unshield.isPending && (
-                  <>
-                    Unshielding tokens — this is a two-step process.
-                    <br />
-                    <span className="text-xs opacity-75">Step 1: Submitting unwrap request → Step 2: Relayer decrypts amount → Finalized</span>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Submit */}
-          <button
-            onClick={mode === "wrap" ? handleWrap : handleUnwrap}
-            disabled={!selectedPair || !amount || isPending}
-            className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-4 rounded-xl transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)] hover:-translate-y-0.5"
-          >
-            {isPending
-              ? "Processing..."
-              : mode === "wrap"
-                ? `Shield ${selectedPair ? selectedPair.erc20Symbol : "Tokens"}`
-                : `Unshield ${selectedPair ? selectedPair.erc7984Symbol : "Tokens"}`}
-          </button>
-
-          {mode === "unwrap" && !isPending && (
-            <p className="text-[11px] text-gray-400 mt-3 text-center leading-relaxed">
-              Unwrap is a two-step async process. The SDK handles both steps automatically:
-              unwrap request → relayer decryption → finalize.
+            <p className="text-2xl font-mono font-semibold text-gray-300">
+              {amount && selectedPair ? amount : "0.00"}
             </p>
-          )}
+            <div className="mt-2">
+              <span className="text-[11px] text-gray-400">
+                {selectedPair && outputBalance !== undefined && outputDecimals !== undefined
+                  ? `Balance: ${formatUnits(outputBalance, outputDecimals)}`
+                  : selectedPair
+                    ? "Connect your wallet to see your balance"
+                    : ""}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Status messages */}
+      {success && (
+        <div className="p-4 rounded-xl text-sm bg-green-50/80 text-green-700 border border-green-200/60">
+          {success}
+        </div>
+      )}
+
+      {error && (
+        <div className="p-4 rounded-xl text-sm bg-red-50/80 text-red-700 border border-red-200/60">
+          {formatWalletError(error)}
+        </div>
+      )}
+
+      {isPending && (
+        <div className="p-4 rounded-xl text-sm bg-amber-50/80 text-amber-700 border border-amber-200/60 flex items-center gap-3">
+          <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin shrink-0" />
+          <div>
+            {shield.isPending && "Shielding — approving ERC-20 spend and wrapping..."}
+            {unshield.isPending && (
+              <>
+                Unshielding — two-step process in progress.
+                <span className="block text-[11px] opacity-75 mt-0.5">
+                  Step 1: Unwrap request → Step 2: Relayer decrypt → Finalized
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Submit */}
+      <button
+        onClick={mode === "wrap" ? handleWrap : handleUnwrap}
+        disabled={!selectedPair || !amount || isPending}
+        className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"
+      >
+        {isPending
+          ? "Processing..."
+          : mode === "wrap"
+            ? `Shield ${selectedPair ? selectedPair.erc20Symbol : "Tokens"}`
+            : `Unshield ${selectedPair ? selectedPair.erc7984Symbol : "Tokens"}`}
+      </button>
+
+      {mode === "unwrap" && !isPending && (
+        <p className="text-[11px] text-gray-400 text-center leading-relaxed">
+          Unwrap is a two-step async process. The SDK handles both steps
+          automatically: unwrap request → relayer decryption → finalize.
+        </p>
+      )}
     </div>
   );
 }

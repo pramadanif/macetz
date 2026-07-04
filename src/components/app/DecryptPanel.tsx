@@ -9,6 +9,7 @@ import {
   useMetadata,
 } from "@zama-fhe/react-sdk";
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
+import { TokenIcon } from "@/components/app/TokenIcon";
 
 type DecryptMode = "registry" | "custom";
 
@@ -26,11 +27,11 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
 
   if (balanceLoading || metaLoading) {
     return (
-      <div className="p-5 rounded-xl bg-amber-50/80 text-amber-700 border border-amber-200/60 backdrop-blur-sm flex items-center gap-3">
-        <div className="w-5 h-5 border-2 border-amber-400 border-t-transparent rounded-full animate-spin shrink-0" />
+      <div className="p-4 rounded-xl bg-amber-50/80 text-amber-700 border border-amber-200/60 flex items-center gap-3">
+        <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin shrink-0" />
         <div>
           <p className="font-medium text-sm">Decrypting your confidential balance...</p>
-          <p className="text-xs opacity-75 mt-0.5">This requires an EIP-712 signature on first use.</p>
+          <p className="text-[11px] opacity-75 mt-0.5">This requires an EIP-712 signature on first use.</p>
         </div>
       </div>
     );
@@ -38,7 +39,7 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
 
   if (error) {
     return (
-      <div className="p-4 rounded-xl text-sm bg-red-50/80 text-red-700 border border-red-200/60 backdrop-blur-sm">
+      <div className="p-4 rounded-xl text-sm bg-red-50/80 text-red-700 border border-red-200/60">
         {error.message}
       </div>
     );
@@ -48,12 +49,17 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
   const symbol = meta?.symbol ?? "???";
 
   return (
-    <div className="p-6 rounded-xl bg-gradient-to-br from-green-50/80 to-emerald-50/80 border border-green-200/60 backdrop-blur-sm">
-      <p className="text-sm text-green-600 mb-2 font-medium">Decrypted Balance</p>
-      <p className="text-3xl font-mono font-semibold text-green-800 tracking-tight">
-        {balance !== undefined ? formatUnits(balance, decimals) : "0"}
-      </p>
-      <p className="text-sm text-green-600 mt-1">{symbol}</p>
+    <div className="emboss-card rounded-2xl p-5">
+      <div className="relative z-10">
+        <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Decrypted Balance</p>
+        <p className="text-3xl font-mono font-semibold text-[#16171C] tracking-tight">
+          {balance !== undefined ? formatUnits(balance, decimals) : "0"}
+        </p>
+        <div className="flex items-center gap-2 mt-1">
+          <TokenIcon symbol={symbol} size={20} />
+          <span className="text-sm text-gray-500">{symbol}</span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -82,8 +88,8 @@ function CustomAddressValidator({
 
   if (isLoading) {
     return (
-      <div className="p-3 rounded-xl text-xs bg-gray-50/80 text-gray-500 border border-gray-200/60 flex items-center gap-2">
-        <div className="w-3.5 h-3.5 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+      <div className="p-2.5 rounded-lg text-[11px] bg-gray-50/80 text-gray-500 border border-gray-200/60 flex items-center gap-2">
+        <div className="w-3 h-3 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
         Checking ERC-7984 support...
       </div>
     );
@@ -91,14 +97,14 @@ function CustomAddressValidator({
 
   if (!isConf) {
     return (
-      <div className="p-3 rounded-xl text-xs bg-red-50/80 text-red-600 border border-red-200/60">
-        This address does not implement ERC-7984. Only confidential tokens can be decrypted.
+      <div className="p-2.5 rounded-lg text-[11px] bg-red-50/80 text-red-600 border border-red-200/60">
+        This address does not implement ERC-7984.
       </div>
     );
   }
 
   return (
-    <div className="p-3 rounded-xl text-xs bg-green-50/80 text-green-600 border border-green-200/60">
+    <div className="p-2.5 rounded-lg text-[11px] bg-green-50/80 text-green-600 border border-green-200/60">
       Valid ERC-7984 confidential token detected.
     </div>
   );
@@ -121,23 +127,22 @@ export function DecryptPanel() {
   const canDecrypt = isAddress(targetAddress) && (mode === "registry" || customValid);
 
   return (
-    <div className="max-w-xl mx-auto space-y-6">
+    <div className="max-w-lg mx-auto space-y-5">
       <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Decrypt Balance</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Decrypt Balance</h2>
         <p className="text-sm text-gray-500 mt-1">
-          Decrypt the confidential balance of any ERC-7984 token in your wallet via the EIP-712 signature flow.
+          Reveal the confidential balance of any ERC-7984 token via EIP-712 signature.
         </p>
       </div>
 
-      <div className="emboss-card rounded-3xl p-8">
+      <div className="emboss-card rounded-2xl p-6">
         <div className="relative z-10">
-          {/* Mode toggle */}
-          <div className="flex gap-1.5 mb-8 p-1 bg-gray-100/80 rounded-full">
+          <div className="flex gap-1 mb-6 p-1 bg-gray-100/80 rounded-full">
             <button
               onClick={() => { setMode("registry"); setShowResult(false); }}
-              className={`flex-1 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                 mode === "registry"
-                  ? "bg-white shadow-md text-[#16171C]"
+                  ? "bg-white shadow-sm text-[#16171C]"
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -145,9 +150,9 @@ export function DecryptPanel() {
             </button>
             <button
               onClick={() => { setMode("custom"); setShowResult(false); }}
-              className={`flex-1 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                 mode === "custom"
-                  ? "bg-white shadow-md text-[#16171C]"
+                  ? "bg-white shadow-sm text-[#16171C]"
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -156,14 +161,11 @@ export function DecryptPanel() {
           </div>
 
           {mode === "registry" ? (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Select Confidential Token
-              </label>
+            <div className="mb-5">
               <select
                 value={selectedToken}
                 onChange={(e) => { setSelectedToken(e.target.value); setShowResult(false); }}
-                className="w-full liquid-glass-field rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5C518]/50 focus:border-[#F5C518]"
+                className="w-full liquid-glass-field rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5C518]/40"
               >
                 <option value="">Choose a confidential token...</option>
                 {pairs?.map((pair) => (
@@ -174,24 +176,20 @@ export function DecryptPanel() {
               </select>
             </div>
           ) : (
-            <div className="mb-6 space-y-3">
-              <label className="block text-sm font-medium text-gray-700">
-                ERC-7984 Token Address
-              </label>
+            <div className="mb-5 space-y-2.5">
               <input
                 type="text"
                 value={customAddress}
                 onChange={(e) => { setCustomAddress(e.target.value); setShowResult(false); setCustomValid(false); }}
                 placeholder="0x..."
-                className="w-full liquid-glass-field rounded-xl px-4 py-3.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#F5C518]/50 focus:border-[#F5C518]"
+                className="w-full liquid-glass-field rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#F5C518]/40"
               />
               <CustomAddressValidator customAddress={customAddress} onValid={handleValidChange} />
             </div>
           )}
 
-          {/* Decrypt result */}
           {showResult && canDecrypt && (
-            <div className="mb-6">
+            <div className="mb-5">
               <DecryptResult tokenAddress={targetAddress as `0x${string}`} />
             </div>
           )}
@@ -199,7 +197,7 @@ export function DecryptPanel() {
           <button
             onClick={() => setShowResult(true)}
             disabled={!canDecrypt}
-            className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-4 rounded-xl transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)] hover:-translate-y-0.5"
+            className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"
           >
             Decrypt Balance
           </button>

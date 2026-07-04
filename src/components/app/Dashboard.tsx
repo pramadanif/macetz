@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAccount } from "wagmi";
-import { CoinPlaceholder } from "@/components/CoinPlaceholder";
+import { Shield, Database, Key, Droplet } from "lucide-react";
 import { WalletButton } from "@/components/app/WalletButton";
 
 interface DashboardProps {
@@ -12,29 +12,35 @@ interface DashboardProps {
 const features = [
   {
     title: "Shield Tokens",
-    description:
-      "Convert ERC-20 tokens into their confidential ERC-7984 equivalent.",
+    description: "Convert ERC-20 tokens into their confidential ERC-7984 equivalent.",
     tab: "wrap",
-    coinType: "gold" as const,
+    icon: Shield,
+    color: "text-[#16171C]",
+    bg: "bg-[#F5C518]/20",
   },
   {
     title: "Registry",
     description: "Browse all registered wrapper pairs on Sepolia testnet.",
     tab: "registry",
-    coinType: "silver" as const,
+    icon: Database,
+    color: "text-[#16171C]",
+    bg: "bg-gray-200/60",
   },
   {
     title: "Decrypt Balance",
     description: "Reveal your encrypted balance with an EIP-712 signature.",
     tab: "decrypt",
-    coinType: "gold" as const,
+    icon: Key,
+    color: "text-[#16171C]",
+    bg: "bg-[#F5C518]/20",
   },
   {
     title: "Testnet Faucet",
-    description:
-      "Claim free mock tokens to try the full shield/unshield flow.",
+    description: "Claim free mock tokens to try the full shield/unshield flow.",
     tab: "faucet",
-    coinType: "silver" as const,
+    icon: Droplet,
+    color: "text-[#16171C]",
+    bg: "bg-gray-200/60",
   },
 ];
 
@@ -42,9 +48,9 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   const { isConnected, address } = useAccount();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Hero CTA Card */}
-      <div className="emboss-card rounded-2xl p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="emboss-card p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
         <div className="space-y-2">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-[#16171C]">
             Your assets. Now confidential.
@@ -75,14 +81,12 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             key={feature.tab}
             type="button"
             onClick={() => onNavigate(feature.tab)}
-            className="glass-panel rounded-2xl p-6 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group"
+            className="emboss-card rounded-2xl p-6 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group"
           >
             <div className="flex items-start gap-4">
-              <CoinPlaceholder
-                type={feature.coinType}
-                size="sm"
-                className="flex-shrink-0 mt-0.5"
-              />
+              <div className={`flex-shrink-0 mt-0.5 p-2 rounded-xl ${feature.bg}`}>
+                <feature.icon className={`w-6 h-6 ${feature.color}`} strokeWidth={1.5} />
+              </div>
               <div className="space-y-1">
                 <h3 className="text-base font-bold tracking-tight text-[#16171C] group-hover:text-[#C8A415] transition-colors">
                   {feature.title}

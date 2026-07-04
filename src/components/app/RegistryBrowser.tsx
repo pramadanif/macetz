@@ -3,6 +3,7 @@
 import React from "react";
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { TokenIcon } from "@/components/app/TokenIcon";
+import { AlertMessage } from "@/components/app/AlertMessage";
 
 export function RegistryBrowser() {
   const { data: pairs, isLoading, error } = useRegistryPairs();
@@ -16,7 +17,7 @@ export function RegistryBrowser() {
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="emboss-card rounded-2xl p-5 animate-pulse">
+            <div key={i} className="emboss-card p-5 animate-pulse">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-full bg-gray-200" />
                 <div className="flex-1">
@@ -37,23 +38,15 @@ export function RegistryBrowser() {
 
   if (error) {
     return (
-      <div className="emboss-card rounded-2xl p-10 text-center max-w-md mx-auto">
-        <div className="relative z-10">
-          <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-red-100 flex items-center justify-center">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500">
-              <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-          </div>
-          <p className="text-red-600 font-medium text-sm mb-1">Failed to load registry</p>
-          <p className="text-red-400 text-xs">{error.message}</p>
-        </div>
+      <div className="max-w-md mx-auto">
+        <AlertMessage type="error" title="Failed to load registry" message={error.message} />
       </div>
     );
   }
 
   if (!pairs || pairs.length === 0) {
     return (
-      <div className="emboss-card rounded-2xl p-10 text-center max-w-md mx-auto">
+      <div className="emboss-card p-6 md:p-8 text-center max-w-sm mx-auto">
         <div className="relative z-10">
           <p className="text-gray-500 text-sm">No wrapper pairs found in the registry.</p>
         </div>
@@ -89,7 +82,7 @@ export function RegistryBrowser() {
         {pairs.map((pair) => (
           <div
             key={pair.erc7984Address}
-            className="group emboss-card rounded-2xl p-5 transition-all duration-200 hover:shadow-lg"
+            className="group emboss-card p-5 transition-all duration-200 hover:shadow-lg"
           >
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">

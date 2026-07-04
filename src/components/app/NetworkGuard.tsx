@@ -30,7 +30,7 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4">
-      <div className="emboss-card rounded-3xl p-12 text-center max-w-md">
+      <div className="emboss-card p-8 text-center max-w-sm">
         <div className="relative z-10">
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-red-100 flex items-center justify-center">
             <svg

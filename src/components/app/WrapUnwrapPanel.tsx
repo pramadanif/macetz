@@ -14,6 +14,7 @@ import { ERC20_ABI } from "@/lib/abis";
 import { formatWalletError } from "@/lib/errors";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
+import { AlertMessage } from "@/components/app/AlertMessage";
 import type { TokenPair } from "@/lib/types";
 
 type Mode = "wrap" | "unwrap";
@@ -110,17 +111,18 @@ export function WrapUnwrapPanel() {
   const outputBalance = mode === "wrap" ? confidentialBalance : erc20Balance;
 
   return (
-    <div className="max-w-lg mx-auto space-y-5">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight">
-          {mode === "wrap" ? "Shield Tokens" : "Unshield Tokens"}
-        </h2>
-        <p className="text-sm text-gray-500 mt-1">
-          {mode === "wrap"
-            ? "Shield ERC-20 tokens into their confidential counterpart."
-            : "Convert confidential tokens back to their public ERC-20 form."}
-        </p>
-      </div>
+    <div className="max-w-lg mx-auto">
+      <div className="emboss-card p-6 sm:p-8 space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            {mode === "wrap" ? "Shield Tokens" : "Unshield Tokens"}
+          </h2>
+          <p className="text-[15px] text-gray-500 mt-2 leading-relaxed">
+            {mode === "wrap"
+              ? "Convert ERC-20 tokens into their confidential counterpart."
+              : "Decrypt your tokens back into standard ERC-20."}
+          </p>
+        </div>
 
       {/* Mode toggle */}
       <div className="flex gap-1 p-1 bg-gray-100/80 rounded-full">
@@ -169,7 +171,7 @@ export function WrapUnwrapPanel() {
       {/* Connected two-card swap flow */}
       <div className="relative">
         {/* Input card — "You shield" / "You unshield" */}
-        <div className="emboss-card rounded-2xl p-5">
+        <div className="emboss-card p-5">
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -217,7 +219,7 @@ export function WrapUnwrapPanel() {
         </div>
 
         {/* Output card — "You receive" */}
-        <div className="emboss-card rounded-2xl p-5">
+        <div className="emboss-card p-5">
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -248,32 +250,30 @@ export function WrapUnwrapPanel() {
 
       {/* Status messages */}
       {success && (
-        <div className="p-4 rounded-xl text-sm bg-green-50/80 text-green-700 border border-green-200/60">
-          {success}
-        </div>
+        <AlertMessage type="success" title="Success" message={success} />
       )}
 
       {error && (
-        <div className="p-4 rounded-xl text-sm bg-red-50/80 text-red-700 border border-red-200/60">
-          {formatWalletError(error)}
-        </div>
+        <AlertMessage type="error" title="Transaction Failed" message={formatWalletError(error)} />
       )}
 
       {isPending && (
-        <div className="p-4 rounded-xl text-sm bg-amber-50/80 text-amber-700 border border-amber-200/60 flex items-center gap-3">
-          <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin shrink-0" />
-          <div>
-            {shield.isPending && "Shielding — approving ERC-20 spend and wrapping..."}
-            {unshield.isPending && (
-              <>
-                Unshielding — two-step process in progress.
-                <span className="block text-[11px] opacity-75 mt-0.5">
-                  Step 1: Unwrap request → Step 2: Relayer decrypt → Finalized
-                </span>
-              </>
-            )}
-          </div>
-        </div>
+        <AlertMessage 
+          type="loading" 
+          title="Processing Transaction" 
+          message={
+            shield.isPending 
+              ? "Shielding — approving ERC-20 spend and wrapping..."
+              : (
+                <>
+                  Unshielding — two-step process in progress.
+                  <span className="block text-[11px] opacity-75 mt-0.5">
+                    Step 1: Unwrap request → Step 2: Relayer decrypt → Finalized
+                  </span>
+                </>
+              )
+          } 
+        />
       )}
 
       {/* Submit */}
@@ -295,6 +295,7 @@ export function WrapUnwrapPanel() {
           automatically: unwrap request → relayer decryption → finalize.
         </p>
       )}
+      </div>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ERC20_ABI } from "@/lib/abis";
 import { FAUCET_MINT_CAP } from "@/lib/config";
 import { TokenIcon } from "@/components/app/TokenIcon";
+import { AlertMessage } from "@/components/app/AlertMessage";
 import type { TokenPair } from "@/lib/types";
 
 export function FaucetPanel() {
@@ -41,18 +42,30 @@ export function FaucetPanel() {
     refetchBalance();
   };
 
-  return (
-    <div className="max-w-lg mx-auto space-y-5">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight">Testnet Faucet</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Claim mock test tokens on Sepolia. Each mint gives you{" "}
-          <span className="font-mono font-medium text-gray-700">{FAUCET_MINT_CAP.toString()}</span>{" "}
-          tokens.
-        </p>
-      </div>
+  const successMessage = txHash ? (
+    <>
+      Minted {FAUCET_MINT_CAP.toString()} {selectedPair?.erc20Symbol ?? "tokens"}.{" "}
+      <a
+        href={`https://sepolia.etherscan.io/tx/${txHash}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline font-medium hover:text-green-900"
+      >
+        View on Etherscan
+      </a>
+    </>
+  ) : null;
 
-      <div className="emboss-card rounded-2xl p-6">
+  return (
+    <div className="max-w-lg mx-auto">
+      <div className="emboss-card p-6 sm:p-8 space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Testnet Faucet</h2>
+          <p className="text-[15px] text-gray-500 mt-2 leading-relaxed">
+            Claim free mock tokens to try the full shield and unshield flow.
+          </p>
+        </div>
+
         <div className="relative z-10">
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6">
             {mockPairs.map((pair) => (
@@ -84,23 +97,15 @@ export function FaucetPanel() {
             </div>
           )}
 
-          {txHash && (
-            <div className="mb-5 p-3.5 rounded-xl text-sm bg-green-50/80 text-green-700 border border-green-200/60">
-              Minted {FAUCET_MINT_CAP.toString()} {selectedPair?.erc20Symbol ?? "tokens"}.{" "}
-              <a
-                href={`https://sepolia.etherscan.io/tx/${txHash}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline font-medium hover:text-green-900"
-              >
-                View on Etherscan
-              </a>
+          {successMessage && (
+            <div className="mb-5">
+              <AlertMessage type="success" title="Success" message={successMessage} />
             </div>
           )}
 
           {error && (
-            <div className="mb-5 p-3.5 rounded-xl text-sm bg-red-50/80 text-red-700 border border-red-200/60">
-              {error}
+            <div className="mb-5">
+              <AlertMessage type="error" title="Minting Failed" message={error} />
             </div>
           )}
 

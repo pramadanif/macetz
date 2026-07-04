@@ -114,7 +114,7 @@ export function OnboardingTutorial() {
           animating ? "opacity-0 scale-95" : "opacity-100 scale-100"
         }`}
       >
-        <div className="emboss-card rounded-3xl p-8">
+        <div className="emboss-card p-6 md:p-8 max-h-[85vh] overflow-y-auto hide-scrollbar">
           <div className="relative z-10">
             {/* Step counter */}
             <p className="text-xs text-gray-400 mb-4 font-medium tracking-wide">

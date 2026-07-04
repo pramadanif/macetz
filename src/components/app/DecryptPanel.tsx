@@ -11,6 +11,7 @@ import {
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
+import { AlertMessage } from "@/components/app/AlertMessage";
 
 type DecryptMode = "registry" | "custom";
 
@@ -28,21 +29,26 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
 
   if (balanceLoading || metaLoading) {
     return (
-      <div className="p-4 rounded-xl bg-amber-50/80 text-amber-700 border border-amber-200/60 flex items-center gap-3">
-        <div className="w-4 h-4 border-2 border-amber-400 border-t-transparent rounded-full animate-spin shrink-0" />
-        <div>
-          <p className="font-medium text-sm">Decrypting your confidential balance...</p>
-          <p className="text-[11px] opacity-75 mt-0.5">This requires an EIP-712 signature on first use.</p>
-        </div>
-      </div>
+      <AlertMessage
+        type="loading"
+        title="Decrypting Balance"
+        message={
+          <>
+            Decrypting your confidential balance...
+            <span className="block text-[11px] opacity-75 mt-0.5">This requires an EIP-712 signature on first use.</span>
+          </>
+        }
+      />
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 rounded-xl text-sm bg-red-50/80 text-red-700 border border-red-200/60">
-        {error.message}
-      </div>
+      <AlertMessage
+        type="error"
+        title="Decryption Failed"
+        message={error.message}
+      />
     );
   }
 
@@ -50,7 +56,7 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
   const symbol = meta?.symbol ?? "???";
 
   return (
-    <div className="emboss-card rounded-2xl p-5">
+    <div className="emboss-card p-5">
       <div className="relative z-10">
         <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Decrypted Balance</p>
         <p className="text-3xl font-mono font-semibold text-[#16171C] tracking-tight">
@@ -128,15 +134,16 @@ export function DecryptPanel() {
   const canDecrypt = isAddress(targetAddress) && (mode === "registry" || customValid);
 
   return (
-    <div className="max-w-lg mx-auto space-y-5">
-      <div>
-        <h2 className="text-xl font-semibold tracking-tight">Decrypt Balance</h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Reveal the confidential balance of any ERC-7984 token via EIP-712 signature.
-        </p>
-      </div>
+    <div className="max-w-lg mx-auto">
+      <div className="emboss-card p-6 sm:p-8 space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Decrypt Balance</h2>
+          <p className="text-[15px] text-gray-500 mt-2 leading-relaxed">
+            Reveal your encrypted confidential balance with an EIP-712 signature.
+          </p>
+        </div>
 
-      <div className="emboss-card rounded-2xl p-6">
+      <div className="emboss-card p-5">
         <div className="relative z-10">
           <div className="flex gap-1 mb-6 p-1 bg-gray-100/80 rounded-full">
             <button
@@ -202,6 +209,7 @@ export function DecryptPanel() {
             Decrypt Balance
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

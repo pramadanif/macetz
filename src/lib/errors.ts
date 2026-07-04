@@ -1,5 +1,6 @@
-export function formatWalletError(error: Error): string {
-  const msg = error.message.toLowerCase();
+export function formatWalletError(error: unknown): string {
+  const raw = error instanceof Error ? error.message : String(error);
+  const msg = raw.toLowerCase();
 
   if (msg.includes("user rejected") || msg.includes("user denied")) {
     return "Transaction rejected by user.";
@@ -33,9 +34,9 @@ export function formatWalletError(error: Error): string {
     return "Transaction timed out. Please check your wallet and try again.";
   }
 
-  const short = error.message.length > 200
-    ? error.message.slice(0, 200) + "..."
-    : error.message;
+  const short = raw.length > 200
+    ? raw.slice(0, 200) + "..."
+    : raw;
 
   return short;
 }

@@ -13,6 +13,7 @@ import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { ERC20_ABI } from "@/lib/abis";
 import { formatWalletError } from "@/lib/errors";
 import { TokenIcon } from "@/components/app/TokenIcon";
+import { TokenSelect } from "@/components/app/TokenSelect";
 import type { TokenPair } from "@/lib/types";
 
 type Mode = "wrap" | "unwrap";
@@ -131,28 +132,24 @@ export function WrapUnwrapPanel() {
       </div>
 
       {/* Token selector */}
-      <div>
-        <select
-          value={selectedPair?.erc7984Address ?? ""}
-          onChange={(e) => {
-            const pair = pairs?.find((p) => p.erc7984Address === e.target.value);
-            setSelectedPair(pair ?? null);
-            setAmount("");
-            setSuccess(null);
-            shield.reset();
-            unshield.reset();
-          }}
-          className="w-full liquid-glass-field rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5C518]/40"
-        >
-          <option value="">Choose a token pair...</option>
-          {pairs?.map((pair) => (
-            <option key={pair.erc7984Address} value={pair.erc7984Address}>
-              {pair.erc20Symbol} → {pair.erc7984Symbol}
-              {pair.source === "local-dev" ? " [Dev]" : ""}
-            </option>
-          ))}
-        </select>
-      </div>
+      <TokenSelect
+        options={(pairs ?? []).map((pair) => ({
+          value: pair.erc7984Address,
+          label: `${pair.erc20Symbol} → ${pair.erc7984Symbol}`,
+          sublabel: pair.source === "local-dev" ? "Dev Pair" : pair.erc7984Name,
+          symbol: pair.erc20Symbol,
+        }))}
+        value={selectedPair?.erc7984Address ?? ""}
+        onChange={(val) => {
+          const pair = pairs?.find((p) => p.erc7984Address === val);
+          setSelectedPair(pair ?? null);
+          setAmount("");
+          setSuccess(null);
+          shield.reset();
+          unshield.reset();
+        }}
+        placeholder="Choose a token pair..."
+      />
 
       {/* Connected two-card swap flow */}
       <div className="relative">

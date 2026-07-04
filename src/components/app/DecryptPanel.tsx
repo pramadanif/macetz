@@ -10,6 +10,7 @@ import {
 } from "@zama-fhe/react-sdk";
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { TokenIcon } from "@/components/app/TokenIcon";
+import { TokenSelect } from "@/components/app/TokenSelect";
 
 type DecryptMode = "registry" | "custom";
 
@@ -162,18 +163,17 @@ export function DecryptPanel() {
 
           {mode === "registry" ? (
             <div className="mb-5">
-              <select
+              <TokenSelect
+                options={(pairs ?? []).map((pair) => ({
+                  value: pair.erc7984Address,
+                  label: pair.erc7984Symbol,
+                  sublabel: pair.erc7984Name,
+                  symbol: pair.erc7984Symbol,
+                }))}
                 value={selectedToken}
-                onChange={(e) => { setSelectedToken(e.target.value); setShowResult(false); }}
-                className="w-full liquid-glass-field rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#F5C518]/40"
-              >
-                <option value="">Choose a confidential token...</option>
-                {pairs?.map((pair) => (
-                  <option key={pair.erc7984Address} value={pair.erc7984Address}>
-                    {pair.erc7984Symbol} — {pair.erc7984Name}
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => { setSelectedToken(val); setShowResult(false); }}
+                placeholder="Choose a confidential token..."
+              />
             </div>
           ) : (
             <div className="mb-5 space-y-2.5">

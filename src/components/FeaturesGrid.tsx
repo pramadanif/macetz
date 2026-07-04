@@ -42,7 +42,7 @@ export function FeaturesGrid() {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col gap-6 order-2 md:order-1 md:h-full"
         >
-          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-5 shrink-0 flex items-center justify-center min-h-[68px] shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
+          <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 rounded-[2rem] p-5 shrink-0 flex items-center justify-center min-h-[68px] shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
             <div className="relative z-10 flex items-center justify-between w-full px-2">
               <span className="text-[15px] font-medium text-[#0A0A0A] tracking-tight">
                 Pair Architecture
@@ -51,13 +51,13 @@ export function FeaturesGrid() {
             </div>
           </div>
 
-          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
+          <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
             <div className="relative z-10 flex flex-col gap-4 h-full w-full justify-center">
               <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center gap-3 transition-transform hover:-translate-y-0.5">
                 <Search className="w-[18px] h-[18px] text-[#A1A1AA] shrink-0" />
                 <input
                   type="text"
-                  placeholder="Query canonical pairs..."
+                  placeholder="Search official Zama registry..."
                   readOnly
                   className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
@@ -65,7 +65,7 @@ export function FeaturesGrid() {
               <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
                 <input
                   type="text"
-                  placeholder="Analyze contract instances..."
+                  placeholder="Filter local 'Dev Pair' configs..."
                   readOnly
                   className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
@@ -73,7 +73,7 @@ export function FeaturesGrid() {
               <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
                 <input
                   type="text"
-                  placeholder="Verify burned addresses..."
+                  placeholder="Browse Sepolia cTokenMocks..."
                   readOnly
                   className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
@@ -118,13 +118,13 @@ export function FeaturesGrid() {
           transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col gap-6 order-3 md:h-full"
         >
-          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
+          <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
             <div className="relative z-10 flex flex-col gap-6 h-full">
               <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center gap-3">
                 <Search className="w-[18px] h-[18px] text-[#A1A1AA] shrink-0" />
                 <input
                   type="text"
-                  placeholder="Global search..."
+                  placeholder="Search by symbol, name, or address..."
                   readOnly
                   className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
@@ -138,17 +138,17 @@ export function FeaturesGrid() {
             </div>
           </div>
 
-          <div className="glass-panel bg-gradient-to-r from-yellow-50 to-[#FCFAEE] backdrop-blur-2xl border border-yellow-200/50 rounded-[2.5rem] px-8 py-7 shrink-0 flex flex-col justify-center shadow-[0_8px_30px_rgba(234,179,8,0.06)] hover:shadow-[0_15px_40px_rgba(234,179,8,0.12)] shadow-inset-light transition-shadow duration-500">
+          <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 rounded-[2.5rem] px-8 py-7 shrink-0 flex flex-col justify-center shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-shadow duration-500">
             <div className="relative z-10 w-full">
               <div className="flex justify-between items-center mb-4">
-                <span className="text-[13px] text-yellow-800 font-semibold tracking-wide uppercase">
-                  Decryption Status
+                <span className="text-[13px] text-gray-800 font-semibold tracking-wide uppercase">
+                  Onchain Sync
                 </span>
-                <span className="text-[13px] font-mono text-yellow-600">68%</span>
+                <span className="text-[13px] font-mono text-gray-600">100%</span>
               </div>
-              <div className="bg-yellow-200/50 h-2 w-full rounded-full overflow-hidden">
-                <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-full rounded-full w-[68%] relative overflow-hidden">
-                  <div className="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
+              <div className="bg-white/60 h-2 w-full rounded-full overflow-hidden shadow-inset-light">
+                <div className="bg-gray-800 h-full rounded-full w-full relative overflow-hidden">
+                  <div className="absolute inset-0 bg-white/20 animate-[shimmer_2s_infinite]" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)' }} />
                 </div>
               </div>
             </div>

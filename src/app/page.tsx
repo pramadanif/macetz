@@ -14,7 +14,7 @@ import { Footer } from '../components/Footer';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#F5F4F0] text-[#16171C] font-sans selection:bg-yellow-200">
+    <div className="min-h-screen bg-[#F5F4F0] text-[#16171C] font-telegraf selection:bg-yellow-200">
       <Header />
       <main className="overflow-hidden">
         <Hero />

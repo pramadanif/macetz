@@ -63,7 +63,7 @@ export function ConfidentialDistribution() {
                 key={row.id}
                 className="flex items-center justify-between text-sm px-2"
               >
-                <span className="text-gray-300 font-mono truncate mr-4 flex-1">
+                <span className="text-gray-300 font-telegraf truncate mr-4 flex-1">
                   {row.address}
                 </span>
                 <span className="text-gray-400 tracking-widest mr-3">***</span>

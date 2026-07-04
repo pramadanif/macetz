@@ -20,10 +20,10 @@ export function ExtensibilitySection() {
       </div>
 
       <div className="dark-panel rounded-2xl overflow-hidden shadow-2xl max-w-3xl mx-auto text-left">
-        <div className="bg-white/5 border-b border-white/10 px-4 py-3 text-xs font-mono text-gray-400">
+        <div className="bg-white/5 border-b border-white/10 px-4 py-3 text-xs font-telegraf text-gray-400">
           config/custom-pairs.json
         </div>
-        <pre className="p-6 lg:p-8 overflow-x-auto text-sm font-mono leading-relaxed text-gray-300 hide-scrollbar">
+        <pre className="p-6 lg:p-8 overflow-x-auto text-sm font-telegraf leading-relaxed text-gray-300 hide-scrollbar">
           <code>{`{
   "pairs": [
     {

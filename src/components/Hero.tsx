@@ -16,7 +16,7 @@ const ANNOTATION_PILLS = [
 const FLOATING_CARDS = [
   {
     title: "Encrypted hex data",
-    className: "top-[6%] left-[-4%] md:left-[-10%] lg:left-[-12%]",
+    className: "top-[10%] left-[2%] md:top-[12%] md:left-[0%] lg:left-[2%]",
     delay: 0,
     fields: [
       { label: "", value: "0x7a3f9c2e1b8d4f6a0e5c3b7d9f1a2e4" },
@@ -25,7 +25,7 @@ const FLOATING_CARDS = [
   },
   {
     title: "Encrypted hex data",
-    className: "top-[4%] right-[-4%] md:right-[-8%] lg:right-[-10%]",
+    className: "top-[8%] right-[2%] md:top-[10%] md:right-[0%] lg:right-[2%]",
     delay: 0.15,
     fields: [
       { label: "Title", value: "0x8f2a1c9e4b7d3f6a0e5" },
@@ -34,7 +34,7 @@ const FLOATING_CARDS = [
   },
   {
     title: "Encryption",
-    className: "top-[42%] right-[-6%] md:right-[-12%] lg:right-[-14%]",
+    className: "hidden sm:block top-[46%] right-[-2%] md:right-[0%] lg:right-[1%]",
     delay: 0.3,
     fields: [
       { label: "Control", value: "0x5a9c3e7f1b2d8a4e6f0" },
@@ -43,7 +43,7 @@ const FLOATING_CARDS = [
   },
   {
     title: "Validation Meta",
-    className: "bottom-[14%] right-[-2%] md:right-[-6%] lg:right-[-8%]",
+    className: "hidden md:block bottom-[16%] right-[4%] lg:right-[6%]",
     delay: 0.45,
     fields: [
       { label: "Qty", value: "0x9e2f4a8c1b7d3e6f0a5" },
@@ -52,7 +52,7 @@ const FLOATING_CARDS = [
   },
   {
     title: "Encrypted system",
-    className: "bottom-[10%] left-[-2%] md:left-[-8%] lg:left-[-10%]",
+    className: "hidden sm:block bottom-[14%] left-[2%] md:left-[0%] lg:left-[2%]",
     delay: 0.6,
     fields: [
       { label: "Source", value: "0x2b7f9a3e1c8d4f6a0e5" },
@@ -63,60 +63,75 @@ const FLOATING_CARDS = [
 
 export function Hero() {
   return (
-    <section className="relative px-4 pt-10 pb-24 overflow-hidden flex flex-col items-center text-center">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-yellow-400/10 blur-[120px] rounded-full pointer-events-none" />
+    <section className="hero-section relative overflow-hidden">
+      <div className="hero-section__glow pointer-events-none" aria-hidden="true" />
 
-      <HeroRotatingCopy />
+      <div className="hero-section__inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-16 lg:pb-20">
+        <div className="hero-section__grid">
+          <div className="hero-section__copy">
+            <HeroRotatingCopy />
 
-      <div className="flex flex-wrap justify-center gap-2 max-w-lg mb-8 px-2">
-        {ANNOTATION_PILLS.map((pill) => (
-          <span
-            key={pill}
-            className="glass-pill px-3 py-1 text-[10px] md:text-xs font-normal text-gray-700 rounded-full"
-          >
-            {pill}
-          </span>
-        ))}
-      </div>
+            <div className="hero-section__actions">
+              <div className="hero-section__ctas">
+                <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium text-sm px-6 py-3 rounded-full transition-colors shadow-lg shadow-yellow-500/20 inline-flex items-center gap-1">
+                  Launch Registry <ArrowRight className="w-4 h-4" />
+                </button>
+                <button className="glass-pill hover:bg-white/90 text-gray-800 font-normal text-sm px-6 py-3 rounded-full transition-colors">
+                  View Live Distribution Demo
+                </button>
+              </div>
 
-      <div className="relative w-full max-w-3xl mx-auto mb-10 px-2 sm:px-4 min-h-[340px] md:min-h-[420px]">
-        <div className="absolute inset-x-10 top-8 bottom-4 rounded-full bg-yellow-400/15 blur-[90px] pointer-events-none" />
+              <p className="hero-section__trust">
+                Built on Zama Protocol · FHEVM · ERC-7984 · Open Source · Live on
+                Sepolia
+              </p>
+            </div>
+          </div>
 
-        {FLOATING_CARDS.map((card) => (
-          <FloatingEncryptedCard
-            key={card.title + card.className}
-            title={card.title}
-            fields={card.fields}
-            className={card.className}
-            delay={card.delay}
-          />
-        ))}
+          <div className="hero-section__visual">
+            <div className="hero-section__stage">
+              <div className="hero-section__pills">
+                {ANNOTATION_PILLS.map((pill) => (
+                  <span
+                    key={pill}
+                    className="glass-pill px-3.5 py-1.5 text-[10px] md:text-[11px] font-normal text-gray-700 rounded-full"
+                  >
+                    {pill}
+                  </span>
+                ))}
+              </div>
 
-        <div className="relative flex justify-center">
-          <Image
-            src={heroAsset}
-            alt="Hero asset"
-            width={658}
-            height={689}
-            priority
-            sizes="(max-width: 768px) 82vw, 520px"
-            className="h-auto w-full max-w-[560px] object-contain relative z-10"
-          />
+              <div className="hero-section__asset-wrap">
+                <div className="hero-section__asset-glow pointer-events-none" aria-hidden="true" />
+                <div className="hero-section__asset-ring pointer-events-none" aria-hidden="true" />
+
+                {FLOATING_CARDS.map((card) => (
+                  <FloatingEncryptedCard
+                    key={card.title + card.className}
+                    title={card.title}
+                    fields={card.fields}
+                    className={card.className}
+                    delay={card.delay}
+                    size="lg"
+                  />
+                ))}
+
+                <div className="hero-section__asset-image relative z-10">
+                  <Image
+                    src={heroAsset}
+                    alt="Hero asset"
+                    width={658}
+                    height={689}
+                    priority
+                    sizes="(max-width: 768px) 88vw, (max-width: 1280px) 52vw, 620px"
+                    className="hero-section__hero-img"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <div className="flex items-center justify-center gap-4 relative z-30 mb-6">
-        <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium text-sm px-6 py-3 rounded-full transition-colors shadow-lg shadow-yellow-500/20 inline-flex items-center gap-1">
-          Launch Registry <ArrowRight className="w-4 h-4" />
-        </button>
-        <button className="glass-pill hover:bg-white/90 text-gray-800 font-normal text-sm px-6 py-3 rounded-full transition-colors">
-          View Live Distribution Demo
-        </button>
-      </div>
-
-      <p className="text-xs text-gray-500 font-normal relative z-30 max-w-xl px-4">
-        Built on Zama Protocol · FHEVM · ERC-7984 · Open Source · Live on Sepolia
-      </p>
     </section>
   );
 }

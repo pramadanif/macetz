@@ -168,7 +168,7 @@ export function HeroRotatingCopy() {
   const current = HERO_COPY_VARIANTS[variantIndex];
 
   return (
-    <div ref={containerRef} className="text-center max-w-3xl mx-auto px-4 mb-10">
+    <div ref={containerRef} className="hero-copy-block text-center max-w-3xl mx-auto px-4 mb-10">
       <h1 className="hero-headline mb-5">
         <span className="text-black">Wrap.</span>{" "}
         {reduceMotion ? (

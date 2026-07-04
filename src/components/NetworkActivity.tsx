@@ -32,7 +32,7 @@ export function NetworkActivity() {
               <div className="hidden lg:block text-sm font-medium text-gray-500 mb-2">
                 {stat.label}
               </div>
-              <div className="text-2xl md:text-3xl lg:text-5xl font-bold text-white lg:text-gray-900 font-mono tracking-tighter mb-1">
+              <div className="text-2xl md:text-3xl lg:text-5xl font-bold text-white lg:text-gray-900 font-telegraf tracking-tighter mb-1">
                 {stat.value}
               </div>
               <div className="text-xs text-gray-400 lg:hidden">{stat.label}</div>

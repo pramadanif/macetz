@@ -173,7 +173,7 @@ export function DecryptScrambleText({
     <Tag ref={containerRef as never} className={className}>
       {content}
       {showCaret && isTransitioning ? (
-        <span className="inline-block w-[2px] h-[0.9em] bg-[#F5C518] ml-0.5 align-middle animate-pulse font-mono" />
+        <span className="inline-block w-[2px] h-[0.9em] bg-[#F5C518] ml-0.5 align-middle animate-pulse font-telegraf" />
       ) : null}
     </Tag>
   );

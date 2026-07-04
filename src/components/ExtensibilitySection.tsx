@@ -8,7 +8,7 @@ export function ExtensibilitySection() {
         <p className="text-xs font-semibold text-gray-500 tracking-[0.14em] uppercase mb-3">
           Extensibility
         </p>
-        <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-4">
+        <h2 className="text-3xl lg:text-4xl font-normal tracking-[-0.03em] text-gray-900 mb-4">
           Adding a pair is a two-minute job, not a pull request review.
         </h2>
         <p className="text-gray-500 font-medium text-sm lg:text-base leading-relaxed">

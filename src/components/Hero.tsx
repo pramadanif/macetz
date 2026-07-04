@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import heroAsset from "../../assets/heroasset.png";
 import { FloatingEncryptedCard } from "./FloatingEncryptedCard";
 import { HeroRotatingCopy } from "./HeroRotatingCopy";
@@ -15,99 +15,79 @@ const ANNOTATION_PILLS = [
 
 const FLOATING_CARDS = [
   {
-    title: "Encrypted hex data",
-    className: "top-[10%] left-[2%] md:top-[12%] md:left-[0%] lg:left-[2%]",
-    delay: 0,
+    title: "Zero Knowledge",
+    className: "hidden sm:block bottom-[12%] -left-[6%] lg:bottom-[15%] lg:-left-[10%] xl:-left-[12%]",
+    delay: 0.9,
     fields: [
-      { label: "", value: "0x7a3f9c2e1b8d4f6a0e5c3b7d9f1a2e4" },
-      { label: "", value: "0xc4e8f2a1b9d6e3f7a0c5b8d2e6f9a1" },
+      { label: "Proof", value: "0x2b7f9a3e1c8d4f6a0e5" },
     ],
   },
   {
-    title: "Encrypted hex data",
-    className: "top-[8%] right-[2%] md:top-[10%] md:right-[0%] lg:right-[2%]",
-    delay: 0.15,
+    title: "Transaction Status",
+    className: "hidden md:block top-[42%] -right-[10%] lg:top-[40%] lg:-right-[14%] xl:-right-[16%]",
+    delay: 1.5,
     fields: [
-      { label: "Title", value: "0x8f2a1c9e4b7d3f6a0e5" },
-      { label: "Amount", value: "0x3d7f1a9c2e8b4f6a0c5" },
-    ],
-  },
-  {
-    title: "Encryption",
-    className: "hidden sm:block top-[46%] right-[-2%] md:right-[0%] lg:right-[1%]",
-    delay: 0.3,
-    fields: [
-      { label: "Control", value: "0x5a9c3e7f1b2d8a4e6f0" },
-      { label: "Amount", value: "0x1f8e4c2a9b7d3f6e0a5" },
-    ],
-  },
-  {
-    title: "Validation Meta",
-    className: "hidden md:block bottom-[16%] right-[4%] lg:right-[6%]",
-    delay: 0.45,
-    fields: [
-      { label: "Qty", value: "0x9e2f4a8c1b7d3e6f0a5" },
       { label: "Status", value: "0x6c1a9e3f7b2d8a4e0f5" },
-    ],
-  },
-  {
-    title: "Encrypted system",
-    className: "hidden sm:block bottom-[14%] left-[2%] md:left-[0%] lg:left-[2%]",
-    delay: 0.6,
-    fields: [
-      { label: "Source", value: "0x2b7f9a3e1c8d4f6a0e5" },
-      { label: "Amount", value: "0x4d8e1f3a9c2b7e6f0a5" },
+      { label: "Hash", value: "0x3d7f1a9c2e8b4f6a0c5" },
     ],
   },
 ];
 
 export function Hero() {
   return (
-    <section className="hero-section relative overflow-hidden">
-      <div className="hero-section__glow pointer-events-none" aria-hidden="true" />
+    <section className="hero-section relative overflow-hidden bg-[#F5F4F0] min-h-[95vh] flex flex-col justify-center">
+      {/* Refined Elegant Glow Effects */}
+      <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[#F5C518]/15 blur-[140px] rounded-full pointer-events-none mix-blend-multiply" aria-hidden="true" />
+      <div className="absolute top-[35%] left-[60%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/50 blur-[90px] rounded-full pointer-events-none" aria-hidden="true" />
 
-      <div className="hero-section__inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-14 pb-16 lg:pb-20">
-        <div className="hero-section__grid">
-          <div className="hero-section__copy">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 lg:pt-36 pb-16 lg:pb-24 w-full">
+        
+        {/* Two-Column Grid Layout */}
+        <div className="hero-section__grid items-center">
+          
+          {/* Left Column: Copy & Actions */}
+          <div className="hero-section__copy !items-start !text-left">
+            {/* Top Annotation Pills (Aligned left on desktop) */}
+            <div className="flex flex-wrap justify-start gap-2.5 mb-8 opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
+              {ANNOTATION_PILLS.map((pill, i) => (
+                <span
+                  key={pill}
+                  className="bg-white/70 backdrop-blur-md border border-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] px-4 py-2 text-[11px] font-semibold tracking-wide text-gray-500 rounded-full"
+                  style={{ animationDelay: `${i * 0.15}s` }}
+                >
+                  {pill}
+                </span>
+              ))}
+            </div>
+
             <HeroRotatingCopy />
 
-            <div className="hero-section__actions">
-              <div className="hero-section__ctas">
-                <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-medium text-sm px-6 py-3 rounded-full transition-colors shadow-lg shadow-yellow-500/20 inline-flex items-center gap-1">
-                  Launch Registry <ArrowRight className="w-4 h-4" />
+            <div className="flex flex-col items-start gap-6 mt-8 w-full">
+              {/* Elegant Buttons */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+                <button className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 inline-flex items-center gap-2">
+                  Launch Registry <ArrowUpRight className="w-4 h-4 opacity-70" />
                 </button>
-                <button className="glass-pill hover:bg-white/90 text-gray-800 font-normal text-sm px-6 py-3 rounded-full transition-colors">
-                  View Live Distribution Demo
+                <button className="bg-white/70 hover:bg-white backdrop-blur-md border border-white/80 text-gray-800 font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-sm hover:shadow-md inline-flex items-center gap-2">
+                  View Live Demo
                 </button>
               </div>
 
-              <p className="hero-section__trust">
-                Built on Zama Protocol · FHEVM · ERC-7984 · Open Source · Live on
-                Sepolia
+              <p className="text-[11px] font-semibold text-gray-400 tracking-[0.1em] uppercase mt-2 opacity-80 text-left">
+                Built on Zama Protocol • FHEVM • Live on Sepolia
               </p>
             </div>
           </div>
 
+          {/* Right Column: Visual Asset Stage */}
           <div className="hero-section__visual">
-            <div className="hero-section__stage">
-              <div className="hero-section__pills">
-                {ANNOTATION_PILLS.map((pill) => (
-                  <span
-                    key={pill}
-                    className="glass-pill px-3.5 py-1.5 text-[10px] md:text-[11px] font-normal text-gray-700 rounded-full"
-                  >
-                    {pill}
-                  </span>
-                ))}
-              </div>
-
-              <div className="hero-section__asset-wrap">
-                <div className="hero-section__asset-glow pointer-events-none" aria-hidden="true" />
-                <div className="hero-section__asset-ring pointer-events-none" aria-hidden="true" />
-
+            <div className="hero-section__stage w-full relative">
+              <div className="hero-section__asset-wrap !pt-0 relative w-full flex items-center justify-center">
+                
+                {/* Floating Cards (Placed elegantly around the larger image) */}
                 {FLOATING_CARDS.map((card) => (
                   <FloatingEncryptedCard
-                    key={card.title + card.className}
+                    key={card.title}
                     title={card.title}
                     fields={card.fields}
                     className={card.className}
@@ -116,20 +96,22 @@ export function Hero() {
                   />
                 ))}
 
-                <div className="hero-section__asset-image relative z-10">
+                {/* Main Hero Image */}
+                <div className="hero-section__asset-image relative z-10 w-full flex justify-center transform transition-transform duration-1000 hover:scale-[1.02]">
                   <Image
                     src={heroAsset}
                     alt="Hero asset"
                     width={658}
                     height={689}
                     priority
-                    sizes="(max-width: 768px) 88vw, (max-width: 1280px) 52vw, 620px"
-                    className="hero-section__hero-img"
+                    sizes="(max-width: 768px) 88vw, (max-width: 1280px) 55vw, 750px"
+                    className="hero-section__hero-img !w-full !max-w-[110%] lg:!max-w-[120%] lg:-mr-10 h-auto object-contain filter drop-shadow-[0_30px_60px_rgba(0,0,0,0.1)]"
                   />
                 </div>
               </div>
             </div>
           </div>
+          
         </div>
       </div>
     </section>

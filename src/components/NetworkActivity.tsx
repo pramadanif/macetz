@@ -21,7 +21,7 @@ export function NetworkActivity() {
             Primary Activity
           </div>
 
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white lg:text-gray-900 tracking-tight">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-white lg:text-gray-900 tracking-[-0.03em]">
             Network Activity
           </h2>
         </div>

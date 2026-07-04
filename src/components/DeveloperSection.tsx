@@ -2,7 +2,7 @@ import React from "react";
 
 export function DeveloperSection() {
   return (
-    <section className="relative w-full py-32 bg-[#050505] flex flex-col items-center justify-center overflow-hidden font-sans">
+    <section className="relative w-full py-32 bg-[#050505] flex flex-col items-center justify-center overflow-hidden">
       {/* Lens flare / Aurora effects in background */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         {/* Top left yellowish glow */}
@@ -14,7 +14,7 @@ export function DeveloperSection() {
 
       <div className="relative z-10 max-w-5xl w-full px-6 flex flex-col items-center text-center">
         {/* Title */}
-        <h2 className="text-4xl md:text-5xl lg:text-[56px] font-medium tracking-tight mb-6 leading-[1.1]">
+        <h2 className="text-4xl md:text-5xl lg:text-[64px] font-normal tracking-[-0.03em] mb-6 leading-[1.1]">
           <span className="text-white">Build </span>
           <span className="bg-gradient-to-r from-[#F9D48D] via-[#F1AC71] to-[#E99757] bg-clip-text text-transparent">
             confidential onchain

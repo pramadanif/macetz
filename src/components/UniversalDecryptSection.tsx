@@ -15,7 +15,7 @@ export function UniversalDecryptSection() {
         <p className="text-xs font-semibold text-gray-500 tracking-[0.14em] uppercase mb-3">
           Decrypt Any Balance
         </p>
-        <h2 className="text-3xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-6 leading-[1.1]">
+        <h2 className="text-3xl lg:text-5xl font-normal tracking-[-0.03em] text-gray-900 mb-6 leading-[1.1]">
           Not just registry tokens.
           <br className="hidden lg:block" /> Any ERC-7984 token, anywhere.
         </h2>

@@ -27,7 +27,7 @@ export function SupportedAssets() {
         <div className="text-sm font-semibold text-gray-500 mb-3 tracking-wide">
           Supported Tokens
         </div>
-        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900 mb-4">
+        <h2 className="text-2xl md:text-3xl font-normal tracking-[-0.03em] text-gray-900 mb-4">
           Supported Ecosystem Assets
         </h2>
         <p className="text-gray-500 font-medium text-sm leading-relaxed">

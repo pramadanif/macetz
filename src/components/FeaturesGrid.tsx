@@ -13,7 +13,7 @@ export function FeaturesGrid() {
         <p className="text-xs font-semibold text-[#8A8A8E] tracking-[0.14em] uppercase mb-3">
           The Official Zama Wrapper Registry
         </p>
-        <h2 className="text-3xl lg:text-[38px] font-bold tracking-tight text-[#16171C] mb-4 leading-tight">
+        <h2 className="text-3xl lg:text-[38px] font-normal tracking-[-0.03em] text-[#16171C] mb-4 leading-tight">
           One registry. Every confidential pair. Zero fragmentation.
         </h2>
         <p className="text-[#6B7280] font-medium text-sm lg:text-[15px] max-w-[640px] mx-auto leading-relaxed">

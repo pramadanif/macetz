@@ -12,7 +12,7 @@ export function CTAFooter() {
 
         <div className="relative z-10 w-full px-8 lg:px-12 pb-10 lg:pb-12 pt-16">
           <div className="max-w-xl">
-            <h2 className="text-[34px] md:text-[44px] lg:text-[50px] font-bold tracking-[-0.03em] text-[#16171C] leading-[1.05] mb-5">
+            <h2 className="text-[34px] md:text-[44px] lg:text-[50px] font-normal tracking-[-0.03em] text-[#16171C] leading-[1.05] mb-5">
               Ready to stop
               <br />
               leaking alpha?

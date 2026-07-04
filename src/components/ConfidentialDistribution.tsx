@@ -15,7 +15,7 @@ export function ConfidentialDistribution() {
         <div className="text-xs font-semibold text-gray-500 mb-3 tracking-[0.14em] uppercase">
           Confidential Distribution · Powered by TokenOps SDK
         </div>
-        <h2 className="text-3xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-6 leading-[1.1]">
+        <h2 className="text-3xl lg:text-5xl font-normal tracking-[-0.03em] text-gray-900 mb-6 leading-[1.1]">
           Distribute to hundreds.
           <br className="hidden lg:block" /> Reveal to none.
         </h2>

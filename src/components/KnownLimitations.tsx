@@ -10,7 +10,7 @@ const LIMITATIONS = [
 export function KnownLimitations() {
   return (
     <section className="px-4 py-20 max-w-3xl mx-auto">
-      <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-gray-900 mb-8 text-center">
+      <h2 className="text-2xl lg:text-3xl font-normal tracking-[-0.03em] text-gray-900 mb-8 text-center">
         Known Limitations
       </h2>
       <ul className="space-y-4">

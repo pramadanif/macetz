@@ -9,22 +9,18 @@
   --color-panel-dark-light: #111318;
   --color-text-dark: #16171C;
   --color-text-muted: #8A8A8E;
-}
-
-:root {
+  
   --font-sans: 'Satoshi', ui-sans-serif, system-ui, sans-serif;
   --font-telegraf: 'Satoshi', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Satoshi', ui-monospace, SFMono-Regular, monospace;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 body, html {
   background-color: var(--color-bg-base);
   color: var(--color-text-dark);
+  font-family: 'Satoshi', ui-sans-serif, system-ui, sans-serif;
 }
 
-* {
-  font-family: 'Satoshi', ui-sans-serif, system-ui, sans-serif !important;
-}
 
 .hero-headline {
   font-family: var(--font-telegraf);

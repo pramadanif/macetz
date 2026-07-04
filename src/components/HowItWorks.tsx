@@ -30,7 +30,7 @@ export function HowItWorks() {
   return (
     <section className="px-4 py-20 max-w-7xl mx-auto flex flex-col items-center">
       <div className="text-center mb-12 lg:mb-16">
-        <h2 className="text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-6">
+        <h2 className="text-3xl lg:text-4xl font-normal tracking-[-0.03em] text-gray-900 mb-6">
           End-to-End Confidentiality in 3 Steps
         </h2>
         <button className="glass-pill px-4 py-2 text-sm font-medium text-gray-700 hover:text-black transition-colors inline-flex items-center gap-1">

@@ -29,48 +29,59 @@ export function FloatingEncryptedCard({
   return (
     <motion.div
       className={`absolute z-20 pointer-events-none ${className}`}
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{
         opacity: 1,
-        y: [0, -5, 0],
+        y: [0, -12, 0],
       }}
       transition={{
-        opacity: { duration: 0.6, delay },
-        y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay },
+        opacity: { duration: 1, delay, ease: "easeOut" },
+        y: { duration: 8, repeat: Infinity, ease: "easeInOut", delay },
       }}
     >
       <div
-        className={`emboss-card rounded-2xl shadow-[0_16px_48px_rgba(17,24,39,0.12)] ${
+        className={`bg-white/70 backdrop-blur-2xl border border-white shadow-[0_16px_40px_-12px_rgba(0,0,0,0.1)] rounded-[20px] overflow-hidden relative ${
           isLarge
-            ? "px-3.5 py-3 min-w-[160px] max-w-[210px]"
-            : "px-3 py-2.5 min-w-[148px] max-w-[196px]"
+            ? "px-5 py-4 min-w-[210px]"
+            : "px-4 py-3 min-w-[170px]"
         }`}
       >
-        <div className="relative z-10 space-y-1.5">
-          <p
-            className={`font-semibold uppercase tracking-[0.14em] text-gray-500 ${
-              isLarge ? "text-[10px]" : "text-[9px]"
-            }`}
-          >
-            {title}
-          </p>
-          {fields.map((field) => (
-            <div key={`${field.label}-${field.value}`} className="space-y-0.5">
-              {field.label ? (
-                <span
-                  className={`text-gray-400 block ${isLarge ? "text-[9px]" : "text-[8px]"}`}
-                >
-                  {field.label}
-                </span>
-              ) : null}
-              <EncryptedText
-                text={field.value}
-                className={`font-telegraf text-gray-700 leading-tight block truncate ${
-                  isLarge ? "text-[10px]" : "text-[9px]"
-                }`}
-              />
-            </div>
-          ))}
+        {/* Subtle inner highlight */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)] animate-pulse" />
+            <p
+              className={`font-semibold uppercase tracking-wider text-gray-800/70 ${
+                isLarge ? "text-[10px]" : "text-[9px]"
+              }`}
+            >
+              {title}
+            </p>
+          </div>
+          
+          <div className="flex flex-col gap-2.5">
+            {fields.map((field) => (
+              <div key={`${field.label}-${field.value}`} className="flex flex-col gap-1.5">
+                {field.label && (
+                  <span
+                    className={`text-gray-500/80 font-medium ${isLarge ? "text-[10px]" : "text-[9px]"}`}
+                  >
+                    {field.label}
+                  </span>
+                )}
+                <div className="bg-[#F5F4F0]/80 rounded-lg px-2.5 py-2 border border-black/[0.04] shadow-inner">
+                  <EncryptedText
+                    text={field.value}
+                    className={`font-mono text-gray-800 font-medium leading-none block truncate ${
+                      isLarge ? "text-[11px]" : "text-[10px]"
+                    }`}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>

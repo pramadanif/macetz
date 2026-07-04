@@ -1,10 +1,44 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ArrowRight, ChevronRight, CheckCircle2, Clock } from "lucide-react";
 import { motion } from "motion/react";
 
 export function ConfidentialDistribution() {
+  const [items, setItems] = useState<{ id: number; addr: string; status: string }[]>([
+    { id: 1, addr: "0xet65..4f3", status: "Claimed" },
+    { id: 2, addr: "0x9906..036", status: "Pending" },
+    { id: 3, addr: "0x61xb..e064", status: "Claimed" },
+    { id: 4, addr: "0x560f..229", status: "Pending" },
+    { id: 5, addr: "0x8b2a..c41", status: "Pending" },
+    { id: 6, addr: "0x34cc..1b9", status: "Claimed" },
+    { id: 7, addr: "0x89fc..3b2", status: "Claimed" },
+  ]);
+
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      
+      setTimeout(() => {
+        // Snap back instantly and shift array to create an infinite loop
+        setIsAnimating(false);
+        setItems((prev: { id: number; addr: string; status: string }[]) => {
+          const arr = [...prev];
+          const first = arr.shift();
+          if (first) arr.push(first);
+          return arr;
+        });
+      }, 700);
+    }, 2500);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Center focus shifts down during the animation to track the moving item
+  const visualActiveIndex = isAnimating ? 3 : 2;
+
   return (
     <section id="distribute" className="px-4 py-20 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20" style={{ perspective: "1200px" }}>
       
@@ -50,28 +84,46 @@ export function ConfidentialDistribution() {
           
           {/* Mask container to fade out top and bottom */}
           <div 
-            className="absolute inset-0 flex flex-col items-center justify-center gap-4 w-full h-full px-8" 
+            className="absolute inset-0 flex flex-col items-center justify-start overflow-hidden px-8 pointer-events-none" 
             style={{ 
-              maskImage: 'linear-gradient(to bottom, transparent, black 25%, black 75%, transparent)', 
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 25%, black 75%, transparent)' 
+              maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)', 
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)' 
             }}
           >
-            
-            {/* Blurred Row 1 */}
-            <DistributionRow opacity="opacity-30" blur="blur-[4px]" address="0xet65..4f3" status="Claimed" />
-            
-            {/* Blurred Row 2 */}
-            <DistributionRow opacity="opacity-50" blur="blur-[2px]" address="0x9906..036" status="Pending" />
-            
-            {/* Active Row 3 */}
-            <DistributionRow isActive address="0x61xb..e064" status="Claimed" />
+            <motion.div
+              animate={{ y: isAnimating ? -112 : 0 }}
+              transition={{ duration: isAnimating ? 0.7 : 0, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full flex flex-col gap-4 items-center pt-[10px]"
+            >
+              {items.map((item: { id: number; addr: string; status: string }, i: number) => {
+                const distance = Math.abs(i - visualActiveIndex);
 
-            {/* Blurred Row 4 */}
-            <DistributionRow opacity="opacity-50" blur="blur-[2px]" address="0x560f..229" status="Pending" />
-            
-            {/* Blurred Row 5 */}
-            <DistributionRow opacity="opacity-30" blur="blur-[4px]" address="0x8b2a..c41" status="Pending" />
-            
+                let opacity = "opacity-100";
+                let blur = "";
+                let isActive = false;
+
+                if (distance === 0) {
+                  isActive = true;
+                } else if (distance === 1) {
+                  opacity = "opacity-60";
+                  blur = "blur-[2px]";
+                } else {
+                  opacity = "opacity-30";
+                  blur = "blur-[5px]";
+                }
+
+                return (
+                  <DistributionRow 
+                    key={item.id}
+                    opacity={opacity}
+                    blur={blur}
+                    isActive={isActive}
+                    address={item.addr}
+                    status={item.status}
+                  />
+                );
+              })}
+            </motion.div>
           </div>
         </div>
       </motion.div>
@@ -83,7 +135,7 @@ function DistributionRow({ opacity = "", blur = "", isActive = false, address, s
   const isClaimed = status === "Claimed";
   
   return (
-    <div className={`w-full max-w-[460px] rounded-xl p-5 lg:p-6 flex items-center justify-between transition-all ${isActive ? 'bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-black/5 z-10 scale-[1.02]' : `bg-white/40 ${opacity} ${blur}`}`}>
+    <div className={`w-full max-w-[460px] h-[96px] rounded-xl p-5 lg:p-6 flex items-center justify-between transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isActive ? 'bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] shadow-inset-light border border-black/5 z-10 scale-[1.05]' : `bg-white/40 shadow-inset-light ${opacity} ${blur} scale-100`}`}>
       <div className="flex flex-col gap-1 w-[45%]">
         <span className="text-[12px] text-gray-500 font-medium">Recipient</span>
         <span className="text-sm font-mono text-black">{address}</span>
@@ -100,7 +152,7 @@ function DistributionRow({ opacity = "", blur = "", isActive = false, address, s
 
       <div className="flex flex-col gap-1 w-[25%] items-end">
         <span className="text-[12px] text-gray-500 font-medium">Status</span>
-        <div className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${isActive ? (isClaimed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600') : (isClaimed ? 'text-green-700' : 'text-gray-600')}`}>
+        <div className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full shadow-inset-light ${isClaimed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
           {isClaimed ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
           {status}
         </div>

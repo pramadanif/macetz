@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { AnimatePresence, motion } from "motion/react";
 import { TokenIcon } from "@/components/app/TokenIcon";
 
 export interface TokenSelectOption {
@@ -60,51 +61,63 @@ export function TokenSelect({ options, value, onChange, placeholder = "Choose a 
     };
   }, [open]);
 
-  const dropdown = open && mounted ? createPortal(
-    <div
-      ref={dropdownRef}
-      className="fixed z-[200]"
-      style={{ top: pos.top, left: pos.left, width: pos.width }}
-    >
-      <div className="bg-white rounded-2xl shadow-2xl border border-gray-200/80 max-h-[320px] overflow-y-auto overscroll-contain">
-        {options.length === 0 && (
-          <div className="px-4 py-3 text-sm text-gray-400">No tokens available</div>
-        )}
-        {options.map((option) => {
-          const isActive = option.value === value;
-          return (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => {
-                onChange(option.value);
-                setOpen(false);
-              }}
-              className={`w-full px-4 py-3 flex items-center gap-3 text-left transition-colors duration-100 first:rounded-t-2xl last:rounded-b-2xl ${
-                isActive
-                  ? "bg-[#F5C518]/8"
-                  : "hover:bg-gray-50"
-              }`}
-            >
-              <TokenIcon symbol={option.symbol} size={32} />
-              <span className="flex flex-col min-w-0 flex-1">
-                <span className={`text-sm font-medium truncate ${isActive ? "text-[#16171C]" : "text-gray-700"}`}>
-                  {option.label}
-                </span>
-                {option.sublabel && (
-                  <span className="text-[11px] text-gray-400 truncate">{option.sublabel}</span>
-                )}
-              </span>
-              {isActive && (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#F5C518" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
-                  <path d="M3.5 8.5l3 3 6-6" />
-                </svg>
-              )}
-            </button>
-          );
-        })}
-      </div>
-    </div>,
+  const dropdown = mounted ? createPortal(
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          ref={dropdownRef}
+          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed z-[200]"
+          style={{ top: pos.top, left: pos.left, width: pos.width }}
+        >
+          <div className="bg-white/70 backdrop-blur-2xl rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.15)] shadow-inset-light border border-white/80 max-h-[320px] overflow-y-auto overscroll-contain p-1.5 flex flex-col gap-0.5">
+            {options.length === 0 && (
+              <div className="px-4 py-6 text-sm text-gray-500 text-center font-medium">No tokens available</div>
+            )}
+            {options.map((option) => {
+              const isActive = option.value === value;
+              return (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => {
+                    onChange(option.value);
+                    setOpen(false);
+                  }}
+                  className={`w-full px-3 py-2.5 flex items-center gap-3 text-left transition-all duration-200 rounded-xl ${
+                    isActive
+                      ? "bg-white shadow-[0_4px_12px_rgba(0,0,0,0.04)] border border-black/5 scale-[1.01] z-10"
+                      : "hover:bg-white/50 hover:scale-[1.01] border border-transparent"
+                  }`}
+                >
+                  <div className={`p-1 rounded-full ${isActive ? 'bg-[#F5F4F0] shadow-inset-light' : 'bg-white shadow-sm border border-black/5'}`}>
+                    <TokenIcon symbol={option.symbol} size={26} />
+                  </div>
+                  <span className="flex flex-col min-w-0 flex-1">
+                    <span className={`text-sm font-semibold truncate transition-colors ${isActive ? "text-[#16171C]" : "text-gray-700 group-hover:text-black"}`}>
+                      {option.label}
+                    </span>
+                    {option.sublabel && (
+                      <span className={`text-[11px] truncate ${isActive ? "text-gray-500" : "text-gray-400"}`}>{option.sublabel}</span>
+                    )}
+                  </span>
+                  {isActive && (
+                    <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="shrink-0 bg-green-100 text-green-700 p-1 rounded-full shadow-inset-light">
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3.5 8.5l3 3 6-6" />
+                      </svg>
+                    </motion.div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
     document.body
   ) : null;
 

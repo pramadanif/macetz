@@ -15,7 +15,7 @@ export function FaucetPanel() {
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { data: pairs } = useRegistryPairs();
-  const { mint, isPending, error, txHash, walletLoading } = useFaucet();
+  const { mint, isPending, error, txHash } = useFaucet();
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
 
   const mockPairs = pairs?.filter((p) => p.isMock && p.source === "registry") ?? [];
@@ -106,7 +106,7 @@ export function FaucetPanel() {
 
           <button
             onClick={handleMint}
-            disabled={!selectedPair || isPending || walletLoading}
+            disabled={!selectedPair || isPending}
             className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"
           >
             {isPending ? (

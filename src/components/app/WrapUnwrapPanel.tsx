@@ -33,12 +33,12 @@ export function WrapUnwrapPanel() {
   const shield = useShield({ address: wrapperAddress });
   const unshield = useUnshield(wrapperAddress);
 
-  const { data: confidentialBalance } = useConfidentialBalance(
+  const { data: confidentialBalance, isLoading: confidentialBalanceLoading, error: confidentialBalanceError } = useConfidentialBalance(
     { address: wrapperAddress, account: address },
-    { enabled: !!selectedPair && !!address }
+    { enabled: !!selectedPair && !!address && mode === "unwrap" }
   );
 
-  const { data: erc20Balance } = useQuery({
+  const { data: erc20Balance, isLoading: erc20BalanceLoading } = useQuery({
     queryKey: ["erc20-balance", selectedPair?.erc20Address, address],
     queryFn: async () => {
       if (!publicClient || !selectedPair || !address) return 0n;
@@ -92,6 +92,21 @@ export function WrapUnwrapPanel() {
   const inputDecimals = mode === "wrap" ? selectedPair?.erc20Decimals : selectedPair?.erc7984Decimals;
   const outputDecimals = mode === "wrap" ? selectedPair?.erc7984Decimals : selectedPair?.erc20Decimals;
   const inputBalance = mode === "wrap" ? erc20Balance : confidentialBalance;
+
+  const balanceLabel = (() => {
+    if (!selectedPair) return "";
+    if (!address) return "Connect your wallet to see your balance";
+    if (mode === "wrap") {
+      if (erc20BalanceLoading || erc20Balance === undefined) return "Loading balance...";
+      return `Balance: ${formatUnits(erc20Balance, selectedPair.erc20Decimals)}`;
+    }
+    if (confidentialBalanceLoading) return "Decrypting confidential balance...";
+    if (confidentialBalanceError) return "Could not decrypt balance";
+    if (confidentialBalance !== undefined) {
+      return `Balance: ${formatUnits(confidentialBalance, selectedPair.erc7984Decimals)}`;
+    }
+    return "Loading balance...";
+  })();
   const outputBalance = mode === "wrap" ? confidentialBalance : erc20Balance;
 
   return (
@@ -178,11 +193,7 @@ export function WrapUnwrapPanel() {
             />
             <div className="flex items-center justify-between mt-2">
               <span className="text-[11px] text-gray-400">
-                {selectedPair && inputBalance !== undefined && inputDecimals !== undefined
-                  ? `Balance: ${formatUnits(inputBalance, inputDecimals)}`
-                  : selectedPair
-                    ? "Connect your wallet to see your balance"
-                    : ""}
+                {balanceLabel}
               </span>
               {selectedPair && inputBalance !== undefined && inputDecimals !== undefined && inputBalance > 0n && (
                 <button

@@ -1,16 +1,28 @@
 "use client";
 
-import React, { useState, useEffect, type ReactNode } from "react";
-import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import React, { useState, useEffect, useRef, type ReactNode } from "react";
+import { useConnection, useSwitchChain } from "wagmi";
 import { CHAIN_ID } from "@/lib/config";
 
 export function NetworkGuard({ children }: { children: ReactNode }) {
-  const { isConnected } = useAccount();
-  const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
+  const { isConnected, chainId } = useConnection();
+  const { switchChain, isPending } = useSwitchChain();
   const [mounted, setMounted] = useState(false);
+  const promptedRef = useRef(false);
 
   useEffect(() => setMounted(true), []);
+
+  const wrongNetwork = mounted && isConnected && chainId !== undefined && chainId !== CHAIN_ID;
+
+  useEffect(() => {
+    if (!wrongNetwork) {
+      promptedRef.current = false;
+      return;
+    }
+    if (promptedRef.current) return;
+    promptedRef.current = true;
+    switchChain({ chainId: CHAIN_ID });
+  }, [wrongNetwork, switchChain]);
 
   if (!mounted || !isConnected || chainId === CHAIN_ID) {
     return <>{children}</>;
@@ -41,13 +53,14 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
             Wrong network
           </h2>
           <p className="text-gray-500 text-[15px] leading-relaxed mb-6">
-            Macetz runs on Sepolia testnet. Please switch your wallet network to continue.
+            Macetz runs on Sepolia testnet. Approve the network switch in your wallet to continue.
           </p>
           <button
             onClick={() => switchChain({ chainId: CHAIN_ID })}
-            className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+            disabled={isPending}
+            className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
           >
-            Switch to Sepolia
+            {isPending ? "Switching..." : "Switch to Sepolia"}
           </button>
         </div>
       </div>

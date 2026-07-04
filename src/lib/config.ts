@@ -6,8 +6,12 @@ export const CHAIN_ID = sepolia.id;
 export const RPC_URL =
   process.env.NEXT_PUBLIC_RPC_URL ?? "https://ethereum-sepolia-rpc.publicnode.com";
 
-export const RELAYER_URL =
-  process.env.NEXT_PUBLIC_RELAYER_URL ?? "/api/relayer/11155111";
+/** Zama relayer-sdk requires absolute http(s) URL. */
+export function getRelayerUrl(): string {
+  const env = process.env.NEXT_PUBLIC_RELAYER_URL;
+  if (env?.startsWith("http")) return env;
+  return "https://relayer.testnet.zama.org/v2";
+}
 
 export const REGISTRY_ADDRESS =
   "0x2f0750Bbb0A246059d80e94c454586a7F27a128e" as const;

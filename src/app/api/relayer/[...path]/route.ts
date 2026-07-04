@@ -20,7 +20,8 @@ async function proxyRequest(request: NextRequest, method: string) {
   }
 
   try {
-    const upstreamUrl = new URL(restPath ? `/${restPath}` : "/", upstream);
+    const base = upstream.replace(/\/$/, "");
+    const upstreamUrl = new URL(restPath ? `${base}/${restPath}` : base);
     url.searchParams.forEach((v, k) => upstreamUrl.searchParams.set(k, v));
 
     const fetchOptions: RequestInit = {

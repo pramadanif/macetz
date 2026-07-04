@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { injected } from "wagmi/connectors";
+import { CHAIN_ID } from "@/lib/config";
+
+const connector = injected();
 
 export function WalletButton() {
   const { address, isConnected } = useAccount();
@@ -41,7 +44,7 @@ export function WalletButton() {
 
   return (
     <button
-      onClick={() => connect({ connector: injected() })}
+      onClick={() => connect({ connector, chainId: CHAIN_ID })}
       disabled={isPending}
       className="flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-medium text-[13px] px-5 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg disabled:opacity-50"
     >

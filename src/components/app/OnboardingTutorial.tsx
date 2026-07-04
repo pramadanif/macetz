@@ -7,40 +7,70 @@ const TOTAL_STEPS = 5;
 
 interface TutorialStep {
   title: string;
-  description: string;
+  description: string | React.ReactNode;
   highlight: "none" | "left" | "center";
+  targetTab?: "dashboard" | "registry" | "wrap" | "decrypt" | "faucet";
 }
 
 const steps: TutorialStep[] = [
   {
-    title: "Welcome",
-    description:
-      "Welcome to Macetz! Your gateway to confidential tokens on Sepolia.",
+    title: "Welcome to Macetz",
+    description: (
+      <div className="space-y-3">
+        <p>Macetz is the canonical interface for the Zama Wrappers Registry.</p>
+        <p>Built for the Zama Developer Program, this dApp allows you to browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero friction on the Sepolia testnet.</p>
+        <p>Let's take a quick tour of how you can interact with Fully Homomorphic Encryption (FHE) on-chain.</p>
+      </div>
+    ),
     highlight: "none",
+    targetTab: "dashboard",
   },
   {
-    title: "Sidebar Navigation",
-    description:
-      "Use the sidebar to navigate between Shield, Registry, Decrypt, and Faucet.",
+    title: "1. The Faucet",
+    description: (
+      <div className="space-y-3">
+        <p>To try the shielding flow, you need standard ERC-20 test tokens.</p>
+        <p>The <strong>Faucet</strong> allows you to claim official `cTokenMock` underlying assets. It covers all 9 official Sepolia mocks listed in the Zama documentation.</p>
+        <p>Once you mint them, your public ERC-20 balance will be visible on block explorers.</p>
+      </div>
+    ),
     highlight: "left",
+    targetTab: "faucet",
   },
   {
-    title: "Registry",
-    description:
-      "Browse all registered ERC-20 ↔ ERC-7984 wrapper pairs from the on-chain registry.",
+    title: "2. The Wrapper Registry",
+    description: (
+      <div className="space-y-3">
+        <p>The <strong>Registry</strong> is your gateway to canonical confidential assets.</p>
+        <p>Macetz dynamically fetches every official ERC-20 ↔ ERC-7984 wrapper pair directly from the on-chain Zama Wrappers Registry.</p>
+        <p>It also seamlessly merges local developer pairs under a "Dev Pair" badge without fragmenting the production ecosystem.</p>
+      </div>
+    ),
     highlight: "center",
+    targetTab: "registry",
   },
   {
-    title: "Shield Tokens",
-    description:
-      "Shield your ERC-20 tokens into confidential ERC-7984 equivalents with one click.",
+    title: "3. Shield & Unshield",
+    description: (
+      <div className="space-y-3">
+        <p>In the <strong>Shield</strong> panel, you convert public ERC-20 tokens into their confidential ERC-7984 counterparts via the Zama SDK.</p>
+        <p>Once wrapped, your balance becomes an encrypted cipher on the blockchain. The unwrap flow (ERC-7984 → ERC-20) utilizes a full two-step asynchronous process: a relayer decryption followed by finalization.</p>
+      </div>
+    ),
     highlight: "center",
+    targetTab: "wrap",
   },
   {
-    title: "Faucet",
-    description:
-      "Claim free mock tokens to try the full flow. Start with the Faucet!",
+    title: "4. Universal Decryption",
+    description: (
+      <div className="space-y-3">
+        <p>How do you view an encrypted balance?</p>
+        <p>The <strong>Decrypt</strong> panel supports EIP-712 user-decryption. By signing a typed message, you authorize the FHEVM gateway to securely decrypt only your specific balance.</p>
+        <p>Macetz makes this universal—it works for <strong>any</strong> ERC-7984 contract address, not just those in the official registry.</p>
+      </div>
+    ),
     highlight: "center",
+    targetTab: "decrypt",
   },
 ];
 
@@ -59,6 +89,16 @@ export function OnboardingTutorial() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleShow = () => {
+      setCurrentStep(0);
+      setVisible(true);
+      setAnimating(false);
+    };
+    window.addEventListener("show-tutorial", handleShow);
+    return () => window.removeEventListener("show-tutorial", handleShow);
+  }, []);
+
   const dismiss = useCallback(() => {
     setVisible(false);
     try {
@@ -67,6 +107,18 @@ export function OnboardingTutorial() {
       // silently ignore
     }
   }, []);
+
+  // Change tab when step changes
+  useEffect(() => {
+    const step = steps[currentStep];
+    if (visible && step && step.targetTab) {
+      window.dispatchEvent(
+        new CustomEvent("tutorial-navigate", {
+          detail: step.targetTab,
+        })
+      );
+    }
+  }, [currentStep, visible]);
 
   const goNext = useCallback(() => {
     if (animating) return;
@@ -125,9 +177,9 @@ export function OnboardingTutorial() {
             <h3 className="text-lg font-semibold text-[#16171C] mb-2">
               {step.title}
             </h3>
-            <p className="text-sm text-gray-600 leading-relaxed mb-8">
+            <div className="text-[15px] text-gray-600 leading-relaxed mb-8">
               {step.description}
-            </p>
+            </div>
 
             {/* Dot indicators */}
             <div className="flex items-center gap-1.5 mb-6" aria-hidden="true">

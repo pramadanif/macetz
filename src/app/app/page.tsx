@@ -19,7 +19,15 @@ export default function AppPage() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    const handleNav = (e: Event) => {
+      const customEvent = e as CustomEvent<Tab>;
+      setActiveTab(customEvent.detail);
+    };
+    window.addEventListener("tutorial-navigate", handleNav);
+    return () => window.removeEventListener("tutorial-navigate", handleNav);
+  }, []);
 
   const handleNavigate = (tab: string) => {
     setActiveTab(tab as Tab);

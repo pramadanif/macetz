@@ -122,6 +122,17 @@ export function AppSidebar({ activeTab, onTabChange }: Props) {
       {/* Bottom utility links */}
       <div className="px-3 pb-3 mt-auto">
         <div className="border-t border-gray-200/60 pt-3 space-y-1">
+          <button 
+            onClick={() => window.dispatchEvent(new Event("show-tutorial"))}
+            className="flex items-center gap-3 px-3 py-2 rounded-2xl text-[13px] text-gray-500 hover:text-gray-800 hover:emboss-card transition-all duration-200 w-full text-left"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+              <path d="M12 17h.01" />
+            </svg>
+            Show Tutorial
+          </button>
           <a
             href="https://docs.zama.ai/fhevm"
             target="_blank"

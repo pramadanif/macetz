@@ -8,61 +8,61 @@ import { RegistryToggle } from "./RegistryToggle";
 
 export function FeaturesGrid() {
   return (
-    <section id="registry" className="features-bento px-4 py-20 max-w-[1100px] mx-auto">
-      <div className="text-center mb-12">
-        <p className="text-xs font-semibold text-[#8A8A8E] tracking-[0.14em] uppercase mb-3">
-          The Official Zama Wrapper Registry
-        </p>
-        <h2 className="text-3xl lg:text-[38px] font-normal tracking-[-0.03em] text-[#16171C] mb-4 leading-tight">
-          One registry. Every confidential pair. Zero fragmentation.
+    <section id="registry" className="px-4 py-32 max-w-[1400px] mx-auto">
+      <div className="text-center mb-20 px-4 max-w-4xl mx-auto flex flex-col items-center">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/[0.03] border border-black/[0.06] mb-6">
+          <div className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
+          <span className="text-[13px] font-semibold text-[#52525B] tracking-wide uppercase">
+            Official Zama Registry
+          </span>
+        </div>
+        <h2 className="text-4xl md:text-5xl lg:text-[64px] font-medium tracking-[-0.04em] text-[#0A0A0A] mb-8 leading-[1.05]">
+          Single Source of Truth.<br className="hidden lg:block"/> Zero Fragmentation.
         </h2>
-        <p className="text-[#6B7280] font-medium text-sm lg:text-[15px] max-w-[640px] mx-auto leading-relaxed">
-          Today, developers spin up their own test tokens instead of using what
-          already exists in the official Zama Wrappers Registry — and the
-          ecosystem fragments because of it. Macetz reads the onchain registry
-          directly as its source of truth, so every ERC-20 ↔ ERC-7984 pair you
-          see here is the real, canonical one. No look-alikes. No guessing which
-          wrapped token is legitimate.
+        <p className="text-[#52525B] font-medium text-[16px] lg:text-[18px] max-w-3xl mx-auto leading-[1.7]">
+          Redundant token deployments lead to severe ecosystem fragmentation. Macetz integrates 
+          directly with the official onchain Zama Wrapper Registry, ensuring every ERC-20 ↔ ERC-7984 
+          pair is canonical and verified. Eliminate ambiguity and build with absolute confidence.
         </p>
       </div>
 
-      <div className="bento-grid grid grid-cols-1 md:grid-cols-[minmax(0,34%)_minmax(168px,22%)_minmax(0,44%)] gap-4 md:gap-5 md:items-stretch md:min-h-[400px]">
+      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,34%)_minmax(168px,22%)_minmax(0,44%)] gap-6 md:gap-8 md:items-stretch md:min-h-[460px] max-w-6xl mx-auto">
         {/* Left */}
-        <div className="bento-col flex flex-col gap-4 order-2 md:order-1 md:h-full">
-          <div className="bento-card rounded-[22px] px-5 py-3.5 shrink-0 flex items-center min-h-[52px]">
-            <div className="relative z-10 flex items-center gap-3 w-full">
-              <RegistryToggle />
-              <span className="text-sm font-semibold text-[#16171C] whitespace-nowrap">
-                ERC-20 ↔ ERC-7984
+        <div className="flex flex-col gap-6 order-2 md:order-1 md:h-full">
+          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-5 shrink-0 flex items-center justify-center min-h-[68px] shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
+            <div className="relative z-10 flex items-center justify-between w-full px-2">
+              <span className="text-[15px] font-medium text-[#0A0A0A] tracking-tight">
+                Pair Architecture
               </span>
+              <RegistryToggle />
             </div>
           </div>
 
-          <div className="bento-card rounded-[28px] p-5 flex-1 flex flex-col min-h-[200px]">
-            <div className="relative z-10 flex flex-col gap-3 h-full">
-              <div className="bento-field rounded-2xl px-4 py-3 flex items-center gap-2.5 min-h-[44px]">
-                <Search className="w-4 h-4 text-[#9CA3AF] shrink-0" />
+          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
+            <div className="relative z-10 flex flex-col gap-4 h-full w-full justify-center">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center gap-3 transition-transform hover:-translate-y-0.5">
+                <Search className="w-[18px] h-[18px] text-[#A1A1AA] shrink-0" />
                 <input
                   type="text"
-                  placeholder="Search"
+                  placeholder="Query canonical pairs..."
                   readOnly
-                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                  className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
               </div>
-              <div className="bento-field rounded-2xl px-4 py-3 flex items-center min-h-[44px]">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
                 <input
                   type="text"
-                  placeholder="Contract addresses..."
+                  placeholder="Analyze contract instances..."
                   readOnly
-                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                  className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
               </div>
-              <div className="bento-field rounded-2xl px-4 py-3 flex items-center min-h-[44px]">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
                 <input
                   type="text"
-                  placeholder="Burned contract addresses..."
+                  placeholder="Verify burned addresses..."
                   readOnly
-                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                  className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
               </div>
             </div>
@@ -70,55 +70,61 @@ export function FeaturesGrid() {
 
           <button
             type="button"
-            className="bento-explore-btn shrink-0 self-start rounded-full px-5 py-2.5 text-sm font-medium text-[#16171C]"
+            className="shrink-0 self-start bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 flex items-center gap-2"
           >
-            Explore the Full Registry →
+            Explore the Registry <span className="text-gray-400">→</span>
           </button>
         </div>
 
         {/* Center — faucet fills entire card */}
-        <div className="bento-col order-1 md:order-2 flex md:h-full min-h-[320px]">
-          <div className="bento-card bento-faucet-card rounded-[28px] w-full h-full relative overflow-hidden">
+        <div className="order-1 md:order-2 flex md:h-full min-h-[380px]">
+          <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-[2.5rem] w-full h-full relative overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-700">
+            <div className="absolute inset-0 bg-gradient-to-tr from-yellow-200/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             <Image
               src={faucetAsset}
-              alt="Faucet asset"
+              alt="Faucet distribution visualization"
               fill
-              sizes="(max-width: 768px) 90vw, 200px"
-              className="bento-faucet-image"
+              sizes="(max-width: 768px) 90vw, 300px"
+              className="object-contain scale-[1.05] group-hover:scale-[1.12] transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]"
               priority
             />
           </div>
         </div>
 
         {/* Right */}
-        <div className="bento-col flex flex-col gap-4 order-3 md:h-full">
-          <div className="bento-card rounded-[28px] p-5 flex-1 flex flex-col min-h-[200px]">
-            <div className="relative z-10 flex flex-col gap-4 h-full">
-              <div className="bento-field rounded-2xl px-4 py-3 flex items-center gap-2.5 min-h-[44px] shrink-0">
-                <Search className="w-4 h-4 text-[#9CA3AF] shrink-0" />
+        <div className="flex flex-col gap-6 order-3 md:h-full">
+          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
+            <div className="relative z-10 flex flex-col gap-6 h-full">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center gap-3">
+                <Search className="w-[18px] h-[18px] text-[#A1A1AA] shrink-0" />
                 <input
                   type="text"
-                  placeholder="Search"
+                  placeholder="Global search..."
                   readOnly
-                  className="bg-transparent border-none outline-none text-sm w-full placeholder-[#9CA3AF] text-[#4B5563]"
+                  className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
               </div>
 
-              <div className="space-y-3 flex-1 flex flex-col justify-start pt-1">
-                <div className="bento-skeleton-line h-3 rounded-md w-full" />
-                <div className="bento-skeleton-line h-3 rounded-md w-[88%]" />
-                <div className="bento-skeleton-line h-3 rounded-md w-[72%]" />
+              <div className="space-y-4 flex-1 flex flex-col justify-center">
+                <div className="bg-black/[0.06] h-3.5 rounded-full w-full animate-pulse" />
+                <div className="bg-black/[0.06] h-3.5 rounded-full w-[75%] animate-pulse" />
+                <div className="bg-black/[0.06] h-3.5 rounded-full w-[90%] animate-pulse" />
               </div>
             </div>
           </div>
 
-          <div className="bento-card rounded-[28px] px-5 py-5 shrink-0 min-h-[88px] flex items-center">
+          <div className="glass-panel bg-gradient-to-r from-yellow-50 to-[#FCFAEE] backdrop-blur-2xl border border-yellow-200/50 rounded-[2.5rem] px-8 py-7 shrink-0 flex flex-col justify-center shadow-[0_8px_30px_rgba(234,179,8,0.06)] hover:shadow-[0_15px_40px_rgba(234,179,8,0.12)] transition-shadow duration-500">
             <div className="relative z-10 w-full">
-              <div className="text-xs text-[#6B7280] font-medium mb-3 text-center">
-                Decryption loading...
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-[13px] text-yellow-800 font-semibold tracking-wide uppercase">
+                  Decryption Status
+                </span>
+                <span className="text-[13px] font-mono text-yellow-600">68%</span>
               </div>
-              <div className="bento-progress-track h-1.5 w-full rounded-full overflow-hidden">
-                <div className="bento-progress-fill h-full rounded-full" />
+              <div className="bg-yellow-200/50 h-2 w-full rounded-full overflow-hidden">
+                <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 h-full rounded-full w-[68%] relative overflow-hidden">
+                  <div className="absolute inset-0 bg-white/30 animate-[shimmer_2s_infinite]" style={{ backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)' }} />
+                </div>
               </div>
             </div>
           </div>

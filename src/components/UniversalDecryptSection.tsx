@@ -1,43 +1,48 @@
 import React from "react";
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 
 const FEATURES = [
-  "Auto-detects ERC-7984 tokens already in your wallet",
-  "Paste-an-address flow for tokens outside the registry",
-  "One signature, decrypted instantly via Zama's public relayer",
-  "Your decrypted balance is never sent anywhere — it's computed client-side",
+  "Automatic detection of supported ERC-7984 tokens within your wallet.",
+  "Streamlined manual entry for unlisted contract addresses.",
+  "Instantaneous decryption powered by Zama's public relayer network.",
+  "Zero-knowledge client-side computation ensures absolute data privacy.",
 ];
 
 export function UniversalDecryptSection() {
   return (
-    <section id="decrypt" className="px-4 py-20 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-      <div className="flex-1 text-center lg:text-left">
-        <p className="text-xs font-semibold text-gray-500 tracking-[0.14em] uppercase mb-3">
-          Decrypt Any Balance
-        </p>
-        <h2 className="text-3xl lg:text-5xl font-normal tracking-[-0.03em] text-gray-900 mb-6 leading-[1.1]">
-          Not just registry tokens.
-          <br className="hidden lg:block" /> Any ERC-7984 token, anywhere.
+    <section id="decrypt" className="px-4 py-32 max-w-[1400px] mx-auto flex flex-col lg:flex-row items-center gap-16 lg:gap-24 relative">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#F9D48D]/5 to-transparent pointer-events-none" />
+      
+      <div className="flex-1 text-center lg:text-left relative z-10 max-w-2xl mx-auto lg:mx-0 pl-0 lg:pl-10">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/[0.03] border border-black/[0.06] mb-6">
+          <div className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
+          <span className="text-[13px] font-semibold text-[#52525B] tracking-wide uppercase">
+            Universal Decryption
+          </span>
+        </div>
+        <h2 className="text-4xl md:text-5xl lg:text-[64px] font-medium tracking-[-0.04em] text-[#0A0A0A] mb-8 leading-[1.05]">
+          Decrypt any ERC-7984<br className="hidden lg:block" /> token across the ecosystem.
         </h2>
-        <p className="text-gray-500 font-medium text-sm lg:text-base mb-8 max-w-md mx-auto lg:mx-0 leading-relaxed">
-          Paste any ERC-7984 contract address — registry-listed or not — and
-          decrypt your own balance in one wallet signature via the EIP-712
-          user-decryption flow. No relayer setup, no backend. It runs entirely in
-          your browser.
+        <p className="text-[#52525B] font-medium text-[16px] lg:text-[18px] mb-12 max-w-xl mx-auto lg:mx-0 leading-[1.7]">
+          Execute seamless balance decryptions using any ERC-7984 contract address. Leveraging the EIP-712 user-decryption standard, you can authorize decryptions with a single signature. Operating entirely client-side, the process requires zero relayer configuration or backend infrastructure.
         </p>
-        <button className="glass-pill px-5 py-2.5 text-sm font-medium text-gray-800 hover:text-black transition-colors inline-flex items-center gap-1">
-          Try Decrypting a Balance <ArrowRight className="w-4 h-4" />
+        <button className="bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 inline-flex items-center gap-2">
+          Try Decrypting a Balance <span className="text-gray-400">→</span>
         </button>
       </div>
 
-      <div className="flex-1 w-full max-w-md">
-        <div className="emboss-card rounded-[2rem] p-6 lg:p-8 space-y-4">
-          {FEATURES.map((feature) => (
-            <div key={feature} className="relative z-10 flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-yellow-400/20 flex items-center justify-center shrink-0 mt-0.5">
-                <Check className="w-3 h-3 text-yellow-600" strokeWidth={3} />
+      <div className="flex-1 w-full max-w-lg relative z-10 pr-0 lg:pr-10 mt-10 lg:mt-0">
+        <div className="absolute -inset-10 bg-yellow-400/10 blur-[60px] rounded-full pointer-events-none" />
+        
+        <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-8 lg:p-10 space-y-7 shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-shadow duration-500">
+          {FEATURES.map((feature, idx) => (
+            <div key={feature} className="relative z-10 flex items-start gap-4 group">
+              <div className="w-[26px] h-[26px] rounded-full bg-gradient-to-b from-yellow-100 to-yellow-50 flex items-center justify-center shrink-0 mt-1 shadow-[0_2px_8px_rgba(250,204,21,0.2)] ring-1 ring-yellow-400/20 group-hover:scale-110 transition-transform duration-300">
+                <Check className="w-3.5 h-3.5 text-yellow-600" strokeWidth={3} />
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed">{feature}</p>
+              <p className="text-[15px] lg:text-[16px] text-[#52525B] font-medium leading-[1.6] group-hover:text-[#0A0A0A] transition-colors duration-300">
+                {feature}
+              </p>
             </div>
           ))}
         </div>

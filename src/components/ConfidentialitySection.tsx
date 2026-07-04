@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react';
 export function ConfidentialitySection() {
   return (
     <section className="px-4 py-20 max-w-7xl mx-auto w-full">
-      <div className="flex flex-col lg:flex-row w-full rounded-3xl overflow-hidden border border-black/5 bg-[#F5F4F0] shadow-sm">
+      <div className="flex flex-col lg:flex-row w-full rounded-3xl overflow-hidden border border-black/5 bg-[#F5F4F0] shadow-inset-light">
         
         {/* Left Side */}
         <div className="w-full lg:w-[45%] p-10 lg:p-16 flex flex-col justify-between">
@@ -55,7 +55,7 @@ export function ConfidentialitySection() {
 
 function TransferRow({ opacity = "", blur = "", isActive = false }: { opacity?: string, blur?: string, isActive?: boolean }) {
   return (
-    <div className={`w-full max-w-[460px] rounded-xl p-5 lg:p-6 flex items-center justify-between transition-all ${isActive ? 'bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-black/5 z-10 scale-[1.02]' : `bg-white/40 ${opacity} ${blur}`}`}>
+    <div className={`w-full max-w-[460px] rounded-xl p-5 lg:p-6 flex items-center justify-between transition-all shadow-inset-light ${isActive ? 'bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] shadow-inset-light border border-black/5 z-10 scale-[1.02]' : `bg-white/40 shadow-inset-light ${opacity} ${blur}`}`}>
       <div className="flex flex-col">
         <span className="text-[12px] text-gray-500 font-medium mb-1">From</span>
         <span className="text-sm font-mono text-black">0x61xb..e064</span>
@@ -78,7 +78,7 @@ function TransferRow({ opacity = "", blur = "", isActive = false }: { opacity?: 
 
 function TokenRow({ opacity, blur, token, address = "0x61xb..e064" }: { opacity: string, blur: string, token: string, address?: string }) {
   return (
-    <div className={`w-full max-w-[460px] rounded-xl p-5 lg:p-6 flex items-center justify-between bg-white/40 ${opacity} ${blur}`}>
+    <div className={`w-full max-w-[460px] rounded-xl p-5 lg:p-6 flex items-center justify-between bg-white/40 shadow-inset-light ${opacity} ${blur}`}>
       <div className="flex flex-col gap-2 w-[60%]">
         <div className="flex items-center">
           <span className="text-[12px] text-gray-500 font-medium w-16">Address</span>

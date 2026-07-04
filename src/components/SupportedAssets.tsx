@@ -108,8 +108,8 @@ export function SupportedAssets() {
           </div>
 
           {/* Layer 2: The Glass Box (Left 45%) with silver/grayscale coins */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 h-[110%] w-[45%] z-20 bg-white/20 backdrop-blur-2xl border-y border-r border-white/60 rounded-r-[3rem] overflow-hidden shadow-[12px_0_30px_rgba(0,0,0,0.06)]">
-            <div className="absolute inset-0 shadow-[inset_-2px_0_12px_rgba(255,255,255,0.8)] pointer-events-none z-30" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 h-[110%] w-[45%] z-20 bg-white/20 backdrop-blur-2xl border-y border-r border-white/60 rounded-r-[3rem] overflow-hidden shadow-[12px_0_30px_rgba(0,0,0,0.06)] shadow-inset-light">
+            <div className="absolute inset-0 shadow-[inset_-2px_0_12px_rgba(255,255,255,0.8)] shadow-inset-light pointer-events-none z-30" />
             
             <div className="absolute inset-0 flex items-center">
               <div className="flex w-max items-center animate-marquee-right">

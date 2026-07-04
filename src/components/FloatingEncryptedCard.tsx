@@ -40,7 +40,7 @@ export function FloatingEncryptedCard({
       }}
     >
       <div
-        className={`bg-white/70 backdrop-blur-2xl border border-white shadow-[0_16px_40px_-12px_rgba(0,0,0,0.1)] rounded-[20px] overflow-hidden relative ${
+        className={`bg-white/70 backdrop-blur-2xl border border-white shadow-[0_16px_40px_-12px_rgba(0,0,0,0.1)] shadow-inset-light rounded-[20px] overflow-hidden relative ${
           isLarge
             ? "px-5 py-4 min-w-[210px]"
             : "px-4 py-3 min-w-[170px]"
@@ -71,7 +71,7 @@ export function FloatingEncryptedCard({
                     {field.label}
                   </span>
                 )}
-                <div className="bg-[#F5F4F0]/80 rounded-lg px-2.5 py-2 border border-black/[0.04] shadow-inner">
+                <div className="bg-[#F5F4F0]/80 rounded-lg px-2.5 py-2 border border-black/[0.04] shadow-inset-light">
                   <EncryptedText
                     text={field.value}
                     className={`font-mono text-gray-800 font-medium leading-none block truncate ${

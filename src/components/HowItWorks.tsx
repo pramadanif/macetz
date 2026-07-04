@@ -47,13 +47,13 @@ export function HowItWorks() {
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-[-0.03em] text-[#0A0A0A] mb-8 leading-[1.1]">
           End-to-End Confidentiality.<br className="hidden lg:block"/> In Three Steps.
         </h2>
-        <button className="bg-[#0A0A0A] text-white rounded-full px-6 py-3 text-[14px] font-medium hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)] hover:-translate-y-0.5 inline-flex items-center gap-2">
+        <button className="bg-[#0A0A0A] text-white rounded-full px-6 py-3 text-[14px] font-medium hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)] shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
           Explore the Registry <ArrowRight className="w-4 h-4 text-gray-400" />
         </button>
       </motion.div>
 
       <div className="w-full max-w-5xl mx-auto px-4 lg:px-0">
-        <div className="glass-panel bg-white/60 backdrop-blur-2xl rounded-[2.5rem] p-8 lg:p-16 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] relative overflow-hidden group">
+        <div className="glass-panel bg-white/60 backdrop-blur-2xl rounded-[2.5rem] p-8 lg:p-16 border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.03)] shadow-inset-light relative overflow-hidden group">
           
           {/* Subtle Background Glow for Step 3 */}
           <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-yellow-400/5 to-transparent pointer-events-none" />

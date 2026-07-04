@@ -53,7 +53,7 @@ export function ExtensibilitySection() {
         </p>
 
         {/* Code Editor */}
-        <div className="w-full max-w-[800px] rounded-xl bg-[#1C1C1C] border border-[#2A2A2A] shadow-2xl overflow-hidden text-left font-mono">
+        <div className="w-full max-w-[800px] rounded-xl bg-[#1C1C1C] border border-[#2A2A2A] shadow-inset-dark overflow-hidden text-left font-mono">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2A2A]">
             <span className="text-[13px] text-[#A1A1AA]">config/custom-pairs.json</span>
@@ -107,7 +107,7 @@ export function ExtensibilitySection() {
           <p className="text-center text-[#A1A1AA] font-medium text-[15px] mb-8 leading-[1.7]">
             Upon server initialization, custom pairs instantly populate the Registry with complete wrap/unwrap functionality. They are automatically labeled as developer instances, ensuring strict separation from official assets.
           </p>
-          <button className="bg-white text-black rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-200 transition-all hover:shadow-[0_8px_20px_rgba(255,255,255,0.15)] flex items-center gap-2">
+          <button className="bg-white text-black rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-200 transition-all hover:shadow-[0_8px_20px_rgba(255,255,255,0.15)] shadow-inset-light flex items-center gap-2">
             Read the Extensibility Guide <ArrowRight className="w-4 h-4 text-gray-500" />
           </button>
         </div>

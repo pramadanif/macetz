@@ -76,8 +76,7 @@ export function KnownLimitations() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="group flex flex-col md:flex-row gap-5 lg:gap-6 items-start bg-white/40 hover:bg-white/80 backdrop-blur-xl border border-black/[0.04] hover:border-yellow-400/30 rounded-[1.5rem] p-6 lg:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgba(250,204,21,0.08)] transition-all duration-500"
+              className="group flex flex-col md:flex-row gap-5 lg:gap-6 items-start bg-white/40 hover:bg-white/80 backdrop-blur-xl border border-black/[0.04] hover:border-yellow-400/30 rounded-[1.5rem] p-6 lg:p-8 shadow-[0_4px_20px_rgba(0,0,0,0.02)] shadow-inset-light transition-all duration-500"
             >
               <div className="shrink-0 w-12 h-12 rounded-full bg-gradient-to-b from-gray-50 to-white border border-black/5 shadow-sm flex items-center justify-center group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-500">
                 <Icon className="w-5 h-5 text-[#52525B] group-hover:text-yellow-600 transition-colors duration-500" strokeWidth={2} />

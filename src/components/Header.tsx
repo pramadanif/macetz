@@ -76,7 +76,7 @@ export function Header() {
       <div
         className={`relative w-full max-w-5xl flex items-center justify-between transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-visible ${
           scrolled
-            ? "h-[64px] px-4 sm:px-6 bg-white/70 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-[32px]"
+            ? "h-[64px] px-4 sm:px-6 bg-white/70 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06)] shadow-inset-light rounded-[32px]"
             : "h-[68px] px-2 sm:px-4 bg-transparent border border-transparent rounded-[32px]"
         }`}
       >
@@ -95,7 +95,7 @@ export function Header() {
         </a>
 
         {/* Desktop Nav Links (Centered) */}
-        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 p-1.5 bg-white/50 backdrop-blur-md rounded-full border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
+        <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 p-1.5 bg-white/50 backdrop-blur-md rounded-full border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.04)] shadow-inset-light">
           {NAV_LINKS.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (
@@ -104,8 +104,8 @@ export function Header() {
                 href={link.href}
                 className={`px-5 py-2 rounded-full text-[14px] font-medium transition-all duration-300 ${
                   isActive 
-                    ? 'bg-black text-white shadow-md' 
-                    : 'text-gray-600 hover:text-black hover:bg-white/80'
+                    ? 'bg-black text-white shadow-inset-dark' 
+                    : 'text-gray-600 hover:text-black hover:bg-white/80 hover:shadow-inset-light'
                 }`}
               >
                 {link.label}
@@ -118,7 +118,7 @@ export function Header() {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 z-10">
           <a
             href="/app"
-            className="hidden sm:flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-medium text-[14px] px-6 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-0.5"
+            className="hidden sm:flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-medium text-[14px] px-6 py-2.5 rounded-full transition-all duration-300 shadow-inset-dark hover:-translate-y-0.5"
           >
             Launch App
             <ArrowUpRight className="w-4 h-4 opacity-70" />
@@ -130,7 +130,7 @@ export function Header() {
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((open) => !open)}
-            className="md:hidden flex items-center justify-center w-11 h-11 rounded-full bg-white/80 border border-white/60 shadow-sm hover:bg-white transition-colors"
+            className="md:hidden flex items-center justify-center w-11 h-11 rounded-full bg-white/80 border border-white/60 shadow-inset-light hover:bg-white transition-colors"
           >
             {menuOpen ? (
               <X className="w-5 h-5 text-gray-800" strokeWidth={2.25} />
@@ -149,7 +149,7 @@ export function Header() {
             : "opacity-0 scale-95 -translate-y-4 pointer-events-none"
         }`}
       >
-        <div className="bg-white/90 backdrop-blur-2xl border border-white/60 shadow-[0_24px_48px_rgba(0,0,0,0.1)] rounded-[32px] p-4 flex flex-col gap-2">
+        <div className="bg-white/90 backdrop-blur-2xl border border-white/60 shadow-[0_24px_48px_rgba(0,0,0,0.1)] shadow-inset-light rounded-[32px] p-4 flex flex-col gap-2">
           {NAV_LINKS.map((link) => {
             const isActive = activeSection === link.href.substring(1);
             return (

@@ -16,20 +16,21 @@ const ANNOTATION_PILLS = [
 
 const FLOATING_CARDS = [
   {
-    title: "Zero Knowledge",
+    title: "ERC-7984 Shielding",
     className: "hidden sm:block bottom-[12%] -left-[6%] lg:bottom-[15%] lg:-left-[10%] xl:-left-[12%]",
     delay: 0.9,
     fields: [
-      { label: "Proof", value: "0x2b7f9a3e1c8d4f6a0e5" },
+      { label: "Ciphertext", value: "0x2b7f9a3e1c8d4f6a0" },
+      { label: "euint64", value: "Encrypted State" },
     ],
   },
   {
-    title: "Transaction Status",
+    title: "EIP-712 Decryption",
     className: "hidden md:block top-[42%] -right-[10%] lg:top-[40%] lg:-right-[14%] xl:-right-[16%]",
     delay: 1.5,
     fields: [
-      { label: "Status", value: "0x6c1a9e3f7b2d8a4e0f5" },
-      { label: "Hash", value: "0x3d7f1a9c2e8b4f6a0c5" },
+      { label: "Signature", value: "0x6c1a9e3f7b2d8a4" },
+      { label: "Plaintext", value: "1,000.00 cUSDC" },
     ],
   },
 ];
@@ -58,7 +59,7 @@ export function Hero() {
               {ANNOTATION_PILLS.map((pill, i) => (
                 <span
                   key={pill}
-                  className="bg-white/70 backdrop-blur-md border border-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.02)] px-4 py-2 text-[11px] font-semibold tracking-wide text-gray-500 rounded-full"
+                  className="bg-white/70 backdrop-blur-md border border-white/80 shadow-inset-light px-4 py-2 text-[11px] font-semibold tracking-wide text-gray-500 rounded-full"
                   style={{ animationDelay: `${i * 0.15}s` }}
                 >
                   {pill}
@@ -82,10 +83,10 @@ export function Hero() {
             >
               {/* Elegant Buttons */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                <button className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 inline-flex items-center gap-2">
+                <button className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
                   Launch Registry <ArrowUpRight className="w-4 h-4 opacity-70" />
                 </button>
-                <button className="bg-white/70 hover:bg-white backdrop-blur-md border border-white/80 text-gray-800 font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-sm hover:shadow-md inline-flex items-center gap-2">
+                <button className="bg-white/70 hover:bg-white backdrop-blur-md border border-white/80 text-gray-800 font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-light inline-flex items-center gap-2">
                   View Live Demo
                 </button>
               </div>

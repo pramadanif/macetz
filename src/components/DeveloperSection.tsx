@@ -36,7 +36,7 @@ export function DeveloperSection() {
         </p>
 
         {/* Code Editor */}
-        <div className="w-full max-w-[800px] rounded-xl bg-[#1C1C1C] border border-[#2A2A2A] shadow-2xl overflow-hidden text-left font-mono">
+        <div className="w-full max-w-[800px] rounded-xl bg-[#1C1C1C] border border-[#2A2A2A] shadow-inset-dark overflow-hidden text-left font-mono">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2A2A]">
             <span className="text-[13px] text-[#A1A1AA]">Confidential Token Standard</span>

@@ -42,7 +42,7 @@ export function FeaturesGrid() {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col gap-6 order-2 md:order-1 md:h-full"
         >
-          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-5 shrink-0 flex items-center justify-center min-h-[68px] shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
+          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-5 shrink-0 flex items-center justify-center min-h-[68px] shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
             <div className="relative z-10 flex items-center justify-between w-full px-2">
               <span className="text-[15px] font-medium text-[#0A0A0A] tracking-tight">
                 Pair Architecture
@@ -51,9 +51,9 @@ export function FeaturesGrid() {
             </div>
           </div>
 
-          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
+          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
             <div className="relative z-10 flex flex-col gap-4 h-full w-full justify-center">
-              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center gap-3 transition-transform hover:-translate-y-0.5">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center gap-3 transition-transform hover:-translate-y-0.5">
                 <Search className="w-[18px] h-[18px] text-[#A1A1AA] shrink-0" />
                 <input
                   type="text"
@@ -62,7 +62,7 @@ export function FeaturesGrid() {
                   className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
               </div>
-              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
                 <input
                   type="text"
                   placeholder="Analyze contract instances..."
@@ -70,7 +70,7 @@ export function FeaturesGrid() {
                   className="bg-transparent border-none outline-none text-[15px] w-full placeholder-[#A1A1AA] text-[#3F3F46] font-medium"
                 />
               </div>
-              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center transition-transform hover:-translate-y-0.5">
                 <input
                   type="text"
                   placeholder="Verify burned addresses..."
@@ -83,7 +83,7 @@ export function FeaturesGrid() {
 
           <button
             type="button"
-            className="shrink-0 self-start bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 flex items-center gap-2"
+            className="shrink-0 self-start bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] shadow-inset-dark hover:-translate-y-0.5 flex items-center gap-2"
           >
             Explore the Registry <span className="text-gray-400">→</span>
           </button>
@@ -97,7 +97,7 @@ export function FeaturesGrid() {
           transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="order-1 md:order-2 flex md:h-full min-h-[380px]"
         >
-          <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-[2.5rem] w-full h-full relative overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-700">
+          <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] shadow-inset-light rounded-[2.5rem] w-full h-full relative overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-700">
             <div className="absolute inset-0 bg-gradient-to-tr from-yellow-200/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             <Image
               src={faucetAsset}
@@ -118,9 +118,9 @@ export function FeaturesGrid() {
           transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col gap-6 order-3 md:h-full"
         >
-          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
+          <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-all duration-500">
             <div className="relative z-10 flex flex-col gap-6 h-full">
-              <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center gap-3">
+              <div className="bg-white/80 shadow-sm border border-black/[0.04] shadow-inset-light rounded-[1.25rem] px-5 py-4 flex items-center gap-3">
                 <Search className="w-[18px] h-[18px] text-[#A1A1AA] shrink-0" />
                 <input
                   type="text"
@@ -138,7 +138,7 @@ export function FeaturesGrid() {
             </div>
           </div>
 
-          <div className="glass-panel bg-gradient-to-r from-yellow-50 to-[#FCFAEE] backdrop-blur-2xl border border-yellow-200/50 rounded-[2.5rem] px-8 py-7 shrink-0 flex flex-col justify-center shadow-[0_8px_30px_rgba(234,179,8,0.06)] hover:shadow-[0_15px_40px_rgba(234,179,8,0.12)] transition-shadow duration-500">
+          <div className="glass-panel bg-gradient-to-r from-yellow-50 to-[#FCFAEE] backdrop-blur-2xl border border-yellow-200/50 rounded-[2.5rem] px-8 py-7 shrink-0 flex flex-col justify-center shadow-[0_8px_30px_rgba(234,179,8,0.06)] hover:shadow-[0_15px_40px_rgba(234,179,8,0.12)] shadow-inset-light transition-shadow duration-500">
             <div className="relative z-10 w-full">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-[13px] text-yellow-800 font-semibold tracking-wide uppercase">

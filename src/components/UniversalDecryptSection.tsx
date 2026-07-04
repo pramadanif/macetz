@@ -35,7 +35,7 @@ export function UniversalDecryptSection() {
         <p className="text-[#6B7280] font-medium text-[15px] md:text-[16px] mb-8 leading-[1.7] max-w-2xl mx-auto lg:mx-0">
           Gone are the days of complex signature orchestration just to view your own funds. Macetz provides a unified EIP-712 decryption gateway.
         </p>
-        <button className="bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 inline-flex items-center gap-2">
+        <button className="bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
           Try Decrypting a Balance <span className="text-gray-400">→</span>
         </button>
       </motion.div>
@@ -49,7 +49,7 @@ export function UniversalDecryptSection() {
       >
         <div className="absolute -inset-10 bg-yellow-400/10 blur-[60px] rounded-full pointer-events-none" />
         
-        <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-8 lg:p-10 space-y-7 shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-shadow duration-500">
+        <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-8 lg:p-10 space-y-7 shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] shadow-inset-light transition-shadow duration-500">
           {FEATURES.map((feature, idx) => (
             <div key={feature} className="relative z-10 flex items-start gap-4 group">
               <div className="w-[26px] h-[26px] rounded-full bg-gradient-to-b from-yellow-100 to-yellow-50 flex items-center justify-center shrink-0 mt-1 shadow-[0_2px_8px_rgba(250,204,21,0.2)] ring-1 ring-yellow-400/20 group-hover:scale-110 transition-transform duration-300">

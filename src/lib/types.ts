@@ -20,6 +20,7 @@ export interface CustomPairEntry {
   symbol: string;
   decimals: number;
   source: "local-dev";
+  iconUrl?: string;
 }
 
 export interface CustomPairsConfig {

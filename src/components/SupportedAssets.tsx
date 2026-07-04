@@ -6,6 +6,7 @@ import Image from "next/image";
 import ethLogo from "../../assets/eth.png";
 import usdcLogo from "../../assets/usdc.png";
 import usdtLogo from "../../assets/usdt.png";
+import { motion } from "motion/react";
 
 const SplineViewer = "spline-viewer" as unknown as React.ElementType;
 
@@ -40,10 +41,10 @@ export function SupportedAssets() {
         <div className="text-sm font-semibold text-gray-500 mb-4 tracking-[0.14em] uppercase">
           Supported Tokens
         </div>
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal tracking-[-0.03em] text-[#16171C] leading-[1.1] mb-6">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-[-0.03em] text-[#16171C] leading-[1.1] mb-6">
           Supported Ecosystem Assets
         </h2>
-        <p className="text-[#6B7280] font-medium text-sm lg:text-[15px] mb-10 max-w-2xl leading-relaxed">
+        <p className="text-[#6B7280] font-medium text-[15px] md:text-[16px] mb-10 max-w-2xl leading-[1.7]">
           Based on zero knowledge proofs, standard crypto passes through a
           'shielding' threshold, transforming to confidential versions.
         </p>
@@ -58,7 +59,11 @@ export function SupportedAssets() {
       <div className="relative z-10 w-full px-4 mt-8 lg:mt-16">
         
         {/* Marquee Track Container */}
-        <div 
+        <motion.div 
+          initial={{ opacity: 0, filter: "blur(15px)" }}
+          whileInView={{ opacity: 1, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
           className="relative w-full max-w-[1400px] mx-auto h-[160px] lg:h-[220px] flex items-center overflow-hidden"
           style={{ maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}
         >
@@ -128,7 +133,7 @@ export function SupportedAssets() {
             </div>
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

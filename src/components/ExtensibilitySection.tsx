@@ -1,21 +1,45 @@
+"use client";
+
 import React from "react";
 import { ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
 
 export function ExtensibilitySection() {
   return (
-    <section id="extensibility" className="relative w-full py-32 bg-[#050505] flex flex-col items-center justify-center overflow-hidden">
+    <section 
+      id="extensibility" 
+      className="relative w-full py-32 bg-[#050505] flex flex-col items-center justify-center overflow-hidden"
+    >
       {/* Lens flare / Aurora effects in background */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         {/* Top left yellowish glow */}
-        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-[#F7D08A]/10 rounded-full blur-[120px]" />
+        <motion.div 
+          animate={{ x: ["0%", "8%", "-4%", "0%"], y: ["0%", "-6%", "5%", "0%"] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-[#F7D08A]/10 rounded-full blur-[120px]" 
+        />
         {/* Subtle rainbow streak approximation using rotated gradients */}
-        <div className="absolute top-[10%] left-[-10%] w-[60%] h-[200px] bg-gradient-to-br from-transparent via-[#F7D08A]/10 to-transparent rotate-[30deg] blur-2xl mix-blend-screen" />
-        <div className="absolute top-[15%] left-[-5%] w-[50%] h-[150px] bg-gradient-to-br from-transparent via-[#E99757]/10 to-transparent rotate-[35deg] blur-2xl mix-blend-screen" />
+        <motion.div 
+          animate={{ rotate: [30, 38, 25, 30], scale: [1, 1.1, 0.95, 1] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[10%] left-[-10%] w-[60%] h-[200px] bg-gradient-to-br from-transparent via-[#F7D08A]/15 to-transparent blur-3xl mix-blend-screen origin-center" 
+        />
+        <motion.div 
+          animate={{ rotate: [35, 25, 42, 35], scale: [1, 1.05, 0.9, 1] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[15%] left-[-5%] w-[50%] h-[150px] bg-gradient-to-br from-transparent via-[#E99757]/15 to-transparent blur-3xl mix-blend-screen origin-center" 
+        />
       </div>
 
-      <div className="relative z-10 max-w-5xl w-full px-6 flex flex-col items-center text-center">
+      <motion.div 
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 max-w-5xl w-full px-6 flex flex-col items-center text-center"
+      >
         {/* Title */}
-        <h2 className="text-4xl md:text-5xl lg:text-[64px] font-normal tracking-[-0.03em] mb-6 leading-[1.1]">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-[-0.03em] mb-6 leading-[1.1]">
           <span className="text-white">Seamless Pair </span>
           <br className="hidden md:block" />
           <span className="bg-gradient-to-r from-[#F9D48D] via-[#F1AC71] to-[#E99757] bg-clip-text text-transparent">
@@ -24,7 +48,7 @@ export function ExtensibilitySection() {
         </h2>
 
         {/* Subtitle */}
-        <p className="text-[#A1A1AA] text-sm md:text-[16px] max-w-2xl leading-[1.7] mb-16">
+        <p className="text-[#A1A1AA] font-medium text-[15px] md:text-[16px] max-w-2xl leading-[1.7] mb-16">
           Macetz utilizes a hybrid sourcing model. While the onchain Wrappers Registry serves as the primary source of truth, developers can effortlessly declare custom environments via a local configuration file. This enables rapid prototyping for pending registrations.
         </p>
 
@@ -88,7 +112,7 @@ export function ExtensibilitySection() {
           </button>
         </div>
 
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -6,22 +6,43 @@ import { CoinPlaceholder } from "./CoinPlaceholder";
 
 const NAV_LINKS = [
   { label: "Registry", href: "#registry" },
+  { label: "Extensibility", href: "#extensibility" },
   { label: "Decrypt", href: "#decrypt" },
   { label: "Distribute", href: "#distribute" },
-  { label: "Docs", href: "#docs" },
 ];
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
   const headerRef = useRef<HTMLElement>(null);
 
-  // Detect scroll to add background blur effect
+  // Detect scroll to add background blur effect and scroll spy
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
+      
+      // Scroll Spy Logic
+      const sections = NAV_LINKS.map(link => link.href.substring(1));
+      let current = "";
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          // Check if element is in the upper part of the viewport
+          if (rect.top <= 250 && rect.bottom >= 250) {
+            current = section;
+            break;
+          }
+        }
+      }
+      setActiveSection(current);
     };
+    
     window.addEventListener("scroll", handleScroll);
+    // Initial check
+    handleScroll();
+    
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -75,15 +96,22 @@ export function Header() {
 
         {/* Desktop Nav Links (Centered) */}
         <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1.5 p-1.5 bg-white/50 backdrop-blur-md rounded-full border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="px-5 py-2 rounded-full text-[14px] font-medium text-gray-600 hover:text-black hover:bg-white/80 transition-all duration-300"
-            >
-              {link.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const isActive = activeSection === link.href.substring(1);
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                className={`px-5 py-2 rounded-full text-[14px] font-medium transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-black text-white shadow-md' 
+                    : 'text-gray-600 hover:text-black hover:bg-white/80'
+                }`}
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </nav>
 
         {/* Right side actions */}
@@ -119,17 +147,22 @@ export function Header() {
         }`}
       >
         <div className="bg-white/90 backdrop-blur-2xl border border-white/60 shadow-[0_24px_48px_rgba(0,0,0,0.1)] rounded-[32px] p-4 flex flex-col gap-2">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-between px-6 py-4 rounded-2xl text-[15px] font-medium text-gray-800 hover:bg-black/5 transition-colors"
-            >
-              {link.label}
-              <ArrowUpRight className="w-4 h-4 opacity-30" />
-            </a>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const isActive = activeSection === link.href.substring(1);
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`flex items-center justify-between px-6 py-4 rounded-2xl text-[15px] font-medium transition-colors ${
+                  isActive ? 'bg-black/5 text-black' : 'text-gray-800 hover:bg-black/5'
+                }`}
+              >
+                {link.label}
+                <ArrowUpRight className="w-4 h-4 opacity-30" />
+              </a>
+            );
+          })}
           <div className="h-px w-full bg-black/5 my-2" />
           <button
             type="button"

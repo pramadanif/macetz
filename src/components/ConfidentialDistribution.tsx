@@ -1,22 +1,31 @@
+"use client";
+
 import React from "react";
 import { ArrowRight, ChevronRight, CheckCircle2, Clock } from "lucide-react";
+import { motion } from "motion/react";
 
 export function ConfidentialDistribution() {
   return (
-    <section id="distribute" className="px-4 py-20 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+    <section id="distribute" className="px-4 py-20 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20" style={{ perspective: "1200px" }}>
       
-      <div className="flex flex-col lg:flex-row w-full rounded-3xl overflow-hidden border border-black/5 bg-[#F8F8F7] shadow-sm">
+      <motion.div 
+        initial={{ opacity: 0, rotateX: -25, y: 40 }}
+        whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="flex flex-col lg:flex-row w-full rounded-3xl overflow-hidden border border-black/5 bg-[#F8F8F7] shadow-sm transform-gpu"
+      >
         
         {/* Left Side: Original Content */}
         <div className="w-full lg:w-[45%] p-10 lg:p-16 flex flex-col justify-center">
           <div className="text-xs font-semibold text-gray-500 mb-4 tracking-[0.14em] uppercase">
             Confidential Distribution · Powered by TokenOps SDK
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal tracking-[-0.03em] text-[#16171C] leading-[1.1] mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-[-0.03em] text-[#16171C] leading-[1.1] mb-6">
             Distribute to hundreds.
             <br className="hidden lg:block" /> Reveal to none.
           </h2>
-          <p className="text-[#6B7280] font-medium text-sm lg:text-[15px] mb-10 max-w-[95%] leading-relaxed">
+          <p className="text-[#6B7280] font-medium text-[15px] md:text-[16px] mb-10 max-w-[95%] leading-[1.7]">
             Payroll, airdrops, and investor distributions all share the same
             problem onchain: everyone can see who got paid and how much. Macetz&apos;s
             distribution layer, built on the TokenOps SDK, keeps amounts and
@@ -65,7 +74,7 @@ export function ConfidentialDistribution() {
             
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

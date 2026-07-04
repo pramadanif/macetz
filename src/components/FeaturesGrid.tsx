@@ -5,30 +5,43 @@ import Image from "next/image";
 import { Search } from "lucide-react";
 import faucetAsset from "../../assets/faucet2.png";
 import { RegistryToggle } from "./RegistryToggle";
+import { motion } from "motion/react";
 
 export function FeaturesGrid() {
   return (
     <section id="registry" className="px-4 py-32 max-w-[1400px] mx-auto">
-      <div className="text-center mb-20 px-4 max-w-4xl mx-auto flex flex-col items-center">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center mb-20 px-4 max-w-4xl mx-auto flex flex-col items-center"
+      >
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/[0.03] border border-black/[0.06] mb-6">
           <div className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
           <span className="text-[13px] font-semibold text-[#52525B] tracking-wide uppercase">
             Official Zama Registry
           </span>
         </div>
-        <h2 className="text-4xl md:text-5xl lg:text-[64px] font-medium tracking-[-0.04em] text-[#0A0A0A] mb-8 leading-[1.05]">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-[-0.03em] text-[#0A0A0A] mb-8 leading-[1.1]">
           Single Source of Truth.<br className="hidden lg:block"/> Zero Fragmentation.
         </h2>
-        <p className="text-[#52525B] font-medium text-[16px] lg:text-[18px] max-w-3xl mx-auto leading-[1.7]">
+        <p className="text-[#6B7280] font-medium text-[15px] md:text-[16px] max-w-2xl mx-auto leading-[1.7]">
           Redundant token deployments lead to severe ecosystem fragmentation. Macetz integrates 
           directly with the official onchain Zama Wrapper Registry, ensuring every ERC-20 ↔ ERC-7984 
           pair is canonical and verified. Eliminate ambiguity and build with absolute confidence.
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-[minmax(0,34%)_minmax(168px,22%)_minmax(0,44%)] gap-6 md:gap-8 md:items-stretch md:min-h-[460px] max-w-6xl mx-auto">
         {/* Left */}
-        <div className="flex flex-col gap-6 order-2 md:order-1 md:h-full">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-6 order-2 md:order-1 md:h-full"
+        >
           <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2rem] p-5 shrink-0 flex items-center justify-center min-h-[68px] shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
             <div className="relative z-10 flex items-center justify-between w-full px-2">
               <span className="text-[15px] font-medium text-[#0A0A0A] tracking-tight">
@@ -74,10 +87,16 @@ export function FeaturesGrid() {
           >
             Explore the Registry <span className="text-gray-400">→</span>
           </button>
-        </div>
+        </motion.div>
 
         {/* Center — faucet fills entire card */}
-        <div className="order-1 md:order-2 flex md:h-full min-h-[380px]">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="order-1 md:order-2 flex md:h-full min-h-[380px]"
+        >
           <div className="glass-panel bg-gradient-to-b from-[#F3F2EE] to-[#E5E4E0] border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-[2.5rem] w-full h-full relative overflow-hidden group hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)] transition-all duration-700">
             <div className="absolute inset-0 bg-gradient-to-tr from-yellow-200/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             <Image
@@ -89,10 +108,16 @@ export function FeaturesGrid() {
               priority
             />
           </div>
-        </div>
+        </motion.div>
 
         {/* Right */}
-        <div className="flex flex-col gap-6 order-3 md:h-full">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-6 order-3 md:h-full"
+        >
           <div className="glass-panel bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[2.5rem] p-6 lg:p-8 flex-1 flex flex-col shadow-[0_8px_30px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] transition-all duration-500">
             <div className="relative z-10 flex flex-col gap-6 h-full">
               <div className="bg-white/80 shadow-sm border border-black/[0.04] rounded-[1.25rem] px-5 py-4 flex items-center gap-3">
@@ -128,7 +153,7 @@ export function FeaturesGrid() {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

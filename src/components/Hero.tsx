@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
+import { motion } from "motion/react";
 import heroAsset from "../../assets/heroasset.png";
 import { FloatingEncryptedCard } from "./FloatingEncryptedCard";
 import { HeroRotatingCopy } from "./HeroRotatingCopy";
@@ -37,8 +38,8 @@ export function Hero() {
   return (
     <section className="hero-section relative overflow-hidden bg-[#F5F4F0] min-h-[95vh] flex flex-col justify-center">
       {/* Refined Elegant Glow Effects */}
-      <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[#F5C518]/15 blur-[140px] rounded-full pointer-events-none mix-blend-multiply" aria-hidden="true" />
-      <div className="absolute top-[35%] left-[60%] -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/50 blur-[90px] rounded-full pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-[40%] right-[-10%] lg:right-[5%] -translate-y-1/2 w-[800px] h-[600px] bg-[#F5C518]/15 blur-[140px] rounded-full pointer-events-none mix-blend-multiply" aria-hidden="true" />
+      <div className="absolute top-[35%] right-[0%] lg:right-[10%] -translate-y-1/2 w-[500px] h-[500px] bg-white/50 blur-[90px] rounded-full pointer-events-none" aria-hidden="true" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 lg:pt-36 pb-16 lg:pb-24 w-full">
         
@@ -48,7 +49,12 @@ export function Hero() {
           {/* Left Column: Copy & Actions */}
           <div className="hero-section__copy !items-start !text-left">
             {/* Top Annotation Pills (Aligned left on desktop) */}
-            <div className="flex flex-wrap justify-start gap-2.5 mb-8 opacity-0 animate-[fadeIn_1s_ease-out_forwards]">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="flex flex-wrap justify-start gap-2.5 mb-8"
+            >
               {ANNOTATION_PILLS.map((pill, i) => (
                 <span
                   key={pill}
@@ -58,11 +64,22 @@ export function Hero() {
                   {pill}
                 </span>
               ))}
-            </div>
+            </motion.div>
 
-            <HeroRotatingCopy />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+            >
+              <HeroRotatingCopy />
+            </motion.div>
 
-            <div className="flex flex-col items-start gap-6 mt-8 w-full">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              className="flex flex-col items-start gap-6 mt-8 w-full"
+            >
               {/* Elegant Buttons */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
                 <button className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 inline-flex items-center gap-2">
@@ -76,11 +93,16 @@ export function Hero() {
               <p className="text-[11px] font-semibold text-gray-400 tracking-[0.1em] uppercase mt-2 opacity-80 text-left">
                 Built on Zama Protocol • FHEVM • Live on Sepolia
               </p>
-            </div>
+            </motion.div>
           </div>
 
           {/* Right Column: Visual Asset Stage */}
-          <div className="hero-section__visual">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            className="hero-section__visual"
+          >
             <div className="hero-section__stage w-full relative">
               <div className="hero-section__asset-wrap !pt-0 relative w-full flex items-center justify-center">
                 
@@ -110,7 +132,7 @@ export function Hero() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
           
         </div>
       </div>

@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { CHAIN_ID } from "@/lib/config";
 
 const connector = injected();
 
 export function WalletButton() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId } = useAccount();
   const { connect, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const { switchChain, isPending: isSwitching } = useSwitchChain();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -27,6 +28,18 @@ export function WalletButton() {
   }
 
   if (isConnected && address) {
+    if (chainId !== CHAIN_ID) {
+      return (
+        <button
+          onClick={() => switchChain({ chainId: CHAIN_ID })}
+          disabled={isSwitching}
+          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-medium text-[13px] px-5 py-2.5 rounded-full transition-all duration-300 disabled:opacity-50 shadow-[inset_0_1px_3px_rgba(255,255,255,0.3)]"
+        >
+          {isSwitching ? "Switching..." : "Switch to Sepolia"}
+        </button>
+      );
+    }
+    
     return (
       <div className="flex items-center gap-2">
         <span className="text-xs font-mono text-gray-500 bg-white/60 px-3 py-1.5 rounded-full border border-white/60">

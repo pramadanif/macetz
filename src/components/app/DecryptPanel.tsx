@@ -12,6 +12,7 @@ import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
 import { AlertMessage } from "@/components/app/AlertMessage";
+import { formatWalletError } from "@/lib/errors";
 
 type DecryptMode = "registry" | "custom";
 
@@ -47,7 +48,7 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
       <AlertMessage
         type="error"
         title="Decryption Failed"
-        message={error.message}
+        message={formatWalletError(error)}
       />
     );
   }

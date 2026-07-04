@@ -6,17 +6,17 @@ import { WalletButton } from "@/components/app/WalletButton";
 
 export function ConnectPrompt() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6">
-      <div className="emboss-card rounded-3xl p-12 text-center max-w-md">
+    <div className="flex flex-col items-center justify-center min-h-[50vh] gap-5">
+      <div className="emboss-card rounded-2xl p-10 text-center max-w-sm">
         <div className="relative z-10">
-          <div className="w-20 h-20 mx-auto mb-6">
-            <CoinPlaceholder type="gold" size="lg" className="w-20 h-20 shadow-lg" />
+          <div className="w-16 h-16 mx-auto mb-5">
+            <CoinPlaceholder type="gold" size="lg" className="w-16 h-16 shadow-md" />
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight mb-3">
+          <h2 className="text-xl font-semibold tracking-tight mb-2">
             Connect your wallet
           </h2>
-          <p className="text-gray-500 text-[15px] leading-relaxed mb-8">
-            Connect a Sepolia-enabled wallet to browse the registry, wrap tokens,
+          <p className="text-gray-500 text-sm leading-relaxed mb-6">
+            Connect a Sepolia-enabled wallet to browse the registry, shield tokens,
             and decrypt confidential balances.
           </p>
           <WalletButton />

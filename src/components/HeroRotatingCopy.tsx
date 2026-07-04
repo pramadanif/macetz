@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 const SCRAMBLE_CHARSET = "ABCDEF0123456789#%&*+=<>";
 
 function randomChar() {
-  return SCRAMBLE_CHARSET[Math.floor(Math.random() * SCRAMBLE_CHARSET.length)];
+  return SCRAMBLE_CHARSET[Math.floor(Math.random() * SCRAMBLE_CHARSET.length)] ?? "#";
 }
 
 function preserve(char: string) {
@@ -108,7 +108,7 @@ export function HeroRotatingCopy() {
     const lockStep = () => {
       if (!visibleRef.current) return;
 
-      while (locked < target.length && preserve(target[locked])) {
+      while (locked < target.length && preserve(target[locked]!)) {
         locked += 1;
       }
 
@@ -138,7 +138,7 @@ export function HeroRotatingCopy() {
 
   useEffect(() => {
     if (reduceMotion) {
-      const current = HERO_COPY_VARIANTS[variantIndex];
+      const current = HERO_COPY_VARIANTS[variantIndex]!;
       setHeadlineDisplay(current.headline);
       setSubtextVisible(true);
       setIsTransitioning(false);
@@ -165,7 +165,7 @@ export function HeroRotatingCopy() {
     return () => window.clearInterval(timer);
   }, [reduceMotion, runTransition]);
 
-  const current = HERO_COPY_VARIANTS[variantIndex];
+  const current = HERO_COPY_VARIANTS[variantIndex]!;
 
   return (
     <div ref={containerRef} className="hero-copy-block text-center max-w-3xl mx-auto px-4 mb-10">

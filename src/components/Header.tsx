@@ -116,10 +116,13 @@ export function Header() {
 
         {/* Right side actions */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 z-10">
-          <button className="hidden sm:flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-medium text-[14px] px-6 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-0.5">
-            Connect
+          <a
+            href="/app"
+            className="hidden sm:flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-medium text-[14px] px-6 py-2.5 rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-black/10 hover:-translate-y-0.5"
+          >
+            Launch App
             <ArrowUpRight className="w-4 h-4 opacity-70" />
-          </button>
+          </a>
 
           {/* Mobile Menu Toggle */}
           <button
@@ -164,13 +167,13 @@ export function Header() {
             );
           })}
           <div className="h-px w-full bg-black/5 my-2" />
-          <button
-            type="button"
+          <a
+            href="/app"
             className="w-full bg-[#16171C] text-white font-medium text-[15px] px-6 py-4 rounded-2xl transition-all duration-300 hover:bg-black flex justify-center items-center gap-2"
           >
-            Connect Wallet
+            Launch App
             <ArrowUpRight className="w-4 h-4 opacity-70" />
-          </button>
+          </a>
         </div>
       </div>
     </header>

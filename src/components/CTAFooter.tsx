@@ -32,13 +32,13 @@ export function CTAFooter() {
               numbers exposed.
             </p>
 
-            <button
-              type="button"
+            <a
+              href="/app"
               className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-5 py-3 rounded-lg transition-colors hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
             >
-              Connect Wallet
+              Launch App
               <ArrowUpRight className="w-4 h-4" strokeWidth={2.5} />
-            </button>
+            </a>
           </div>
         </div>
       </motion.div>

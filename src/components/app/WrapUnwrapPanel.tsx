@@ -148,28 +148,8 @@ export function WrapUnwrapPanel() {
         </button>
       </div>
 
-      {/* Token selector */}
-      <TokenSelect
-        options={(pairs ?? []).map((pair) => ({
-          value: pair.erc7984Address,
-          label: `${pair.erc20Symbol} → ${pair.erc7984Symbol}`,
-          sublabel: pair.source === "local-dev" ? "Dev Pair" : pair.erc7984Name,
-          symbol: pair.erc20Symbol,
-        }))}
-        value={selectedPair?.erc7984Address ?? ""}
-        onChange={(val) => {
-          const pair = pairs?.find((p) => p.erc7984Address === val);
-          setSelectedPair(pair ?? null);
-          setAmount("");
-          setSuccess(null);
-          shield.reset();
-          unshield.reset();
-        }}
-        placeholder="Choose a token pair..."
-      />
-
       {/* Connected two-card swap flow */}
-      <div className="relative">
+      <div className="relative mt-2">
         {/* Input card — "You shield" / "You unshield" */}
         <div className="emboss-card p-5">
           <div className="relative z-10">
@@ -177,12 +157,27 @@ export function WrapUnwrapPanel() {
               <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {mode === "wrap" ? "You shield" : "You unshield"}
               </span>
-              {selectedPair && inputSymbol && (
-                <span className="glass-pill flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full text-gray-600">
-                  <TokenIcon symbol={inputSymbol} size={18} />
-                  {inputSymbol}
-                </span>
-              )}
+              <div className="w-[140px]">
+                <TokenSelect
+                  options={(pairs ?? []).map((pair) => ({
+                    value: pair.erc7984Address,
+                    label: mode === "wrap" ? pair.erc20Symbol : pair.erc7984Symbol,
+                    sublabel: undefined,
+                    symbol: mode === "wrap" ? pair.erc20Symbol : pair.erc7984Symbol,
+                  }))}
+                  value={selectedPair?.erc7984Address ?? ""}
+                  onChange={(val) => {
+                    const pair = pairs?.find((p) => p.erc7984Address === val);
+                    setSelectedPair(pair ?? null);
+                    setAmount("");
+                    setSuccess(null);
+                    shield.reset();
+                    unshield.reset();
+                  }}
+                  placeholder="Select..."
+                  variant="pill"
+                />
+              </div>
             </div>
             <input
               type="text"
@@ -226,10 +221,14 @@ export function WrapUnwrapPanel() {
                 You receive
               </span>
               {selectedPair && outputSymbol && (
-                <span className="glass-pill flex items-center gap-1.5 text-[11px] font-semibold px-2 py-1 rounded-full text-gray-600">
-                  <TokenIcon symbol={outputSymbol} size={18} />
-                  {outputSymbol}
-                </span>
+                <div className="w-[140px]">
+                  <div className="w-full flex items-center px-2.5 py-1.5 rounded-full text-sm font-medium bg-gray-50 border border-black/5 text-[#16171C]">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <TokenIcon symbol={outputSymbol} size={18} />
+                      <span className="font-semibold truncate">{outputSymbol}</span>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
             <p className="text-2xl font-mono font-semibold text-gray-300">

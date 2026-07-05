@@ -11,26 +11,32 @@ const COINGECKO_CDN = "https://assets.coingecko.com/coins/images";
 export const KNOWN_TOKEN_ICONS: Record<string, string> = {
   USDC: "/icons/usdc.svg",
   USDCMock: "/icons/usdc.svg",
+  cUSDC: "/icons/usdc.svg",
   cUSDCMock: "/icons/usdc.svg",
 
   USDT: "/icons/usdt.svg",
   USDTMock: "/icons/usdt.svg",
+  cUSDT: "/icons/usdt.svg",
   cUSDTMock: "/icons/usdt.svg",
 
   WETH: "/icons/weth.svg",
   WETHMock: "/icons/weth.svg",
+  cWETH: "/icons/weth.svg",
   cWETHMock: "/icons/weth.svg",
 
   XAUt: "/icons/xaut.svg",
   XAUtMock: "/icons/xaut.svg",
+  cXAUt: "/icons/xaut.svg",
   cXAUtMock: "/icons/xaut.svg",
 
   ZAMA: "/icons/zama.svg",
   ZAMAMock: "/icons/zama.svg",
+  cZAMA: "/icons/zama.svg",
   cZAMAMock: "/icons/zama.svg",
 
   BRON: "/icons/bron-bron-coin-logo.webp",
   BRONMock: "/icons/bron-bron-coin-logo.webp",
+  cBRON: "/icons/bron-bron-coin-logo.webp",
   cBRONMock: "/icons/bron-bron-coin-logo.webp",
 
   tGBP: "/icons/tgbp.svg",

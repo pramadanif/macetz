@@ -3,16 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRight, ChevronRight, CheckCircle2, Clock } from "lucide-react";
 import { motion } from "motion/react";
+import { TokenIcon } from "@/components/app/TokenIcon";
 
 export function ConfidentialDistribution() {
-  const [items, setItems] = useState<{ id: number; addr: string; status: string }[]>([
-    { id: 1, addr: "0xet65..4f3", status: "Claimed" },
-    { id: 2, addr: "0x9906..036", status: "Pending" },
-    { id: 3, addr: "0x61xb..e064", status: "Claimed" },
-    { id: 4, addr: "0x560f..229", status: "Pending" },
-    { id: 5, addr: "0x8b2a..c41", status: "Pending" },
-    { id: 6, addr: "0x34cc..1b9", status: "Claimed" },
-    { id: 7, addr: "0x89fc..3b2", status: "Claimed" },
+  const [items, setItems] = useState<{ id: number; addr: string; status: string; symbol: string }[]>([
+    { id: 1, addr: "0xet65..4f3", status: "Claimed", symbol: "cUSDC" },
+    { id: 2, addr: "0x9906..036", status: "Pending", symbol: "cWETH" },
+    { id: 3, addr: "0x61xb..e064", status: "Claimed", symbol: "cZAMA" },
+    { id: 4, addr: "0x560f..229", status: "Pending", symbol: "cUSDT" },
+    { id: 5, addr: "0x8b2a..c41", status: "Pending", symbol: "cUSDC" },
+    { id: 6, addr: "0x34cc..1b9", status: "Claimed", symbol: "cZAMA" },
+    { id: 7, addr: "0x89fc..3b2", status: "Claimed", symbol: "ctGBP" },
   ]);
 
   const [isAnimating, setIsAnimating] = useState(false);
@@ -24,7 +25,7 @@ export function ConfidentialDistribution() {
       setTimeout(() => {
         // Snap back instantly and shift array to create an infinite loop
         setIsAnimating(false);
-        setItems((prev: { id: number; addr: string; status: string }[]) => {
+        setItems((prev: { id: number; addr: string; status: string; symbol: string }[]) => {
           const arr = [...prev];
           const first = arr.shift();
           if (first) arr.push(first);
@@ -95,7 +96,7 @@ export function ConfidentialDistribution() {
               transition={{ duration: isAnimating ? 0.7 : 0, ease: [0.16, 1, 0.3, 1] }}
               className="w-full flex flex-col gap-4 items-center pt-[10px]"
             >
-              {items.map((item: { id: number; addr: string; status: string }, i: number) => {
+              {items.map((item: { id: number; addr: string; status: string; symbol: string }, i: number) => {
                 const distance = Math.abs(i - visualActiveIndex);
 
                 let opacity = "opacity-100";
@@ -120,6 +121,7 @@ export function ConfidentialDistribution() {
                     isActive={isActive}
                     address={item.addr}
                     status={item.status}
+                    symbol={item.symbol}
                   />
                 );
               })}
@@ -131,21 +133,24 @@ export function ConfidentialDistribution() {
   );
 }
 
-function DistributionRow({ opacity = "", blur = "", isActive = false, address, status }: { opacity?: string, blur?: string, isActive?: boolean, address: string, status: string }) {
+function DistributionRow({ opacity = "", blur = "", isActive = false, address, status, symbol }: { opacity?: string, blur?: string, isActive?: boolean, address: string, status: string, symbol: string }) {
   const isClaimed = status === "Claimed";
   
   return (
     <div className={`w-full max-w-[460px] h-[96px] rounded-xl p-5 lg:p-6 flex items-center justify-between transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${isActive ? 'bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)] shadow-inset-light border border-black/5 z-10 scale-[1.05]' : `bg-white/40 shadow-inset-light ${opacity} ${blur} scale-100`}`}>
-      <div className="flex flex-col gap-1 w-[45%]">
+      <div className="flex flex-col gap-1 w-[40%]">
         <span className="text-[12px] text-gray-500 font-medium">Recipient</span>
         <span className="text-sm font-mono text-black">{address}</span>
       </div>
       
       <div className="w-px h-10 bg-black/10 mx-2 lg:mx-4" />
       
-      <div className="flex flex-col gap-1 w-[25%] text-center">
+      <div className="flex flex-col gap-1 w-[30%] text-center items-center">
         <span className="text-[12px] text-gray-500 font-medium">Amount</span>
-        <span className="text-[15px] font-mono text-black tracking-[0.2em] mt-0.5">***</span>
+        <div className="flex items-center gap-2 mt-0.5">
+          <TokenIcon symbol={symbol} size={20} />
+          <span className="text-[15px] font-mono text-black tracking-[0.2em] translate-y-0.5">***</span>
+        </div>
       </div>
 
       <div className="w-px h-10 bg-black/10 mx-2 lg:mx-4" />

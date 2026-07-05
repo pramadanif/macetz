@@ -120,15 +120,15 @@ export function Hero() {
                 ))}
 
                 {/* Main Hero Image */}
-                <div className="hero-section__asset-image relative z-10 w-full flex justify-center transform transition-transform duration-1000 hover:scale-[1.02]">
+                <div className="hero-section__asset-image relative z-10 w-full flex justify-center transform transition-transform duration-1000 hover:scale-[1.01]">
                   <Image
                     src={heroAsset}
                     alt="Hero asset"
                     width={658}
                     height={689}
                     priority
-                    sizes="(max-width: 768px) 88vw, (max-width: 1280px) 55vw, 750px"
-                    className="hero-section__hero-img !w-full !max-w-[110%] lg:!max-w-[120%] lg:-mr-10 h-auto object-contain filter drop-shadow-[0_30px_60px_rgba(0,0,0,0.1)]"
+                    sizes="(max-width: 768px) 80vw, (max-width: 1280px) 45vw, 600px"
+                    className="hero-section__hero-img !w-[90%] lg:!w-[85%] lg:-mr-10 h-auto object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
                   />
                 </div>
               </div>

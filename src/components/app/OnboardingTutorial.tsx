@@ -243,34 +243,41 @@ export function OnboardingTutorial() {
   let cardStyle: any = {
     top: "50%",
     left: "50%",
-    transform: "translate(-50%, -50%)",
+    x: "-50%",
+    y: "-50%",
   };
 
-  if (targetRect && step.position !== "center") {
-    // Attempt to position relative to the element
+  if (targetRect && step.position !== "center" && typeof window !== "undefined") {
+    let top: number = window.innerHeight / 2;
+    let y: string | number = "-50%";
+    
     if (step.position === "bottom") {
-      cardStyle = {
-        top: targetRect.bottom + 20,
-        left: Math.min(Math.max(20, targetRect.left + targetRect.width / 2), typeof window !== "undefined" ? window.innerWidth - 420 : 0),
-        transform: "translateX(0)", // we adjust left manually to prevent offscreen
-      };
-      if (typeof window !== "undefined" && (cardStyle.left as number) < window.innerWidth / 2) {
-        cardStyle.transform = "translateX(0)";
+      top = targetRect.bottom + 20;
+      if (top + 300 > window.innerHeight) {
+        top = targetRect.top - 20;
+        y = "-100%";
       } else {
-        cardStyle.left = targetRect.right;
-        cardStyle.transform = "translateX(-100%)";
+        y = 0;
       }
     } else if (step.position === "top") {
-      cardStyle = {
-        top: targetRect.top - 20,
-        left: Math.min(Math.max(20, targetRect.left + targetRect.width / 2), typeof window !== "undefined" ? window.innerWidth - 420 : 0),
-        transform: "translateY(-100%)",
-      };
-      if (typeof window !== "undefined" && (cardStyle.left as number) > window.innerWidth / 2) {
-         cardStyle.left = targetRect.right;
-         cardStyle.transform = "translate(-100%, -100%)";
+      top = targetRect.top - 20;
+      if (top - 300 < 0) {
+        top = targetRect.bottom + 20;
+        y = 0;
+      } else {
+        y = "-100%";
       }
     }
+
+    let left = targetRect.left + targetRect.width / 2;
+    const halfWidth = 200; // max-width is 400px
+    if (left - halfWidth < 20) {
+      left = 20 + halfWidth;
+    } else if (left + halfWidth > window.innerWidth - 20) {
+      left = window.innerWidth - 20 - halfWidth;
+    }
+
+    cardStyle = { top, left, x: "-50%", y };
   }
 
   return (
@@ -307,7 +314,7 @@ export function OnboardingTutorial() {
       <motion.div
         layout
         initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1, ...cardStyle }}
+        animate={{ opacity: 1, scale: 1, top: cardStyle.top, left: cardStyle.left, x: cardStyle.x, y: cardStyle.y }}
         transition={{ type: "spring", damping: 25, stiffness: 150 }}
         className="absolute w-full max-w-[400px] px-4"
       >

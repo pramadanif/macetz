@@ -19,8 +19,9 @@ export function useFaucet() {
   const mint = useCallback(
     async (tokenAddress: `0x${string}`, decimals: number, amount?: bigint) => {
       if (!isConnected || !address || !publicClient) {
-        setError("Wallet not connected");
-        return;
+        const msg = "Wallet not connected";
+        setError(msg);
+        throw new Error(msg);
       }
 
       setIsPending(true);
@@ -45,8 +46,10 @@ export function useFaucet() {
 
         setTxHash(hash);
         await publicClient.waitForTransactionReceipt({ hash });
+        return hash;
       } catch (e) {
         setError(formatWalletError(e));
+        throw e;
       } finally {
         setIsPending(false);
       }

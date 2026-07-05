@@ -79,11 +79,9 @@ export const KNOWN_MOCK_PAIRS = [
     underlying: "0xf6Ef9ADB61A48E29E36bc873070A46A3D2667ff3" as const,
     isMock: false,
   },
-  {
-    symbol: "csteakcUSDC",
-    name: "csteakcUSDC (Mock)",
-    wrapper: "0x13F7d34A4f0102734F19E3Ff16e068Fe194B28c4" as const,
-    underlying: "0x6AB54988261AEC573a2CA13cF802d3B1114f864C" as const,
-    isMock: true,
-  },
 ] as const;
+
+/** Wrapper addresses listed in Zama Sepolia docs — on-chain extras are excluded. */
+export const OFFICIAL_DOC_WRAPPER_ADDRESSES = new Set(
+  KNOWN_MOCK_PAIRS.map((p) => p.wrapper.toLowerCase())
+);

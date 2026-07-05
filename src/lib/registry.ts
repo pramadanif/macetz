@@ -1,5 +1,9 @@
 import { type PublicClient } from "viem";
-import { REGISTRY_ADDRESS, KNOWN_MOCK_PAIRS } from "./config";
+import {
+  REGISTRY_ADDRESS,
+  KNOWN_MOCK_PAIRS,
+  OFFICIAL_DOC_WRAPPER_ADDRESSES,
+} from "./config";
 import { REGISTRY_ABI, ERC20_ABI } from "./abis";
 import type { TokenPair, CustomPairsConfig } from "./types";
 import customPairsJson from "../../config/custom-pairs.json";
@@ -53,7 +57,14 @@ export async function fetchRegistryPairs(
     functionName: "getTokenConfidentialTokenPairs",
   })) as RawRegistryPair[];
 
-  const validPairs = rawPairs.filter((p) => p.isValid);
+  // Only surface wrappers that appear in Zama's official Sepolia docs table.
+  const validPairs = rawPairs.filter(
+    (p) =>
+      p.isValid &&
+      OFFICIAL_DOC_WRAPPER_ADDRESSES.has(
+        p.confidentialTokenAddress.toLowerCase()
+      )
+  );
 
   const pairs: TokenPair[] = await Promise.all(
     validPairs.map(async (raw) => {

@@ -8,6 +8,7 @@ import { useFaucet } from "@/hooks/useFaucet";
 import { useQuery } from "@tanstack/react-query";
 import { ERC20_ABI } from "@/lib/abis";
 import { FAUCET_MINT_CAP } from "@/lib/config";
+import { formatWalletError } from "@/lib/errors";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import type { TokenPair } from "@/lib/types";
@@ -15,9 +16,14 @@ import type { TokenPair } from "@/lib/types";
 export function FaucetPanel() {
   const { address } = useAccount();
   const publicClient = usePublicClient();
-  const { data: pairs } = useRegistryPairs();
+  const { data: pairs, isLoading: isLoadingPairs } = useRegistryPairs();
   const { mint, isPending, error, txHash } = useFaucet();
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
+  const [mintAllProgress, setMintAllProgress] = useState<{
+    current: number;
+    total: number;
+  } | null>(null);
+  const [mintAllError, setMintAllError] = useState<string | null>(null);
 
   const mockPairs = pairs?.filter((p) => p.isMock && p.source === "registry") ?? [];
 
@@ -39,6 +45,27 @@ export function FaucetPanel() {
   const handleMint = async () => {
     if (!selectedPair) return;
     await mint(selectedPair.erc20Address, selectedPair.erc20Decimals);
+    refetchBalance();
+  };
+
+  const handleMintAll = async () => {
+    if (mockPairs.length === 0) return;
+    setMintAllError(null);
+    setMintAllProgress({ current: 0, total: mockPairs.length });
+
+    for (let i = 0; i < mockPairs.length; i++) {
+      const pair = mockPairs[i]!;
+      setMintAllProgress({ current: i + 1, total: mockPairs.length });
+      try {
+        await mint(pair.erc20Address, pair.erc20Decimals);
+      } catch (e) {
+        setMintAllError(formatWalletError(e));
+        setMintAllProgress(null);
+        return;
+      }
+    }
+
+    setMintAllProgress(null);
     refetchBalance();
   };
 
@@ -67,23 +94,34 @@ export function FaucetPanel() {
         </div>
 
         <div className="relative z-10">
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6">
-            {mockPairs.map((pair) => (
-              <button
-                key={pair.erc20Address}
-                onClick={() => setSelectedPair(pair)}
-                className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200 ${
-                  selectedPair?.erc20Address === pair.erc20Address
-                    ? "bg-[#F5C518]/10 border border-[#F5C518]/30 shadow-sm"
-                    : "bg-white/50 border border-white/60 hover:bg-white/80"
-                }`}
-              >
-                <TokenIcon symbol={pair.erc20Symbol} size={32} />
-                <span className="text-[11px] font-medium text-gray-700 leading-tight text-center">
-                  {pair.erc20Symbol}
-                </span>
-              </button>
-            ))}
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6 min-h-[100px]">
+            {isLoadingPairs ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-8">
+                <div className="w-8 h-8 border-[3px] border-[#16171C]/10 border-t-[#16171C] rounded-full animate-spin mb-3" />
+                <span className="text-sm text-gray-500 font-medium animate-pulse">Loading faucets...</span>
+              </div>
+            ) : mockPairs.length > 0 ? (
+              mockPairs.map((pair) => (
+                <button
+                  key={pair.erc20Address}
+                  onClick={() => setSelectedPair(pair)}
+                  className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200 ${
+                    selectedPair?.erc20Address === pair.erc20Address
+                      ? "bg-[#F5C518]/10 border border-[#F5C518]/30 shadow-sm"
+                      : "bg-white/50 border border-white/60 hover:bg-white/80"
+                  }`}
+                >
+                  <TokenIcon symbol={pair.erc20Symbol} size={32} />
+                  <span className="text-[11px] font-medium text-gray-700 leading-tight text-center">
+                    {pair.erc20Symbol}
+                  </span>
+                </button>
+              ))
+            ) : (
+              <div className="col-span-full flex justify-center py-8">
+                <span className="text-sm text-gray-400 font-medium">No faucets available</span>
+              </div>
+            )}
           </div>
 
           {selectedPair && balance !== undefined && (
@@ -109,20 +147,45 @@ export function FaucetPanel() {
             </div>
           )}
 
-          <button
-            onClick={handleMint}
-            disabled={!selectedPair || isPending}
-            className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"
-          >
-            {isPending ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Minting...
-              </span>
-            ) : (
-              `Mint ${FAUCET_MINT_CAP.toString()} ${selectedPair?.erc20Symbol ?? "Tokens"}`
-            )}
-          </button>
+          {mintAllProgress && (
+            <div className="mb-4">
+              <AlertMessage
+                type="loading"
+                title="Minting all mocks"
+                message={`Minting ${mintAllProgress.current} of ${mintAllProgress.total}...`}
+              />
+            </div>
+          )}
+
+          {mintAllError && (
+            <div className="mb-4">
+              <AlertMessage type="error" title="Mint All Failed" message={mintAllError} />
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <button
+              onClick={handleMintAll}
+              disabled={mockPairs.length === 0 || isPending || !!mintAllProgress}
+              className="flex-1 border border-[#16171C] text-[#16171C] hover:bg-[#16171C] hover:text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Mint All ({mockPairs.length})
+            </button>
+            <button
+              onClick={handleMint}
+              disabled={!selectedPair || isPending || !!mintAllProgress}
+              className="flex-[2] bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"
+            >
+              {isPending ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Minting...
+                </span>
+              ) : (
+                `Mint ${FAUCET_MINT_CAP.toString()} ${selectedPair?.erc20Symbol ?? "Tokens"}`
+              )}
+            </button>
+          </div>
 
           <p className="text-[11px] text-gray-400 mt-3 text-center">
             Only mock tokens have a public faucet. Official tokens like ctGBP have restricted minting.

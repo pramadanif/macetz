@@ -1,15 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "motion/react";
 
 const STORAGE_KEY = "macetz_tutorial_seen";
-const TOTAL_STEPS = 5;
+
+type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute";
 
 interface TutorialStep {
   title: string;
   description: string | React.ReactNode;
-  highlight: "none" | "left" | "center";
-  targetTab?: "dashboard" | "registry" | "wrap" | "decrypt" | "faucet";
+  targetTab?: Tab;
+  targetSelector?: string; // e.g. "#faucet-mint-btn"
+  position?: "top" | "bottom" | "center";
 }
 
 const steps: TutorialStep[] = [
@@ -22,8 +25,8 @@ const steps: TutorialStep[] = [
         <p>Let's take a quick tour of how you can interact with Fully Homomorphic Encryption (FHE) on-chain.</p>
       </div>
     ),
-    highlight: "none",
     targetTab: "dashboard",
+    position: "center",
   },
   {
     title: "1. The Faucet",
@@ -31,11 +34,25 @@ const steps: TutorialStep[] = [
       <div className="space-y-3">
         <p>To try the shielding flow, you need standard ERC-20 test tokens.</p>
         <p>The <strong>Faucet</strong> allows you to claim official `cTokenMock` underlying assets. It covers all 7 public-mint Sepolia mocks listed in the Zama documentation.</p>
-        <p>Once you mint them, your public ERC-20 balance will be visible on block explorers.</p>
       </div>
     ),
-    highlight: "left",
     targetTab: "faucet",
+    targetSelector: "#nav-faucet",
+    position: "center",
+  },
+  {
+    title: "1a. Faucet Mock Tokens",
+    description: "Select the mock token you wish to mint from this list.",
+    targetTab: "faucet",
+    targetSelector: "#faucet-token-list",
+    position: "bottom",
+  },
+  {
+    title: "1b. Minting",
+    description: "Click here to mint 1,000 test tokens. Your public ERC-20 balance will then be visible on block explorers.",
+    targetTab: "faucet",
+    targetSelector: "#faucet-mint-btn",
+    position: "top",
   },
   {
     title: "2. The Wrapper Registry",
@@ -43,41 +60,96 @@ const steps: TutorialStep[] = [
       <div className="space-y-3">
         <p>The <strong>Registry</strong> is your gateway to canonical confidential assets.</p>
         <p>Macetz dynamically fetches every official ERC-20 ↔ ERC-7984 wrapper pair directly from the on-chain Zama Wrappers Registry.</p>
-        <p>It also seamlessly merges local developer pairs under a "Dev Pair" badge without fragmenting the production ecosystem.</p>
       </div>
     ),
-    highlight: "center",
     targetTab: "registry",
+    targetSelector: "#nav-registry",
+    position: "center",
+  },
+  {
+    title: "2a. Registry Browser",
+    description: "Here you can view all available pairs. It merges official pairs with local developer pairs under a 'Dev Pair' badge.",
+    targetTab: "registry",
+    targetSelector: "#registry-table",
+    position: "top",
   },
   {
     title: "3. Shield & Unshield",
     description: (
       <div className="space-y-3">
         <p>In the <strong>Shield</strong> panel, you convert public ERC-20 tokens into their confidential ERC-7984 counterparts via the Zama SDK.</p>
-        <p>Once wrapped, your balance becomes an encrypted cipher on the blockchain. The unwrap flow (ERC-7984 → ERC-20) utilizes a full two-step asynchronous process: a relayer decryption followed by finalization.</p>
       </div>
     ),
-    highlight: "center",
     targetTab: "wrap",
+    targetSelector: "#nav-wrap",
+    position: "center",
+  },
+  {
+    title: "3a. Token Selection",
+    description: "Choose which public asset you want to shield from this dropdown.",
+    targetTab: "wrap",
+    targetSelector: "#wrap-token-select",
+    position: "bottom",
+  },
+  {
+    title: "3b. Execute Shield",
+    description: "Once you enter an amount, click here to wrap. Your balance becomes an encrypted cipher on the blockchain. The unwrap flow operates similarly.",
+    targetTab: "wrap",
+    targetSelector: "#wrap-submit-btn",
+    position: "top",
   },
   {
     title: "4. Universal Decryption",
     description: (
       <div className="space-y-3">
         <p>How do you view an encrypted balance?</p>
-        <p>The <strong>Decrypt</strong> panel supports EIP-712 user-decryption. By signing a typed message, you authorize the FHEVM gateway to securely decrypt only your specific balance.</p>
-        <p>Macetz makes this universal—it works for <strong>any</strong> ERC-7984 contract address, not just those in the official registry.</p>
+        <p>Macetz supports EIP-712 user-decryption, acting universally across any ERC-7984 contract address.</p>
       </div>
     ),
-    highlight: "center",
     targetTab: "decrypt",
+    targetSelector: "#nav-decrypt",
+    position: "center",
+  },
+  {
+    title: "4a. Decrypt Balance",
+    description: "By signing a typed message when clicking this button, you authorize the FHEVM gateway to securely decrypt only your specific balance.",
+    targetTab: "decrypt",
+    targetSelector: "#decrypt-submit-btn",
+    position: "top",
+  },
+  {
+    title: "5. Distribute Tokens",
+    description: (
+      <div className="space-y-3">
+        <p>The <strong>Distribute</strong> panel enables you to send standard or confidential tokens to multiple addresses in one go.</p>
+      </div>
+    ),
+    targetTab: "distribute",
+    targetSelector: "#nav-distribute",
+    position: "center",
+  },
+  {
+    title: "5a. Token Selection",
+    description: "Select the shielded asset you want to use for confidential payroll or airdrops.",
+    targetTab: "distribute",
+    targetSelector: "#distribute-token-select",
+    position: "bottom",
+  },
+  {
+    title: "5b. Review & Execute",
+    description: "Add your recipients manually or upload a CSV, then click here to execute a fully encrypted batch transfer.",
+    targetTab: "distribute",
+    targetSelector: "#distribute-next-btn",
+    position: "top",
   },
 ];
+
+const TOTAL_STEPS = steps.length;
 
 export function OnboardingTutorial() {
   const [visible, setVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
 
   useEffect(() => {
     try {
@@ -85,7 +157,7 @@ export function OnboardingTutorial() {
         setVisible(true);
       }
     } catch {
-      // localStorage unavailable (e.g. private browsing restrictions)
+      // localStorage unavailable
     }
   }, []);
 
@@ -93,7 +165,6 @@ export function OnboardingTutorial() {
     const handleShow = () => {
       setCurrentStep(0);
       setVisible(true);
-      setAnimating(false);
     };
     window.addEventListener("show-tutorial", handleShow);
     return () => window.removeEventListener("show-tutorial", handleShow);
@@ -108,9 +179,10 @@ export function OnboardingTutorial() {
     }
   }, []);
 
-  // Change tab when step changes
+  const step = steps[currentStep]!;
+
+  // Dispatch navigation
   useEffect(() => {
-    const step = steps[currentStep];
     if (visible && step && step.targetTab) {
       window.dispatchEvent(
         new CustomEvent("tutorial-navigate", {
@@ -118,55 +190,128 @@ export function OnboardingTutorial() {
         })
       );
     }
-  }, [currentStep, visible]);
+  }, [currentStep, visible, step]);
+
+  // Track target rect
+  useEffect(() => {
+    if (!visible || !step) return;
+    
+    if (!step.targetSelector) {
+      setTargetRect(null);
+      return;
+    }
+
+    const update = () => {
+      const el = document.querySelector(step.targetSelector!);
+      if (el) {
+        setTargetRect(el.getBoundingClientRect());
+      } else {
+        setTargetRect(null);
+      }
+    };
+
+    update();
+    const interval = setInterval(update, 100);
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+    };
+  }, [currentStep, visible, step]);
 
   const goNext = useCallback(() => {
-    if (animating) return;
     if (currentStep >= TOTAL_STEPS - 1) {
       dismiss();
       return;
     }
-    setAnimating(true);
-    setTimeout(() => {
-      setCurrentStep((s) => s + 1);
-      setAnimating(false);
-    }, 200);
-  }, [currentStep, animating, dismiss]);
+    setCurrentStep((s) => s + 1);
+  }, [currentStep, dismiss]);
+
+  const goPrev = useCallback(() => {
+    if (currentStep <= 0) return;
+    setCurrentStep((s) => s - 1);
+  }, [currentStep]);
 
   if (!visible) return null;
 
-  const step = steps[currentStep]!;
   const isLastStep = currentStep === TOTAL_STEPS - 1;
 
-  const cardPosition =
-    step.highlight === "left"
-      ? "left-[280px] top-1/2 -translate-y-1/2"
-      : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2";
+  // Calculate Card Position
+  let cardStyle: any = {
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+  };
+
+  if (targetRect && step.position !== "center") {
+    // Attempt to position relative to the element
+    if (step.position === "bottom") {
+      cardStyle = {
+        top: targetRect.bottom + 20,
+        left: Math.min(Math.max(20, targetRect.left + targetRect.width / 2), typeof window !== "undefined" ? window.innerWidth - 420 : 0),
+        transform: "translateX(0)", // we adjust left manually to prevent offscreen
+      };
+      if (typeof window !== "undefined" && (cardStyle.left as number) < window.innerWidth / 2) {
+        cardStyle.transform = "translateX(0)";
+      } else {
+        cardStyle.left = targetRect.right;
+        cardStyle.transform = "translateX(-100%)";
+      }
+    } else if (step.position === "top") {
+      cardStyle = {
+        top: targetRect.top - 20,
+        left: Math.min(Math.max(20, targetRect.left + targetRect.width / 2), typeof window !== "undefined" ? window.innerWidth - 420 : 0),
+        transform: "translateY(-100%)",
+      };
+      if (typeof window !== "undefined" && (cardStyle.left as number) > window.innerWidth / 2) {
+         cardStyle.left = targetRect.right;
+         cardStyle.transform = "translate(-100%, -100%)";
+      }
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-[100]" role="dialog" aria-modal="true">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 transition-opacity duration-300"
-        onClick={dismiss}
-        aria-hidden="true"
+      {/* Background Mask */}
+      <div 
+        className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${!targetRect ? "opacity-100" : "opacity-0"}`} 
+        onClick={dismiss} 
       />
-
-      {/* Highlight cutout hint for sidebar steps */}
-      {step.highlight === "left" && (
-        <div
-          className="absolute left-0 top-0 bottom-0 w-[260px] border-r-2 border-[#F5C518]/60 bg-white/5 pointer-events-none"
-          aria-hidden="true"
-        />
-      )}
+      
+      {/* Dynamic Spotlight */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" onClick={dismiss}>
+        <AnimatePresence>
+          {targetRect && (
+            <motion.div
+              layout
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: 1, 
+                x: targetRect.left - 12, 
+                y: targetRect.top - 12, 
+                width: targetRect.width + 24, 
+                height: targetRect.height + 24 
+              }}
+              exit={{ opacity: 0 }}
+              transition={{ type: "spring", damping: 30, stiffness: 200, mass: 0.8 }}
+              className="absolute rounded-2xl shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] ring-4 ring-[#F5C518]/80 pointer-events-auto cursor-pointer"
+            />
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Tutorial card */}
-      <div
-        className={`absolute ${cardPosition} w-full max-w-[400px] px-4 transition-all duration-200 ${
-          animating ? "opacity-0 scale-95" : "opacity-100 scale-100"
-        }`}
+      <motion.div
+        layout
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1, ...cardStyle }}
+        transition={{ type: "spring", damping: 25, stiffness: 150 }}
+        className="absolute w-full max-w-[400px] px-4"
       >
-        <div className="emboss-card p-6 md:p-8 max-h-[85vh] overflow-y-auto hide-scrollbar">
+        <div className="emboss-card p-6 md:p-8 max-h-[85vh] overflow-y-auto hide-scrollbar bg-white/95 backdrop-blur-xl shadow-2xl">
           <div className="relative z-10">
             {/* Step counter */}
             <p className="text-xs text-gray-400 mb-4 font-medium tracking-wide">
@@ -182,16 +327,16 @@ export function OnboardingTutorial() {
             </div>
 
             {/* Dot indicators */}
-            <div className="flex items-center gap-1.5 mb-6" aria-hidden="true">
+            <div className="flex flex-wrap items-center gap-1.5 mb-6" aria-hidden="true">
               {steps.map((_, i) => (
                 <span
                   key={i}
                   className={`block rounded-full transition-all duration-300 ${
                     i === currentStep
-                      ? "w-5 h-2 bg-[#F5C518]"
+                      ? "w-4 h-1.5 bg-[#F5C518]"
                       : i < currentStep
-                        ? "w-2 h-2 bg-[#F5C518]/40"
-                        : "w-2 h-2 bg-gray-300"
+                        ? "w-1.5 h-1.5 bg-[#F5C518]/40"
+                        : "w-1.5 h-1.5 bg-gray-200"
                   }`}
                 />
               ))}
@@ -205,16 +350,26 @@ export function OnboardingTutorial() {
               >
                 Skip
               </button>
-              <button
-                onClick={goNext}
-                className="bg-[#16171C] text-white rounded-full px-6 py-2.5 text-sm font-medium hover:bg-black transition-colors"
-              >
-                {isLastStep ? "Get Started" : "Next"}
-              </button>
+              <div className="flex gap-2">
+                {currentStep > 0 && (
+                  <button
+                    onClick={goPrev}
+                    className="bg-gray-100 text-gray-600 rounded-full px-4 py-2.5 text-sm font-medium hover:bg-gray-200 transition-colors"
+                  >
+                    Back
+                  </button>
+                )}
+                <button
+                  onClick={goNext}
+                  className="bg-[#16171C] text-white rounded-full px-6 py-2.5 text-sm font-medium hover:bg-black transition-colors"
+                >
+                  {isLastStep ? "Finish" : "Next"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

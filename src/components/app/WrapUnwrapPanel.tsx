@@ -157,7 +157,7 @@ export function WrapUnwrapPanel() {
               <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {mode === "wrap" ? "You shield" : "You unshield"}
               </span>
-              <div className="w-[140px]">
+              <div id="wrap-token-select" className="w-[140px]">
                 <TokenSelect
                   options={(pairs ?? []).map((pair) => ({
                     value: pair.erc7984Address,
@@ -277,6 +277,7 @@ export function WrapUnwrapPanel() {
 
       {/* Submit */}
       <button
+        id="wrap-submit-btn"
         onClick={mode === "wrap" ? handleWrap : handleUnwrap}
         disabled={!selectedPair || !amount || isPending}
         className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"

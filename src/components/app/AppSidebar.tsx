@@ -112,6 +112,7 @@ export function AppSidebar({ activeTab, onTabChange }: Props) {
             return (
               <li key={item.id}>
                 <button
+                  id={`nav-${item.id}`}
                   onClick={() => {
                     onTabChange(item.id);
                     setMobileOpen(false);

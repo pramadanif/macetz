@@ -203,6 +203,7 @@ export function DecryptPanel() {
           )}
 
           <button
+            id="decrypt-submit-btn"
             onClick={() => setShowResult(true)}
             disabled={!canDecrypt}
             className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"

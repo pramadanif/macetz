@@ -445,7 +445,7 @@ export function DistributePanel() {
                 <label className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Shielded token (from Registry)
                 </label>
-                <div className="mt-2">
+                <div id="distribute-token-select" className="mt-2">
                   <TokenSelect
                     options={tokenOptions}
                     value={selectedToken}
@@ -518,6 +518,7 @@ export function DistributePanel() {
               </div>
 
               <button
+                id="distribute-next-btn"
                 onClick={() => setStep(2)}
                 disabled={!selectedToken || validRows.length === 0}
                 className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all disabled:opacity-40"

@@ -94,7 +94,7 @@ export function FaucetPanel() {
         </div>
 
         <div className="relative z-10">
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6 min-h-[100px]">
+          <div id="faucet-token-list" className="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6 min-h-[100px]">
             {isLoadingPairs ? (
               <div className="col-span-full flex flex-col items-center justify-center py-8">
                 <div className="w-8 h-8 border-[3px] border-[#16171C]/10 border-t-[#16171C] rounded-full animate-spin mb-3" />
@@ -172,6 +172,7 @@ export function FaucetPanel() {
               Mint All ({mockPairs.length})
             </button>
             <button
+              id="faucet-mint-btn"
               onClick={handleMint}
               disabled={!selectedPair || isPending || !!mintAllProgress}
               className="flex-[2] bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"

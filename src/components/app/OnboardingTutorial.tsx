@@ -30,7 +30,7 @@ const steps: TutorialStep[] = [
     description: (
       <div className="space-y-3">
         <p>To try the shielding flow, you need standard ERC-20 test tokens.</p>
-        <p>The <strong>Faucet</strong> allows you to claim official `cTokenMock` underlying assets. It covers all 9 official Sepolia mocks listed in the Zama documentation.</p>
+        <p>The <strong>Faucet</strong> allows you to claim official `cTokenMock` underlying assets. It covers all 7 public-mint Sepolia mocks listed in the Zama documentation.</p>
         <p>Once you mint them, your public ERC-20 balance will be visible on block explorers.</p>
       </div>
     ),

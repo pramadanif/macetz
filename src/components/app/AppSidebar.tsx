@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { CoinPlaceholder } from "@/components/CoinPlaceholder";
 import { WalletButton } from "@/components/app/WalletButton";
 
-type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet";
+type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute";
 
 interface NavItem {
   id: Tab;
@@ -65,6 +65,18 @@ const NAV_ITEMS: NavItem[] = [
         <path d="M10 3c-1 2-3 3.5-3 5.5a3 3 0 006 0C13 6.5 11 5 10 3z" />
         <path d="M10 11v3" />
         <path d="M7 17c0-1.5 1.3-3 3-3s3 1.5 3 3" />
+      </svg>
+    ),
+  },
+  {
+    id: "distribute",
+    label: "Distribute",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="10" cy="5" r="2.5" />
+        <circle cx="4.5" cy="14" r="2.5" />
+        <circle cx="15.5" cy="14" r="2.5" />
+        <path d="M10 7.5v2M8.2 11.5L5.8 12.5M11.8 11.5l2.4 1" />
       </svg>
     ),
   },

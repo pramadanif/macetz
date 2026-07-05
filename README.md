@@ -50,7 +50,7 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 | Registry source | ✅ Onchain canonical registry | ❌ Hardcoded / local only |
 | Pair extensibility | ✅ Hybrid: onchain + local config | ❌ Redeployment required |
 | EIP-712 decrypt | ✅ Any ERC-7984, not just registry pairs | ❌ Registry tokens only |
-| cTokenMock faucet | ✅ All 9 official Sepolia mocks | ❌ Limited / none |
+| cTokenMock faucet | ✅ All 7 official Sepolia mocks (public mint) | ❌ Limited / none |
 | Error handling | ✅ User-friendly, context-aware messages | ❌ Raw contract reverts |
 | UX | ✅ Premium, step-by-step flows | ❌ Minimal |
 
@@ -95,7 +95,7 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 
 ### 🚰 Testnet Faucet
 - Claims official cTokenMock test tokens (up to 1,000 per mint call)
-- Covers all 9 official Sepolia cTokenMocks listed in the Zama docs
+- Covers all 7 public-mint Sepolia cTokenMocks listed in the Zama docs
 - One-click mint with real-time transaction status feedback
 
 ---
@@ -339,7 +339,7 @@ Ideal for developers iterating on new ERC-7984 tokens before official registrati
 
 ## 🪙 Official Sepolia cTokenMocks
 
-All 9 official cTokenMock pairs are hardcoded in `src/lib/config.ts` as a fallback guarantee and displayed in the Faucet tab:
+All 8 official Sepolia confidential wrappers from the Zama docs are hardcoded in `src/lib/config.ts` (7 mocks + ctGBP). The Faucet tab shows the 7 public-mint mocks only:
 
 | Symbol | ERC-7984 Wrapper | Underlying ERC-20 | Faucet |
 |--------|-----------------|-------------------|--------|
@@ -351,7 +351,6 @@ All 9 official cTokenMock pairs are hardcoded in `src/lib/config.ts` as a fallba
 | **ctGBPMock** | [0xfCE5c7...7CC](https://sepolia.etherscan.io/address/0xfCE5c7069c5525eF6c8C2b2E35A745bA20a2F7CC) | [0x93c931...42](https://sepolia.etherscan.io/address/0x93c931278A2aad1916783F952f94276eA5111442) | ✅ Public |
 | **cXAUtMock** | [0xe4FcF8...0C7](https://sepolia.etherscan.io/address/0xe4FcF848739845BC81Dee1d5352cf3844F0a60C7) | [0x24377A...40](https://sepolia.etherscan.io/address/0x24377AE4AA0C45ecEe71225007f17c5D423dd940) | ✅ Public |
 | **ctGBP** | [0x167DC9...208](https://sepolia.etherscan.io/address/0x167DC962808B32CFFFc7e14B5018c0bE06A3A208) | [0xf6Ef9A...f3](https://sepolia.etherscan.io/address/0xf6Ef9ADB61A48E29E36bc873070A46A3D2667ff3) | ⚠️ Restricted |
-| **csteakcUSDC** | [0x13F7d3...c4](https://sepolia.etherscan.io/address/0x13F7d34A4f0102734F19E3Ff16e068Fe194B28c4) | [0x6AB549...6C](https://sepolia.etherscan.io/address/0x6AB54988261AEC573a2CA13cF802d3B1114f864C) | ✅ Public |
 
 ---
 
@@ -590,6 +589,40 @@ NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
 # Zama relayer proxy — leave as default for Vercel deployments
 NEXT_PUBLIC_RELAYER_URL=/api/relayer/11155111
 ```
+
+---
+
+## 💼 Special Bounty Track — Confidential Payroll (TokenOps)
+
+Macetz integrates **TokenOps Confidential Disperse** (`@tokenops/sdk/fhe-disperse`) in the same app as the Wrappers Registry bounty — no separate deployment.
+
+### Use case
+
+**Corporate payroll on Sepolia:** HR shields USDC (or any registry mock), batches encrypted salaries to employee wallets in one transaction. Each employee decrypts only their own allocation via EIP-712. Third parties see recipients but not individual amounts.
+
+### Smart contract layer (for judges)
+
+There is **no custom disperse contract in this repo.** The app calls the official TokenOps singleton via SDK:
+
+| Network | DisperseConfidential Singleton |
+|---------|-------------------------------|
+| Sepolia | `0x710dD9885Cc9986EfD234E7719483147a6d8DBb4` |
+
+Campaign clones are not used for disperse — the singleton + SDK `useDisperse` handles encryption, ACL grants, and `confidentialTransferFrom` in one tx (`mode: "direct"`).
+
+### Distribute tab flows
+
+1. **Sender wizard (4 steps):** Select shielded token → Review preflight → Approve singleton operator + disperse → Track claim status (pending/claimed via `confidentialBalanceOf`, amounts never shown)
+2. **Recipient view:** Detect pending allocations → **Decrypt & Claim** via Zama EIP-712 user-decryption
+3. **CSV upload:** `address,amount` per line for payroll imports
+
+### TokenOps SDK wiring
+
+```bash
+npm install @tokenops/sdk --legacy-peer-deps
+```
+
+Encryptor uses the live Zama relayer from `@zama-fhe/react-sdk` (`useZamaSDK().relayer`), forwarded lazily into `useDisperse({ encryptor: () => relayer })` per TokenOps docs.
 
 ---
 

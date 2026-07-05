@@ -8,11 +8,12 @@ import { RegistryBrowser } from "@/components/app/RegistryBrowser";
 import { WrapUnwrapPanel } from "@/components/app/WrapUnwrapPanel";
 import { DecryptPanel } from "@/components/app/DecryptPanel";
 import { FaucetPanel } from "@/components/app/FaucetPanel";
+import { DistributePanel } from "@/components/app/DistributePanel";
 import { ConnectPrompt } from "@/components/app/ConnectPrompt";
 import { NetworkGuard } from "@/components/app/NetworkGuard";
 import { OnboardingTutorial } from "@/components/app/OnboardingTutorial";
 
-type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet";
+type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute";
 
 export default function AppPage() {
   const { isConnected } = useAccount();
@@ -51,6 +52,7 @@ export default function AppPage() {
               {activeTab === "wrap" && <WrapUnwrapPanel />}
               {activeTab === "decrypt" && <DecryptPanel />}
               {activeTab === "faucet" && <FaucetPanel />}
+              {activeTab === "distribute" && <DistributePanel />}
             </>
           )}
         </main>

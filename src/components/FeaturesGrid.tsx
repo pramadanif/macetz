@@ -35,7 +35,7 @@ export function FeaturesGrid() {
 
         {/* Confidential Token Logos */}
         <div className="flex items-center justify-center gap-3 sm:gap-4 mt-10 flex-wrap">
-          {["cUSDC", "cUSDT", "cZAMA", "cWETH", "cBRON", "ctGBP"].map((symbol) => (
+          {["cUSDC", "cUSDT", "cZAMA", "cWETH", "cBRON", "cXAUt", "ctGBP"].map((symbol) => (
              <div key={symbol} className="flex items-center gap-2.5 bg-white/60 backdrop-blur-sm shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-white/80 px-4 py-2.5 rounded-2xl hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.06)] transition-all duration-300 cursor-default">
                <TokenIcon symbol={symbol} size={24} />
                <span className="text-[13px] font-bold text-[#3F3F46] tracking-tight">{symbol}</span>

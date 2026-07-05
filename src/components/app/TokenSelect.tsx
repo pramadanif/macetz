@@ -17,14 +17,15 @@ interface TokenSelectProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  variant?: "default" | "pill";
 }
 
-export function TokenSelect({ options, value, onChange, placeholder = "Choose a token..." }: TokenSelectProps) {
+export function TokenSelect({ options, value, onChange, placeholder = "Choose a token...", variant = "default" }: TokenSelectProps) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 0, right: 0 });
 
   const selected = options.find((o) => o.value === value);
 
@@ -37,6 +38,7 @@ export function TokenSelect({ options, value, onChange, placeholder = "Choose a 
       top: rect.bottom + 8,
       left: rect.left,
       width: rect.width,
+      right: window.innerWidth - rect.right,
     });
   }, [open]);
 
@@ -71,7 +73,11 @@ export function TokenSelect({ options, value, onChange, placeholder = "Choose a 
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
           transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="fixed z-[200]"
-          style={{ top: pos.top, left: pos.left, width: pos.width }}
+          style={
+            variant === "pill"
+              ? { top: pos.top, right: pos.right, minWidth: 220 }
+              : { top: pos.top, left: pos.left, width: pos.width }
+          }
         >
           <div className="bg-white/70 backdrop-blur-2xl rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.15)] shadow-inset-light border border-white/80 max-h-[320px] overflow-y-auto overscroll-contain p-1.5 flex flex-col gap-0.5">
             {options.length === 0 && (
@@ -127,30 +133,43 @@ export function TokenSelect({ options, value, onChange, placeholder = "Choose a 
         ref={triggerRef}
         type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full liquid-glass-field rounded-xl px-4 py-3 text-sm text-left flex items-center justify-between gap-3 focus:outline-none transition-all ${
-          open ? "ring-2 ring-[#F5C518]/40" : ""
-        }`}
+        className={
+          variant === "pill"
+            ? `w-full flex items-center justify-between gap-1.5 px-2.5 py-1.5 rounded-full text-sm font-medium transition-all ${
+                open ? "bg-gray-200/80 ring-2 ring-[#F5C518]/40" : "bg-gray-100 hover:bg-gray-200/80"
+              }`
+            : `w-full liquid-glass-field rounded-xl px-4 py-3 text-sm text-left flex items-center justify-between gap-3 focus:outline-none transition-all ${
+                open ? "ring-2 ring-[#F5C518]/40" : ""
+              }`
+        }
       >
         {selected ? (
-          <span className="flex items-center gap-3 min-w-0">
-            <TokenIcon symbol={selected.symbol} size={28} />
-            <span className="flex flex-col min-w-0">
-              <span className="font-medium text-[#16171C] truncate">{selected.label}</span>
-              {selected.sublabel && (
-                <span className="text-[11px] text-gray-400 truncate">{selected.sublabel}</span>
-              )}
+          variant === "pill" ? (
+            <span className="flex items-center gap-1.5 min-w-0 text-[#16171C]">
+              <TokenIcon symbol={selected.symbol} size={18} />
+              <span className="font-semibold truncate">{selected.label}</span>
             </span>
-          </span>
+          ) : (
+            <span className="flex items-center gap-3 min-w-0">
+              <TokenIcon symbol={selected.symbol} size={28} />
+              <span className="flex flex-col min-w-0">
+                <span className="font-medium text-[#16171C] truncate">{selected.label}</span>
+                {selected.sublabel && (
+                  <span className="text-[11px] text-gray-400 truncate">{selected.sublabel}</span>
+                )}
+              </span>
+            </span>
+          )
         ) : (
           <span className="text-gray-400">{placeholder}</span>
         )}
         <svg
-          width="16"
-          height="16"
+          width={variant === "pill" ? "14" : "16"}
+          height={variant === "pill" ? "14" : "16"}
           viewBox="0 0 16 16"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           className={`text-gray-400 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}

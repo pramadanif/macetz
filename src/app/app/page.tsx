@@ -9,12 +9,13 @@ import { WrapUnwrapPanel } from "@/components/app/WrapUnwrapPanel";
 import { DecryptPanel } from "@/components/app/DecryptPanel";
 import { FaucetPanel } from "@/components/app/FaucetPanel";
 import { DistributePanel } from "@/components/app/DistributePanel";
+import { DocsPanel } from "@/components/app/DocsPanel";
 import { ConnectPrompt } from "@/components/app/ConnectPrompt";
 import { NetworkGuard } from "@/components/app/NetworkGuard";
 import { OnboardingTutorial } from "@/components/app/OnboardingTutorial";
 import { isMainnet } from "@/lib/config";
 
-type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute";
+type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute" | "docs";
 
 /** Shown on mainnet when user navigates to faucet tab (e.g. via tutorial). */
 function MainnetFaucetBanner() {
@@ -94,6 +95,7 @@ export default function AppPage() {
                 isMainnet(chainId) ? <MainnetFaucetBanner /> : <FaucetPanel />
               )}
               {activeTab === "distribute" && <DistributePanel />}
+              {activeTab === "docs" && <DocsPanel />}
             </>
           )}
         </main>

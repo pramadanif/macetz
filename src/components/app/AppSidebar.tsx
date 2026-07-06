@@ -8,7 +8,7 @@ import { WalletButton } from "@/components/app/WalletButton";
 import { NetworkSwitchButton } from "@/components/app/NetworkSwitchButton";
 import { isMainnet } from "@/lib/config";
 
-type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute";
+type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute" | "docs";
 
 interface NavItem {
   id: Tab;
@@ -71,6 +71,17 @@ const NAV_ITEMS: NavItem[] = [
         <circle cx="4.5" cy="14" r="2.5" />
         <circle cx="15.5" cy="14" r="2.5" />
         <path d="M10 7.5v2M8.2 11.5L5.8 12.5M11.8 11.5l2.4 1" />
+      </svg>
+    ),
+  },
+  {
+    id: "docs",
+    label: "Docs",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 3h7l3 3v11a1 1 0 01-1 1H5a1 1 0 01-1-1V4a1 1 0 011-1z" />
+        <path d="M12 3v4h4" />
+        <path d="M7 9h6M7 12h6M7 15h4" />
       </svg>
     ),
   },

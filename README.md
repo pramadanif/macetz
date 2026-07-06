@@ -352,37 +352,52 @@ Follow the [Zama Wrappers Registry documentation](https://docs.zama.ai) for the 
 
 Ideal for developers iterating on new ERC-7984 tokens before official registration.
 
+**Live reference:** open the Registry tab on Sepolia — you'll see pre-seeded example pairs tagged **Dev** (`cDEMO1`, `cDEMO2`) immediately, with zero setup.
+
 **Step 1:** Open `config/custom-pairs.json`
 
-**Step 2:** Add your entry:
+**Step 2:** Add your entry under the correct chain key (`"11155111"` for Sepolia, `"1"` for Mainnet):
 
 ```json
 {
-  "pairs": [
+  "11155111": [
     {
-      "erc20":     "0xYourUnderlyingERC20Address",
-      "erc7984":   "0xYourERC7984WrapperAddress",
-      "symbol":    "cMYTOKEN",
-      "decimals":  18,
-      "source":    "local-dev"
+      "erc20": "0xYourUnderlyingERC20Address",
+      "erc7984": "0xYourERC7984WrapperAddress",
+      "symbol": "cMYTOKEN",
+      "decimals": 18,
+      "source": "local-dev"
     }
-  ]
+  ],
+  "1": []
 }
 ```
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `erc20` | `address` | ✅ | Underlying ERC-20 address on Sepolia |
-| `erc7984` | `address` | ✅ | ERC-7984 wrapper address on Sepolia |
+| `erc20` | `address` | ✅ | Underlying ERC-20 address on the target network |
+| `erc7984` | `address` | ✅ | ERC-7984 wrapper address on the target network |
 | `symbol` | `string` | ✅ | Ticker for the wrapper token (prefix with `c`) |
 | `decimals` | `number` | ✅ | ERC-20 decimals (max 18; wrapper auto-caps at 6) |
 | `source` | `"local-dev"` | ✅ | Must always be `"local-dev"` |
 
-**Step 3:** Restart dev server (or redeploy). The pair appears in the Registry tab with a **"Dev Pair"** badge.
+**Step 3:** Restart dev server. Pair shows with **Dev** badge.
 
-**Step 4:** When ready for production, submit to the onchain registry and remove the local entry.
+### Path C — In-App Admin UI *(Interactive extensibility demo)*
 
-> **Security note:** Local-dev pairs are always visually separated and excluded from canonical statistics.
+1. Open **Registry → Add a Pair**
+2. Paste ERC-20 + ERC-7984 addresses (validated on the **currently connected network**)
+3. Pair appears instantly as **Preview** — browser-only, chain-scoped in `localStorage`
+4. Click **Copy Config Snippet** to paste into `custom-pairs.json` for a permanent entry
+
+Works on **both Sepolia and Mainnet** — preview pairs never leak across networks.
+
+### Path D — Deploy your own pair (`dev-guide/`)
+
+Cross-platform Hardhat guide (macOS + Windows): [`dev-guide/README.md`](./dev-guide/README.md).  
+`npm run deploy:sepolia` → paste addresses into Path B or Path C.
+
+> **Security note:** Local-dev and preview pairs are visually separated from canonical on-chain registry pairs.
 
 ---
 

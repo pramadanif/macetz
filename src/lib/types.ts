@@ -1,4 +1,4 @@
-export type PairSource = "registry" | "local-dev";
+export type PairSource = "registry" | "local-dev" | "browser-preview";
 
 /**
  * Integrity status computed by the registry integrity checker.
@@ -35,7 +35,8 @@ export interface CustomPairEntry {
 }
 
 export interface CustomPairsConfig {
-  pairs: CustomPairEntry[];
+  /** ChainId-keyed pairs — e.g. "11155111" (Sepolia), "1" (Mainnet). */
+  [chainId: string]: CustomPairEntry[];
 }
 
 export interface UnwrapRequest {

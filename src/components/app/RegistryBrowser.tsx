@@ -5,6 +5,7 @@ import { useChainId } from "wagmi";
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
+import { AddPairSection } from "@/components/app/AddPairSection";
 import { isMainnet } from "@/lib/config";
 
 /** Returns the appropriate Etherscan block explorer URL for the current chain. */
@@ -99,6 +100,7 @@ export function RegistryBrowser() {
 
   const registryCount = pairs.filter((p) => p.source === "registry").length;
   const devCount = pairs.filter((p) => p.source === "local-dev").length;
+  const previewCount = pairs.filter((p) => p.source === "browser-preview").length;
   const flaggedCount = pairs.filter((p) => p.integrityStatus === "flagged").length;
 
   return (
@@ -138,6 +140,11 @@ export function RegistryBrowser() {
               {devCount} dev
             </span>
           )}
+          {previewCount > 0 && (
+            <span className="bg-violet-50 border border-violet-200 text-violet-600 px-2.5 py-1 rounded-full text-[11px] font-medium">
+              {previewCount} preview
+            </span>
+          )}
           {flaggedCount > 0 && (
             <span
               title={`${flaggedCount} pair(s) flagged by integrity checks`}
@@ -148,6 +155,8 @@ export function RegistryBrowser() {
           )}
         </div>
       </div>
+
+      <AddPairSection />
 
       <div id="registry-table" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {pairs.map((pair) => (
@@ -172,13 +181,16 @@ export function RegistryBrowser() {
                 </div>
                 {/* Type badge (Official / Mock / Dev) */}
                 <div>
+                  {pair.source === "browser-preview" && (
+                    <span className="text-[10px] font-semibold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">Preview</span>
+                  )}
                   {pair.source === "local-dev" && (
                     <span className="text-[10px] font-semibold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Dev</span>
                   )}
-                  {pair.isMock && pair.source !== "local-dev" && (
+                  {pair.isMock && pair.source === "registry" && (
                     <span className="text-[10px] font-semibold bg-[#F5C518]/15 text-[#9a7800] px-2 py-0.5 rounded-full">Mock</span>
                   )}
-                  {!pair.isMock && pair.source !== "local-dev" && (
+                  {!pair.isMock && pair.source === "registry" && (
                     <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Official</span>
                   )}
                 </div>

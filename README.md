@@ -33,6 +33,7 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 - [Local Development](#-local-development)
 - [Deployment](#-deployment)
 - [Environment Variables](#-environment-variables)
+- [Bounty Submission Checklist](#-bounty-submission-checklist-wrappers-registry-track)
 - [Known Limitations](#-known-limitations)
 
 ---
@@ -64,8 +65,11 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 |---|---|---|
 | **Production** | [https://macetz.vercel.app](https://macetz.vercel.app) | Sepolia + Mainnet |
 | **App (dApp)** | [https://macetz.vercel.app/app](https://macetz.vercel.app/app) | Sepolia + Mainnet |
+| **Local dev** | `npm run dev` → [http://localhost:3000/app](http://localhost:3000/app) | Sepolia (recommended for judges) |
 
-> **Note for Judges:** Connect a MetaMask (or any EIP-1193 wallet) to **Sepolia testnet** OR **Ethereum mainnet**, navigate to `/app`, and you can immediately browse the registry and decrypt balances on either network. On Sepolia you can also claim from the faucet, wrap, and unwrap. This directly addresses the judging criterion: *"Is the live deployment stable on BOTH NETWORKS?"*
+> **Note for Judges:** Connect MetaMask to **Sepolia** for the full bounty flow (registry → faucet → shield → decrypt → unshield → arbitrary ERC-7984 decrypt). Ethereum mainnet is supported for browse/shield/decrypt with a real-funds confirmation gate. **Confidential Distribute (TokenOps) is Sepolia-only** — the official disperse singleton is deployed on testnet.
+>
+> If the Vercel URL returns 404, redeploy from this repo (`vercel.json` included) or use local dev — all features are in `/app`.
 
 ---
 
@@ -73,10 +77,10 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 
 Macetz is the first Wrappers Registry interface to explicitly support **both** networks listed in Zama's official documentation.
 
-| Chain | Registry Address | Wrapper Pairs | Browse | Decrypt | Wrap/Unwrap | Faucet |
-|---|---|---|---|---|---|---|
-| **Sepolia** | `0x2f0750Bb...128e` | 8 official + 1 custom | ✅ | ✅ | ✅ | ✅ |
-| **Ethereum Mainnet** | `0xeb5015fF...bBA0` | 9 official | ✅ | ✅ | ✅ (real-funds confirmation) | ❌ (no testnet faucet) |
+| Chain | Registry Address | Wrapper Pairs | Browse | Decrypt | Wrap/Unwrap | Faucet | Distribute |
+|---|---|---|---|---|---|---|---|
+| **Sepolia** | `0x2f0750Bb...128e` | 8 official (docs allowlist) | ✅ | ✅ | ✅ | ✅ | ✅ (TokenOps) |
+| **Ethereum Mainnet** | `0xeb5015fF...bBA0` | 9 official | ✅ | ✅ | ✅ (real-funds confirmation) | ❌ | ❌ |
 
 ### Network switching
 - A **network switch control** in the sidebar shows the active network with an animated indicator and lets you switch chains with a single click — this triggers a real MetaMask chain-switch request, not a UI state toggle.
@@ -118,7 +122,16 @@ Some symbols legitimately have two entries: an official production wrapper (e.g.
 - **Network-aware**: auto-switches between Sepolia and Mainnet registry contracts based on wallet connection
 - **Integrity badges**: each pair shows `✓ Verified` or `⚠ Flagged` based on automatic anomaly checks
 - Clearly labels mock (testnet-only) vs. production tokens
-- Merges local dev-only pairs with a "Dev Pair" badge — never fragmented with canonical pairs
+- Merges local dev-only pairs with a **"Dev Pair"** badge — `configExample` entries are **registry display only** (not offered in Shield/Decrypt/Distribute until real contracts are deployed)
+
+### 📖 In-App Documentation
+- Sidebar **Docs** tab with table of contents, copyable code blocks, and the full `dev-guide/` deploy walkthrough
+- Structured content in `src/lib/docs-content.ts` — edit docs without touching layout code
+
+### 💼 Confidential Distribution (TokenOps — Sepolia)
+- 4-step sender wizard: token → recipients (CSV) → preflight review → disperse tx
+- Recipient view: detect pending allocations → EIP-712 decrypt own payroll amount
+- Uses official TokenOps singleton `0x710dD9885Cc9986EfD234E7719483147a6d8DBb4` on Sepolia
 
 ### 🔒 Wrap (ERC-20 → ERC-7984)
 - Auto-detects current ERC-20 allowance before submitting
@@ -166,7 +179,9 @@ graph TD
     D --> H["Registry Tab"]
     D --> I["Wrap/Unwrap Tab"]
     D --> J["Decrypt Tab"]
-    D --> K["Faucet Tab"]
+    D --> K["Faucet Tab\n(Sepolia only)"]
+    D --> L2["Distribute Tab\n(TokenOps Sepolia)"]
+    D --> L3["Docs Tab"]
 
     H --> L["useRegistryPairs hook"]
     L --> M["fetchRegistryPairs()"]
@@ -190,36 +205,32 @@ graph TD
 macetz/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx                      # Landing page (marketing)
-│   │   ├── layout.tsx                    # Root layout + fonts
-│   │   ├── app/
-│   │   │   └── page.tsx                  # dApp shell (tabs: Registry/Wrap/Decrypt/Faucet)
-│   │   └── api/
-│   │       └── relayer/
-│   │           └── [chainId]/route.ts    # Relayer proxy (forwards to Zama, avoids CORS)
-│   ├── components/
-│   │   ├── app/                          # dApp-specific components
-│   │   │   ├── RegistryPanel.tsx         # Browse pairs UI
-│   │   │   ├── WrapPanel.tsx             # Wrap/Unwrap UI + step tracker
-│   │   │   ├── DecryptPanel.tsx          # Decrypt balance UI (universal)
-│   │   │   └── FaucetPanel.tsx           # Faucet UI
-│   │   └── *.tsx                         # Landing page components
+│   │   ├── page.tsx                      # Landing page
+│   │   ├── app/page.tsx                  # dApp shell (Registry/Shield/Decrypt/Faucet/Distribute/Docs)
+│   │   └── api/relayer/[...path]/route.ts # Relayer proxy (Sepolia + Mainnet)
+│   ├── components/app/
+│   │   ├── RegistryBrowser.tsx           # Browse pairs + Add a Pair admin UI
+│   │   ├── WrapUnwrapPanel.tsx           # Shield / Unshield
+│   │   ├── DecryptPanel.tsx              # Registry + Any ERC-7984 decrypt
+│   │   ├── FaucetPanel.tsx               # cTokenMock mints (Sepolia)
+│   │   ├── DistributePanel.tsx           # TokenOps payroll wizard (Sepolia)
+│   │   └── DocsPanel.tsx                 # In-app documentation
 │   ├── hooks/
-│   │   ├── useRegistryPairs.ts           # Fetches + merges onchain + local pairs
-│   │   └── useFaucet.ts                  # Mints cTokenMock test tokens
+│   │   ├── useRegistryPairs.ts           # Onchain + custom + preview merge
+│   │   └── useFaucet.ts
 │   ├── lib/
-│   │   ├── config.ts                     # Constants: chain, registry address, cTokenMocks
-│   │   ├── types.ts                      # TypeScript interfaces (TokenPair, WrapStep, etc.)
-│   │   ├── abis.ts                       # Contract ABIs (Registry, ERC20, ERC7984, Wrapper)
-│   │   ├── registry.ts                   # Onchain registry + local config fetcher
-│   │   ├── errors.ts                     # User-friendly error formatter
-│   │   └── token-icons.ts                # Token logo URL mappings
-│   └── providers/
-│       └── Web3Provider.tsx              # wagmi + Zama FHEVM SDK provider setup
-├── config/
-│   └── custom-pairs.json                 # Local dev-only pairs (see: Add a New Pair)
-├── .env.example                          # Environment variable reference
-└── package.json
+│   │   ├── config.ts                     # KNOWN_MOCK_PAIRS, registry addresses
+│   │   ├── registry.ts                   # Onchain fetch + custom-pairs loader
+│   │   ├── pair-utils.ts                 # Operational-pair gate (Shield/Decrypt/Distribute)
+│   │   ├── pair-validation.ts            # Add Pair on-chain validation
+│   │   ├── preview-pairs.ts              # Browser localStorage previews
+│   │   ├── disperse.ts                   # TokenOps campaign helpers
+│   │   └── docs-content.ts               # In-app docs (structured data)
+│   └── providers/Web3Provider.tsx        # wagmi + Zama SDK (shared config)
+├── config/custom-pairs.json              # Chain-keyed dev pairs (`configExample` = display-only)
+├── dev-guide/                            # Hardhat deploy your own pair
+├── scripts/verify-distribute.mjs         # Autonomous Distribute smoke tests
+└── vercel.json
 ```
 
 ### Data Flow
@@ -302,19 +313,15 @@ export async function fetchRegistryPairs(client: PublicClient): Promise<TokenPai
 ### 2. Secondary: Local Config
 
 ```typescript
-// src/lib/registry.ts
-export function loadCustomPairs(): TokenPair[] {
+// src/lib/registry.ts — chain-keyed local config
+export function loadCustomPairs(chainId: number): TokenPair[] {
   const config = customPairsJson as CustomPairsConfig;
-  return config.pairs.map((entry) => ({
-    erc20Address: entry.erc20 as `0x${string}`,
-    erc7984Address: entry.erc7984 as `0x${string}`,
-    source: "local-dev",  // Always tagged — never mixed with canonical pairs in stats
-    // ...
-  }));
+  const entries = config[String(chainId)] ?? [];
+  return entries.map((entry) => mapCustomEntryToPair(entry, "local-dev"));
 }
 ```
 
-Custom pairs are tagged `source: "local-dev"` and rendered with a **"Dev Pair"** badge, maintaining strict visual separation from official registry pairs.
+Custom pairs are tagged `source: "local-dev"`. Entries with `"configExample": true` (seeded `cDEMO1` / `cDEMO2`) appear in the **Registry** tab only — they are excluded from Shield, Decrypt, and Distribute until replaced with deployed contract addresses.
 
 ### Registry Merge Logic
 
@@ -331,7 +338,7 @@ flowchart LR
 
 ## ➕ How to Add a New ERC-20 ↔ ERC-7984 Pair
 
-Macetz supports **two paths** for adding pairs:
+Macetz supports **four paths** for adding pairs:
 
 ---
 
@@ -352,7 +359,7 @@ Follow the [Zama Wrappers Registry documentation](https://docs.zama.ai) for the 
 
 Ideal for developers iterating on new ERC-7984 tokens before official registration.
 
-**Live reference:** open the Registry tab on Sepolia — you'll see pre-seeded example pairs tagged **Dev** (`cDEMO1`, `cDEMO2`) immediately, with zero setup.
+**Live reference:** open the Registry tab on Sepolia — you'll see pre-seeded **config examples** tagged **Dev** (`cDEMO1`, `cDEMO2`). These illustrate the JSON schema only; they are **not** deployed contracts and cannot be wrapped or decrypted.
 
 **Step 1:** Open `config/custom-pairs.json`
 
@@ -380,6 +387,7 @@ Ideal for developers iterating on new ERC-7984 tokens before official registrati
 | `symbol` | `string` | ✅ | Ticker for the wrapper token (prefix with `c`) |
 | `decimals` | `number` | ✅ | ERC-20 decimals (max 18; wrapper auto-caps at 6) |
 | `source` | `"local-dev"` | ✅ | Must always be `"local-dev"` |
+| `configExample` | `boolean` | Optional | When `true`, pair is registry display-only (no Shield/Decrypt/Distribute) |
 
 **Step 3:** Restart dev server. Pair shows with **Dev** badge.
 
@@ -674,11 +682,14 @@ There is **no custom disperse contract in this repo.** The app calls the officia
 
 Campaign clones are not used for disperse — the singleton + SDK `useDisperse` handles encryption, ACL grants, and `confidentialTransferFrom` in one tx (`mode: "direct"`).
 
-### Distribute tab flows
+### Distribute tab flows (Sepolia only)
 
-1. **Sender wizard (4 steps):** Select shielded token → Review preflight → Approve singleton operator + disperse → Track claim status (pending/claimed via `confidentialBalanceOf`, amounts never shown)
-2. **Recipient view:** Detect pending allocations → **Decrypt & Claim** via Zama EIP-712 user-decryption
+1. **Sender wizard (4 steps):** Select operational shielded token → Review preflight (`usePreflightDisperse`) → Approve singleton operator + `useDisperse` tx → Track claim status (pending/claimed via `confidentialBalanceOf` — amounts never shown to third parties)
+2. **Recipient view:** Scan operational registry tokens for pending handles → **Decrypt & Claim** via EIP-712
 3. **CSV upload:** `address,amount` per line for payroll imports
+4. **Mainnet:** informational banner — disperse singleton is Sepolia-only
+
+Autonomous smoke tests: `npm run verify:distribute`
 
 ### TokenOps SDK wiring
 
@@ -690,11 +701,35 @@ Encryptor uses the live Zama relayer from `@zama-fhe/react-sdk` (`useZamaSDK().r
 
 ---
 
+## ✅ Bounty Submission Checklist (Wrappers Registry Track)
+
+| Requirement | Status | Where |
+|---|---|---|
+| Public GitHub repo | ✅ | This repository |
+| Live URL (wallet connect) | ⚠️ Redeploy Vercel or use `npm run dev` | [Live Deployment](#-live-deployment) |
+| Sepolia: browse registry | ✅ | Registry tab — 8 official pairs (docs allowlist filter) |
+| Sepolia: all 7 cTokenMock faucet mints | ✅ | Faucet tab — `KNOWN_MOCK_PAIRS` + Mint All |
+| Sepolia: wrap / unwrap every registry pair | ✅ | Shield tab — `useShield` / `useUnshield` |
+| Sepolia: decrypt registry + arbitrary ERC-7984 | ✅ | Decrypt tab — Registry + Any ERC-7984 modes |
+| Hybrid registry (onchain + local config) | ✅ | `registry.ts` + `custom-pairs.json` + Admin UI |
+| Documented add-pair process (4 paths) | ✅ | README + in-app Docs + `dev-guide/` |
+| EIP-712 user-decryption | ✅ | `@zama-fhe/react-sdk` `useConfidentialBalance` |
+| Relayer SDK integration | ✅ | `Web3Provider` + `/api/relayer/[chainId]` proxy |
+| Error handling (approval, balance, network) | ✅ | `src/lib/errors.ts` + UI guards |
+| Demo video + X thread | 🔲 Submitter delivers | — |
+
+**Judge quick path (Sepolia):** Faucet mint `cUSDCMock` → Shield wrap → Decrypt balance → Unshield → Decrypt tab paste arbitrary wrapper from `dev-guide` deploy.
+
+Run automated checks: `npm run verify`
+
+---
+
 ## ⚠️ Known Limitations
 
-- **Testnet only** — Sepolia is the only supported network (by design for this bounty; mainnet is architecturally ready)
-- **Single-token batches** — The SDK currently processes one token per operation; multi-token batches are roadmapped
-- **Injected wallet** — Requires MetaMask or any EIP-1193 wallet; hardware wallets via WalletConnect
+- **Bounty E2E on Sepolia** — Full wrap/unwrap/faucet/distribute flow is validated on Sepolia testnet. Mainnet supports registry browse, shield, and decrypt with real-funds confirmation; no testnet faucet or TokenOps disperse on mainnet.
+- **Config examples** — `configExample: true` dev pairs are registry display-only until replaced with deployed addresses
+- **Single-token batches** — TokenOps Distribute processes one confidential token per payroll run
+- **Injected wallet** — Requires MetaMask or any EIP-1193 wallet
 - **Relayer latency** — Unwrap finalization depends on Zama's relayer (~30–90s on Sepolia)
 - **Unaudited** — Community project for the Zama Developer Program; do not use with real funds
 

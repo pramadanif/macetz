@@ -1,0 +1,26 @@
+{
+  "name": "macetz-dev-guide",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Deploy your own ERC-20 + ERC-7984 pair for Macetz extensibility testing",
+  "scripts": {
+    "compile": "hardhat compile",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "deploy:mainnet": "hardhat run scripts/deploy.ts --network mainnet",
+    "wrap-verify": "hardhat run scripts/wrap-and-verify.ts --network sepolia"
+  },
+  "devDependencies": {
+    "@fhevm/hardhat-plugin": "^0.4.2",
+    "@fhevm/mock-utils": "^0.4.2",
+    "@fhevm/solidity": "^0.11.1",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@openzeppelin/confidential-contracts": "^0.5.1",
+    "@openzeppelin/contracts": "^5.6.1",
+    "@zama-fhe/sdk": "^3.2.0",
+    "dotenv": "^16.4.7",
+    "hardhat": "^2.22.18",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
+    "viem": "^2.54.3"
+  }
+}

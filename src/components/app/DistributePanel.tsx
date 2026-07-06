@@ -25,6 +25,7 @@ import { TokenSelect } from "@/components/app/TokenSelect";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import { formatWalletError } from "@/lib/errors";
+import { isOperationalPair } from "@/lib/pair-utils";
 import { CONFIDENTIAL_BALANCE_ABI } from "@/lib/abis";
 import {
   DISPERSE_SINGLETON_SEPOLIA,
@@ -254,7 +255,9 @@ export function DistributePanel() {
 
   const tokenOptions = useMemo(
     () =>
-      (pairs ?? []).map((pair) => ({
+      (pairs ?? [])
+        .filter(isOperationalPair)
+        .map((pair) => ({
         value: pair.erc7984Address,
         label: pair.erc7984Symbol,
         sublabel: `${pair.erc7984Name} · Shield first`,

@@ -7,6 +7,7 @@ import {
   loadCustomPairs,
   mapCustomEntryToPair,
 } from "@/lib/registry";
+import { enrichLocalDevPair } from "@/lib/pair-utils";
 import { loadPreviewPairs } from "@/lib/preview-pairs";
 import type { TokenPair } from "@/lib/types";
 
@@ -34,7 +35,9 @@ export function useRegistryPairs() {
         merged.push(pair);
       }
 
-      return merged;
+      return Promise.all(
+        merged.map((pair) => enrichLocalDevPair(publicClient, pair))
+      );
     },
     enabled: !!publicClient,
     staleTime: 5 * 60 * 1000,

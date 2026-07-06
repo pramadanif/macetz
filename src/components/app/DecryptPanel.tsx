@@ -13,6 +13,7 @@ import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import { formatWalletError } from "@/lib/errors";
+import { isOperationalPair } from "@/lib/pair-utils";
 
 type DecryptMode = "registry" | "custom";
 
@@ -172,7 +173,9 @@ export function DecryptPanel() {
           {mode === "registry" ? (
             <div className="mb-5">
               <TokenSelect
-                options={(pairs ?? []).map((pair) => ({
+                options={(pairs ?? [])
+                  .filter(isOperationalPair)
+                  .map((pair) => ({
                   value: pair.erc7984Address,
                   label: pair.erc7984Symbol,
                   sublabel: pair.erc7984Name,

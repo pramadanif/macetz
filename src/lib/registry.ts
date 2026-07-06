@@ -1,4 +1,4 @@
-import { type PublicClient } from "viem";
+import { type PublicClient, getAddress } from "viem";
 import {
   getRegistryAddress,
   getOfficialAddresses,
@@ -8,7 +8,7 @@ import {
   isMainnet,
 } from "./config";
 import { REGISTRY_ABI, ERC20_ABI } from "./abis";
-import type { TokenPair, CustomPairsConfig, IntegrityStatus } from "./types";
+import type { TokenPair, CustomPairsConfig, CustomPairEntry, IntegrityStatus } from "./types";
 import customPairsJson from "../../config/custom-pairs.json";
 
 interface RawRegistryPair {
@@ -164,21 +164,34 @@ export async function fetchRegistryPairs(
   return runIntegrityChecks(pairs);
 }
 
-export function loadCustomPairs(): TokenPair[] {
-  const config = customPairsJson as CustomPairsConfig;
-  return config.pairs.map((entry) => ({
-    erc20Address: entry.erc20 as `0x${string}`,
-    erc7984Address: entry.erc7984 as `0x${string}`,
-    erc20Symbol: entry.symbol.replace(/^c/, ""),
-    erc20Name: `${entry.symbol.replace(/^c/, "")} (Dev)`,
+/** Map a config or preview entry into a registry TokenPair row. */
+export function mapCustomEntryToPair(
+  entry: CustomPairEntry,
+  source: "local-dev" | "browser-preview"
+): TokenPair {
+  const baseSymbol = entry.symbol.replace(/^c/, "");
+  return {
+    erc20Address: getAddress(entry.erc20),
+    erc7984Address: getAddress(entry.erc7984),
+    erc20Symbol: baseSymbol,
+    erc20Name: `${baseSymbol} (${source === "local-dev" ? "Dev" : "Preview"})`,
     erc20Decimals: entry.decimals,
     erc7984Symbol: entry.symbol,
-    erc7984Name: `${entry.symbol} (Dev Pair)`,
+    erc7984Name: `${entry.symbol} (${source === "local-dev" ? "Dev Pair" : "Preview Pair"})`,
     erc7984Decimals: Math.min(entry.decimals, 6),
-    source: "local-dev" as const,
+    source,
     isMock: true,
-    isValid: true,
-    // Local dev pairs are always considered verified (user-configured)
-    integrityStatus: "verified" as const,
-  }));
+    isValid: source === "browser-preview",
+    integrityStatus: source === "browser-preview" ? "verified" : "flagged",
+    integrityReason:
+      source === "local-dev"
+        ? "Pending on-chain verification — config example until contracts are deployed."
+        : undefined,
+  };
+}
+
+export function loadCustomPairs(chainId: number): TokenPair[] {
+  const config = customPairsJson as CustomPairsConfig;
+  const entries = config[String(chainId)] ?? [];
+  return entries.map((entry) => mapCustomEntryToPair(entry, "local-dev"));
 }

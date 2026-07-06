@@ -53,8 +53,17 @@ export function ConfidentialDistribution() {
         
         {/* Left Side: Original Content */}
         <div className="w-full lg:w-[45%] p-10 lg:p-16 flex flex-col justify-center">
-          <div className="text-xs font-semibold text-gray-500 mb-4 tracking-[0.14em] uppercase">
-            Confidential Distribution · Powered by TokenOps SDK
+          <div className="flex items-center flex-wrap gap-2.5 mb-4">
+            <span className="text-xs font-bold text-gray-500 tracking-[0.14em] uppercase">
+              Confidential Distribution
+            </span>
+            <span className="text-gray-300 hidden sm:inline-block">·</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold text-gray-500 tracking-[0.14em] uppercase">
+                Powered by
+              </span>
+              <img src="/icons/tokenops.svg" alt="TokenOps" className="h-4 w-auto" />
+            </div>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-[-0.03em] text-[#16171C] leading-[1.1] mb-6">
             Distribute to hundreds.

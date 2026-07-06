@@ -121,7 +121,8 @@ const steps: TutorialStep[] = [
     title: "5. Distribute Tokens",
     description: (
       <div className="space-y-3">
-        <p>The <strong>Distribute</strong> panel enables you to send standard or confidential tokens to multiple addresses in one go.</p>
+        <p>The <strong>Distribute</strong> panel is the core of Macetz, powered by the <strong className="font-semibold text-[#16171C]">TokenOps SDK</strong>.</p>
+        <p>It enables you to execute confidential payrolls or shielded airdrops to hundreds of addresses in a single transaction. Amounts remain fully encrypted on-chain.</p>
       </div>
     ),
     targetTab: "distribute",
@@ -137,7 +138,7 @@ const steps: TutorialStep[] = [
   },
   {
     title: "5b. Review & Execute",
-    description: "Add your recipients manually or upload a CSV, then click here to execute a fully encrypted batch transfer.",
+    description: "Add your recipients manually or upload a CSV, then execute a fully encrypted batch transfer. Every recipient can independently verify and decrypt their exact allocation.",
     targetTab: "distribute",
     targetSelector: "#distribute-next-btn",
     position: "top",

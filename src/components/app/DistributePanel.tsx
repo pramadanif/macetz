@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback, useEffect } from "react";
+import { CheckCircle2 } from "lucide-react";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { isAddress, parseUnits, formatUnits } from "viem";
 import { useZamaSDK } from "@zama-fhe/react-sdk";
@@ -54,6 +55,7 @@ function RecipientDecryptCard({ tokenAddress }: { tokenAddress: `0x${string}` })
   const {
     data: balance,
     isLoading,
+    isFetching,
     error,
     refetch,
   } = useConfidentialBalance({
@@ -76,7 +78,7 @@ function RecipientDecryptCard({ tokenAddress }: { tokenAddress: `0x${string}` })
         </div>
       </div>
 
-      {isLoading && (
+      {(isLoading || isFetching) && (
         <AlertMessage
           type="loading"
           title="Decrypting"
@@ -84,7 +86,7 @@ function RecipientDecryptCard({ tokenAddress }: { tokenAddress: `0x${string}` })
         />
       )}
 
-      {error && (
+      {error && !isFetching && (
         <AlertMessage
           type="error"
           title="Decryption Failed"
@@ -92,23 +94,30 @@ function RecipientDecryptCard({ tokenAddress }: { tokenAddress: `0x${string}` })
         />
       )}
 
-      {balance !== undefined && !error && (
-        <div className="p-4 rounded-xl bg-[#F5C518]/10 border border-[#F5C518]/30">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-            Your allocation
-          </p>
-          <p className="text-2xl font-mono font-semibold text-[#16171C]">
-            {formatUnits(balance, decimals)} {symbol}
-          </p>
+      {balance !== undefined && !error ? (
+        <div className="space-y-3">
+          <div className="p-4 rounded-xl bg-[#F5C518]/10 border border-[#F5C518]/30">
+            <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
+              Your allocation
+            </p>
+            <p className="text-2xl font-mono font-semibold text-[#16171C]">
+              {formatUnits(balance, decimals)} {symbol}
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-2 text-[13px] text-gray-500 font-medium bg-gray-50/80 py-3 rounded-xl border border-gray-200/60 shadow-sm">
+            <CheckCircle2 className="w-4 h-4 text-[#F5C518]" />
+            Allocation verified in your wallet
+          </div>
         </div>
+      ) : (
+        <button
+          onClick={() => refetch()}
+          disabled={isLoading || isFetching}
+          className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-40"
+        >
+          {isLoading || isFetching ? "Decrypting..." : "Decrypt & Claim"}
+        </button>
       )}
-
-      <button
-        onClick={() => refetch()}
-        className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-40"
-      >
-        Decrypt &amp; Claim
-      </button>
     </div>
   );
 }
@@ -345,13 +354,18 @@ export function DistributePanel() {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="emboss-card p-6 sm:p-8">
         <div className="relative z-10 space-y-4">
-          <div>
+          <div className="flex flex-col">
+            <div className="inline-flex items-center gap-2 self-start px-3 py-1.5 mb-3 rounded-full bg-black/[0.03] border border-black/[0.05]">
+              <img src="/icons/tokenops.svg" alt="TokenOps" className="h-3 w-auto" />
+              <span className="text-[10px] font-bold tracking-widest uppercase text-gray-600">
+                Powered by TokenOps SDK
+              </span>
+            </div>
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-              Confidential Payroll
+              Confidential Distribution
             </h2>
             <p className="text-[15px] text-gray-500 mt-2 leading-relaxed">
-              Distribute shielded ERC-7984 salaries to your team in one transaction.
-              Amounts stay encrypted on-chain — only each recipient can decrypt their pay.
+              Run shielded airdrops and team payrolls effortlessly. Amounts and recipient lists remain strictly confidential on-chain — every recipient independently verifies and decrypts their own allocation.
             </p>
           </div>
 
@@ -382,6 +396,9 @@ export function DistributePanel() {
 
       {role === "recipient" ? (
         <div className="space-y-4">
+          <p className="text-sm text-gray-500 mb-3 px-1 leading-relaxed">
+            Confidential allocations secured by <strong className="font-semibold text-gray-700">TokenOps SDK</strong>. Independently verify and decrypt to claim your allocation.
+          </p>
           {pendingTokens && pendingTokens.length > 0 ? (
             <>
               <AlertMessage
@@ -410,11 +427,11 @@ export function DistributePanel() {
       ) : (
         <>
           {/* Step indicator */}
-          <div className="flex items-center gap-2 px-2">
+          <div className="flex items-center justify-between w-full max-w-sm mx-auto px-4">
             {([1, 2, 3, 4] as WizardStep[]).map((s) => (
-              <div key={s} className="flex-1 flex items-center gap-2">
+              <React.Fragment key={s}>
                 <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold ${
+                  className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold z-10 shrink-0 transition-colors ${
                     step >= s
                       ? "bg-[#F5C518] text-[#16171C]"
                       : "bg-gray-200 text-gray-500"
@@ -424,12 +441,12 @@ export function DistributePanel() {
                 </div>
                 {s < 4 && (
                   <div
-                    className={`flex-1 h-0.5 ${
+                    className={`flex-1 h-0.5 mx-2 transition-colors ${
                       step > s ? "bg-[#F5C518]" : "bg-gray-200"
                     }`}
                   />
                 )}
-              </div>
+              </React.Fragment>
             ))}
           </div>
           <p className="text-[11px] text-gray-400 text-center -mt-2">

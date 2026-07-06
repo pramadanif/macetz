@@ -7,9 +7,15 @@ import { injected } from "wagmi/connectors";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ZamaProvider } from "@zama-fhe/react-sdk";
 import { createConfig as createZamaConfig } from "@zama-fhe/react-sdk/wagmi";
-import { sepolia as sepoliaFhe, type FheChain } from "@zama-fhe/sdk/chains";
+import { sepolia as sepoliaFhe, mainnet as mainnetFhe, type FheChain } from "@zama-fhe/sdk/chains";
 import { web } from "@zama-fhe/sdk/web";
-import { RPC_URL, MAINNET_RPC_URL, getRelayerUrl, SEPOLIA_CHAIN_ID } from "@/lib/config";
+import {
+  RPC_URL,
+  MAINNET_RPC_URL,
+  getRelayerUrl,
+  SEPOLIA_CHAIN_ID,
+  MAINNET_CHAIN_ID,
+} from "@/lib/config";
 
 /**
  * Full wagmi config — supports both Sepolia and Ethereum mainnet.
@@ -21,20 +27,6 @@ const wagmiConfig = createConfig({
   transports: {
     [sepolia.id]: http(RPC_URL),
     [mainnet.id]: http(MAINNET_RPC_URL),
-  },
-});
-
-/**
- * Zama-specific wagmi config — Sepolia only.
- * createZamaConfig requires its wagmiConfig to only include FHE-supported chains.
- * We pass this to Zama while using the full wagmiConfig for WagmiProvider.
- * WagmiProvider context is shared — the Zama SDK reads from it at runtime.
- */
-const wagmiConfigZama = createConfig({
-  chains: [sepolia],
-  connectors: [injected()],
-  transports: {
-    [sepolia.id]: http(RPC_URL),
   },
 });
 
@@ -55,17 +47,25 @@ export function Web3Provider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      const sepoliaRelayerUrl = getRelayerUrl(SEPOLIA_CHAIN_ID);
       const mySepolia = {
         ...sepoliaFhe,
-        relayerUrl: sepoliaRelayerUrl,
+        relayerUrl: getRelayerUrl(SEPOLIA_CHAIN_ID),
       } as const satisfies FheChain;
 
+      const myMainnet = {
+        ...mainnetFhe,
+        relayerUrl: getRelayerUrl(MAINNET_CHAIN_ID),
+      } as const satisfies FheChain;
+
+      // Must use the same wagmiConfig as WagmiProvider — Zama's signer reads
+      // getConnection(wagmiConfig); a separate config never receives the connect().
       const config = createZamaConfig({
-        chains: [mySepolia],
-        // Use Sepolia-only wagmi config for Zama to avoid multi-chain conflicts
-        wagmiConfig: wagmiConfigZama,
-        relayers: { [mySepolia.id]: web() },
+        chains: [mySepolia, myMainnet],
+        wagmiConfig,
+        relayers: {
+          [mySepolia.id]: web(),
+          [myMainnet.id]: web(),
+        },
       });
       setZamaConfig(config);
     } catch (err) {

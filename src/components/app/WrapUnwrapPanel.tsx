@@ -17,14 +17,16 @@ import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import type { TokenPair } from "@/lib/types";
+import { isOperationalPair } from "@/lib/pair-utils";
 
 type Mode = "wrap" | "unwrap";
 
 export function WrapUnwrapPanel() {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const publicClient = usePublicClient();
   const chainId = useChainId();
   const { data: pairs, isLoading: pairsLoading } = useRegistryPairs();
+  const operationalPairs = (pairs ?? []).filter(isOperationalPair);
 
   const [mode, setMode] = useState<Mode>("wrap");
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
@@ -80,6 +82,7 @@ export function WrapUnwrapPanel() {
 
   const executeWrap = async () => {
     if (!selectedPair || !amount) return;
+    if (!isConnected || !address) return;
     setMainnetConfirmPending(null);
     setSuccess(null);
     const parsedAmount = parseUnits(amount, selectedPair.erc20Decimals);
@@ -90,6 +93,7 @@ export function WrapUnwrapPanel() {
 
   const executeUnwrap = async () => {
     if (!selectedPair || !amount) return;
+    if (!isConnected || !address) return;
     setMainnetConfirmPending(null);
     setSuccess(null);
     const parsedAmount = parseUnits(amount, selectedPair.erc7984Decimals);
@@ -185,7 +189,7 @@ export function WrapUnwrapPanel() {
               </span>
               <div id="wrap-token-select" className="w-[140px]">
                 <TokenSelect
-                  options={(pairs ?? []).map((pair) => ({
+                  options={operationalPairs.map((pair) => ({
                     value: pair.erc7984Address,
                     label: mode === "wrap" ? pair.erc20Symbol : pair.erc7984Symbol,
                     sublabel: undefined,
@@ -348,7 +352,7 @@ export function WrapUnwrapPanel() {
       <button
         id="wrap-submit-btn"
         onClick={mode === "wrap" ? handleWrap : handleUnwrap}
-        disabled={!selectedPair || !amount || isPending}
+        disabled={!selectedPair || !amount || isPending || !isConnected || !address}
         className="w-full bg-[#16171C] hover:bg-black text-white font-semibold py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg"
       >
         {isPending

@@ -2,6 +2,14 @@ export function formatWalletError(error: unknown): string {
   const raw = error instanceof Error ? error.message : String(error);
   const msg = raw.toLowerCase();
 
+  if (msg.includes("returned no data") || msg.includes("confidentialbalanceof")) {
+    return "No confidential contract at this address. Dev Pair config examples are registry-only — use an official pair or deploy your own.";
+  }
+
+  if (msg.includes("walletnotconnected") || msg.includes("without a connected wallet")) {
+    return "Wallet not connected to the FHE signer. Disconnect and reconnect your wallet, then try again.";
+  }
+
   if (msg.includes("user rejected") || msg.includes("user denied")) {
     return "Transaction rejected by user.";
   }

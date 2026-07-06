@@ -7,7 +7,9 @@
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
     "build": "next build",
     "start": "next start --hostname 0.0.0.0 --port 3000",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "verify:distribute": "node scripts/verify-distribute.mjs",
+    "verify": "npm run lint && npm run build && npm run verify:distribute"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

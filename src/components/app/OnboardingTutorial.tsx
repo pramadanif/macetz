@@ -45,14 +45,14 @@ const steps: TutorialStep[] = [
     description: "Select the mock token you wish to mint from this list.",
     targetTab: "faucet",
     targetSelector: "#faucet-token-list",
-    position: "bottom",
+    position: "center",
   },
   {
     title: "1b. Minting",
     description: "Click here to mint 1,000 test tokens. Your public ERC-20 balance will then be visible on block explorers.",
     targetTab: "faucet",
     targetSelector: "#faucet-mint-btn",
-    position: "top",
+    position: "center",
   },
   {
     title: "2. The Wrapper Registry",
@@ -71,7 +71,7 @@ const steps: TutorialStep[] = [
     description: "Here you can view all available pairs. It merges official pairs with local developer pairs under a 'Dev Pair' badge.",
     targetTab: "registry",
     targetSelector: "#registry-table",
-    position: "top",
+    position: "center",
   },
   {
     title: "3. Shield & Unshield",
@@ -89,14 +89,14 @@ const steps: TutorialStep[] = [
     description: "Choose which public asset you want to shield from this dropdown.",
     targetTab: "wrap",
     targetSelector: "#wrap-token-select",
-    position: "bottom",
+    position: "center",
   },
   {
     title: "3b. Execute Shield",
     description: "Once you enter an amount, click here to wrap. Your balance becomes an encrypted cipher on the blockchain. The unwrap flow operates similarly.",
     targetTab: "wrap",
     targetSelector: "#wrap-submit-btn",
-    position: "top",
+    position: "center",
   },
   {
     title: "4. Universal Decryption",
@@ -115,7 +115,7 @@ const steps: TutorialStep[] = [
     description: "By signing a typed message when clicking this button, you authorize the FHEVM gateway to securely decrypt only your specific balance.",
     targetTab: "decrypt",
     targetSelector: "#decrypt-submit-btn",
-    position: "top",
+    position: "center",
   },
   {
     title: "5. Distribute Tokens",
@@ -134,23 +134,37 @@ const steps: TutorialStep[] = [
     description: "Select the shielded asset you want to use for confidential payroll or airdrops.",
     targetTab: "distribute",
     targetSelector: "#distribute-token-select",
-    position: "bottom",
+    position: "center",
   },
   {
     title: "5b. Review & Execute",
     description: "Add your recipients manually or upload a CSV, then execute a fully encrypted batch transfer. Every recipient can independently verify and decrypt their exact allocation.",
     targetTab: "distribute",
     targetSelector: "#distribute-next-btn",
-    position: "top",
+    position: "center",
   },
 ];
 
-const TOTAL_STEPS = steps.length;
+import { useChainId } from "wagmi";
+import { isMainnet } from "@/lib/config";
 
 export function OnboardingTutorial() {
   const [visible, setVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState<DOMRect | null>(null);
+  
+  const chainId = useChainId();
+  const onMainnet = isMainnet(chainId);
+  
+  // Filter out Faucet steps if we're on Mainnet since the tab is hidden
+  const activeSteps = React.useMemo(() => {
+    return steps.filter(s => {
+      if (onMainnet && s.targetTab === "faucet") return false;
+      return true;
+    });
+  }, [onMainnet]);
+
+  const TOTAL_STEPS = activeSteps.length;
 
   useEffect(() => {
     try {
@@ -180,7 +194,7 @@ export function OnboardingTutorial() {
     }
   }, []);
 
-  const step = steps[currentStep]!;
+  const step = activeSteps[currentStep]!;
 
   // Dispatch navigation
   useEffect(() => {
@@ -336,7 +350,7 @@ export function OnboardingTutorial() {
 
             {/* Dot indicators */}
             <div className="flex flex-wrap items-center gap-1.5 mb-6" aria-hidden="true">
-              {steps.map((_, i) => (
+              {activeSteps.map((_, i) => (
                 <span
                   key={i}
                   className={`block rounded-full transition-all duration-300 ${

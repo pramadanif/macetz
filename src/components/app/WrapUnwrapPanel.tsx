@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAccount, usePublicClient } from "wagmi";
+import { useAccount, usePublicClient, useChainId } from "wagmi";
 import { parseUnits, formatUnits } from "viem";
 import {
   useShield,
@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { ERC20_ABI } from "@/lib/abis";
 import { formatWalletError } from "@/lib/errors";
+import { isMainnet } from "@/lib/config";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
 import { AlertMessage } from "@/components/app/AlertMessage";
@@ -22,12 +23,15 @@ type Mode = "wrap" | "unwrap";
 export function WrapUnwrapPanel() {
   const { address } = useAccount();
   const publicClient = usePublicClient();
+  const chainId = useChainId();
   const { data: pairs, isLoading: pairsLoading } = useRegistryPairs();
 
   const [mode, setMode] = useState<Mode>("wrap");
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
   const [amount, setAmount] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
+  /** Mainnet real-funds confirmation state */
+  const [mainnetConfirmPending, setMainnetConfirmPending] = useState<"wrap" | "unwrap" | null>(null);
 
   const wrapperAddress = selectedPair?.erc7984Address ?? ("0x0000000000000000000000000000000000000000" as `0x${string}`);
 
@@ -56,6 +60,27 @@ export function WrapUnwrapPanel() {
 
   const handleWrap = async () => {
     if (!selectedPair || !amount) return;
+    // Gate on mainnet confirmation
+    if (isMainnet(chainId)) {
+      setMainnetConfirmPending("wrap");
+      return;
+    }
+    await executeWrap();
+  };
+
+  const handleUnwrap = async () => {
+    if (!selectedPair || !amount) return;
+    // Gate on mainnet confirmation
+    if (isMainnet(chainId)) {
+      setMainnetConfirmPending("unwrap");
+      return;
+    }
+    await executeUnwrap();
+  };
+
+  const executeWrap = async () => {
+    if (!selectedPair || !amount) return;
+    setMainnetConfirmPending(null);
     setSuccess(null);
     const parsedAmount = parseUnits(amount, selectedPair.erc20Decimals);
     await shield.mutateAsync({ amount: parsedAmount });
@@ -63,8 +88,9 @@ export function WrapUnwrapPanel() {
     setAmount("");
   };
 
-  const handleUnwrap = async () => {
+  const executeUnwrap = async () => {
     if (!selectedPair || !amount) return;
+    setMainnetConfirmPending(null);
     setSuccess(null);
     const parsedAmount = parseUnits(amount, selectedPair.erc7984Decimals);
     await unshield.mutateAsync({ amount: parsedAmount });
@@ -275,6 +301,49 @@ export function WrapUnwrapPanel() {
         />
       )}
 
+      {/* Mainnet real-funds confirmation modal */}
+      {mainnetConfirmPending && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl p-7 max-w-sm w-full">
+            <div className="flex items-start gap-4 mb-5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 flex items-center justify-center shrink-0">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-[17px] text-gray-900 leading-tight mb-1">
+                  Real assets — Ethereum Mainnet
+                </h3>
+                <p className="text-[13px] text-gray-500 leading-relaxed">
+                  You are about to{" "}
+                  <strong>{mainnetConfirmPending === "wrap" ? "shield" : "unshield"}</strong>{" "}
+                  <strong>{amount} {mainnetConfirmPending === "wrap" ? selectedPair?.erc20Symbol : selectedPair?.erc7984Symbol}</strong>{" "}
+                  on <strong>Ethereum mainnet</strong>. This uses real funds and cannot be undone.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setMainnetConfirmPending(null)}
+                className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-600 text-sm font-semibold hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                id="mainnet-confirm-btn"
+                onClick={mainnetConfirmPending === "wrap" ? executeWrap : executeUnwrap}
+                className="flex-1 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold transition-colors"
+              >
+                I understand, proceed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Submit */}
       <button
         id="wrap-submit-btn"
@@ -289,7 +358,20 @@ export function WrapUnwrapPanel() {
             : `Unshield ${selectedPair ? selectedPair.erc7984Symbol : "Tokens"}`}
       </button>
 
-      {mode === "unwrap" && !isPending && (
+      {isMainnet(chainId) && !isPending && selectedPair && (
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200/60">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500 shrink-0">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <p className="text-[11px] text-amber-700 leading-relaxed">
+            <strong>Mainnet:</strong> A confirmation step will appear before any transaction.
+          </p>
+        </div>
+      )}
+
+      {mode === "unwrap" && !isPending && !isMainnet(chainId) && (
         <p className="text-[11px] text-gray-400 text-center leading-relaxed">
           Unwrap is a two-step async process. The SDK handles both steps
           automatically: unwrap request → relayer decryption → finalize.

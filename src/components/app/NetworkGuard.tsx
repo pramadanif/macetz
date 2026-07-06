@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, type ReactNode } from "react";
 import { useConnection, useSwitchChain } from "wagmi";
-import { CHAIN_ID } from "@/lib/config";
+import { isSupportedChain, SEPOLIA_CHAIN_ID } from "@/lib/config";
 
 export function NetworkGuard({ children }: { children: ReactNode }) {
   const { isConnected, chainId } = useConnection();
@@ -12,7 +12,12 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
 
   useEffect(() => setMounted(true), []);
 
-  const wrongNetwork = mounted && isConnected && chainId !== undefined && chainId !== CHAIN_ID;
+  // Wrong network = connected to something OTHER than Sepolia or Mainnet
+  const wrongNetwork =
+    mounted &&
+    isConnected &&
+    chainId !== undefined &&
+    !isSupportedChain(chainId);
 
   useEffect(() => {
     if (!wrongNetwork) {
@@ -21,10 +26,12 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
     }
     if (promptedRef.current) return;
     promptedRef.current = true;
-    switchChain({ chainId: CHAIN_ID });
+    // Default prompt: switch to Sepolia (the safe/recommended starting point)
+    switchChain({ chainId: SEPOLIA_CHAIN_ID });
   }, [wrongNetwork, switchChain]);
 
-  if (!mounted || !isConnected || chainId === CHAIN_ID) {
+  // Supported network (Sepolia or Mainnet) or not connected — render children
+  if (!mounted || !isConnected || !wrongNetwork) {
     return <>{children}</>;
   }
 
@@ -50,13 +57,15 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
             </svg>
           </div>
           <h2 className="text-2xl font-semibold tracking-tight mb-3">
-            Wrong network
+            Unsupported network
           </h2>
           <p className="text-gray-500 text-[15px] leading-relaxed mb-6">
-            Macetz runs on Sepolia testnet. Approve the network switch in your wallet to continue.
+            Macetz supports <strong>Sepolia testnet</strong> and{" "}
+            <strong>Ethereum mainnet</strong>. Switch to one of these networks
+            to continue.
           </p>
           <button
-            onClick={() => switchChain({ chainId: CHAIN_ID })}
+            onClick={() => switchChain({ chainId: SEPOLIA_CHAIN_ID })}
             disabled={isPending}
             className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
           >

@@ -28,18 +28,21 @@ export function WalletButton() {
   }
 
   if (isConnected && address) {
-    if (chainId !== CHAIN_ID) {
+    if (!chainId || (chainId !== 11155111 && chainId !== 1)) {
       return (
-        <button
-          onClick={() => switchChain({ chainId: CHAIN_ID })}
-          disabled={isSwitching}
-          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-medium text-[13px] px-5 py-2.5 rounded-full transition-all duration-300 disabled:opacity-50 shadow-[inset_0_1px_3px_rgba(255,255,255,0.3)]"
-        >
-          {isSwitching ? "Switching..." : "Switch to Sepolia"}
-        </button>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+            Unsupported Network
+          </span>
+          <button
+            onClick={() => disconnect()}
+            className="text-xs text-gray-500 hover:text-red-600 bg-white/60 px-3 py-1.5 rounded-full border border-white/60 transition-colors"
+          >
+            Disconnect
+          </button>
+        </div>
       );
     }
-    
     return (
       <div className="flex items-center gap-2">
         <span className="text-xs font-mono text-gray-500 bg-white/60 px-3 py-1.5 rounded-full border border-white/60">

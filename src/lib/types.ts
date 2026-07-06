@@ -1,5 +1,12 @@
 export type PairSource = "registry" | "local-dev";
 
+/**
+ * Integrity status computed by the registry integrity checker.
+ * - "verified": pair passed all sanity checks
+ * - "flagged": pair has at least one anomaly (see integrityReason)
+ */
+export type IntegrityStatus = "verified" | "flagged";
+
 export interface TokenPair {
   erc20Address: `0x${string}`;
   erc7984Address: `0x${string}`;
@@ -12,6 +19,10 @@ export interface TokenPair {
   source: PairSource;
   isMock: boolean;
   isValid: boolean;
+  /** Integrity check result — computed after registry load. */
+  integrityStatus: IntegrityStatus;
+  /** Human-readable reason when integrityStatus === "flagged". */
+  integrityReason?: string;
 }
 
 export interface CustomPairEntry {

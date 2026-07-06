@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { useChainId } from "wagmi";
+import { AnimatePresence, motion } from "motion/react";
 import { CoinPlaceholder } from "@/components/CoinPlaceholder";
 import { WalletButton } from "@/components/app/WalletButton";
+import { NetworkSwitchButton } from "@/components/app/NetworkSwitchButton";
+import { isMainnet } from "@/lib/config";
 
 type Tab = "dashboard" | "registry" | "wrap" | "decrypt" | "faucet" | "distribute";
 
@@ -12,6 +16,7 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
+/** Core nav items — always visible regardless of network. */
 const NAV_ITEMS: NavItem[] = [
   {
     id: "dashboard",
@@ -58,17 +63,6 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
-    id: "faucet",
-    label: "Faucet",
-    icon: (
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M10 3c-1 2-3 3.5-3 5.5a3 3 0 006 0C13 6.5 11 5 10 3z" />
-        <path d="M10 11v3" />
-        <path d="M7 17c0-1.5 1.3-3 3-3s3 1.5 3 3" />
-      </svg>
-    ),
-  },
-  {
     id: "distribute",
     label: "Distribute",
     icon: (
@@ -82,23 +76,72 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+/** Faucet nav item — only shown on Sepolia testnet. */
+const FAUCET_ITEM: NavItem = {
+  id: "faucet",
+  label: "Faucet",
+  icon: (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 3c-1 2-3 3.5-3 5.5a3 3 0 006 0C13 6.5 11 5 10 3z" />
+      <path d="M10 11v3" />
+      <path d="M7 17c0-1.5 1.3-3 3-3s3 1.5 3 3" />
+    </svg>
+  ),
+};
+
+/** Shared animation config — matches existing `transition-all duration-200` baseline. */
+const FAUCET_VARIANTS = {
+  initial: { opacity: 0, height: 0, marginTop: 0 },
+  animate: { opacity: 1, height: "auto", marginTop: 0 },
+  exit: { opacity: 0, height: 0, marginTop: 0 },
+};
+const FAUCET_TRANSITION = { duration: 0.2, ease: "easeInOut" as const };
+
 interface Props {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
 }
 
+function NavButton({
+  item,
+  isActive,
+  onClick,
+}: {
+  item: NavItem;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      id={`nav-${item.id}`}
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-[14px] font-medium transition-all duration-200 ${
+        isActive
+          ? "emboss-card text-[#16171C]"
+          : "text-gray-500 hover:text-gray-800 hover:emboss-card"
+      }`}
+    >
+      <span className={isActive ? "text-[#16171C]" : ""}>{item.icon}</span>
+      {item.label}
+    </button>
+  );
+}
+
 export function AppSidebar({ activeTab, onTabChange }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const chainId = useChainId();
+  const onMainnet = isMainnet(chainId);
+
+  const handleTabChange = (tab: Tab) => {
+    onTabChange(tab);
+    setMobileOpen(false);
+  };
 
   const sidebarContent = (
     <div className="flex flex-col h-full">
       {/* Wordmark */}
       <div className="flex items-center gap-2.5 px-5 py-6">
-        <CoinPlaceholder
-          type="silver"
-          size="sm"
-          className="w-8 h-8 shadow-sm"
-        />
+        <CoinPlaceholder type="silver" size="sm" className="w-8 h-8 shadow-sm" />
         <span className="font-bold text-[20px] tracking-tight text-[#16171C]">
           Macetz
         </span>
@@ -107,35 +150,43 @@ export function AppSidebar({ activeTab, onTabChange }: Props) {
       {/* Primary nav */}
       <nav className="flex-1 px-3 mt-2">
         <ul className="space-y-1">
-          {NAV_ITEMS.map((item) => {
-            const isActive = activeTab === item.id;
-            return (
-              <li key={item.id}>
-                <button
-                  id={`nav-${item.id}`}
-                  onClick={() => {
-                    onTabChange(item.id);
-                    setMobileOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-[14px] font-medium transition-all duration-200 ${
-                    isActive
-                      ? "emboss-card text-[#16171C]"
-                      : "text-gray-500 hover:text-gray-800 hover:emboss-card"
-                  }`}
-                >
-                  <span className={isActive ? "text-[#16171C]" : ""}>{item.icon}</span>
-                  {item.label}
-                </button>
-              </li>
-            );
-          })}
+          {NAV_ITEMS.map((item) => (
+            <li key={item.id}>
+              <NavButton
+                item={item}
+                isActive={activeTab === item.id}
+                onClick={() => handleTabChange(item.id)}
+              />
+            </li>
+          ))}
+
+          {/* Faucet — conditionally shown with smooth animated transition */}
+          <AnimatePresence initial={false}>
+            {!onMainnet && (
+              <motion.li
+                key="faucet-nav"
+                variants={FAUCET_VARIANTS}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={FAUCET_TRANSITION}
+                style={{ overflow: "hidden" }}
+              >
+                <NavButton
+                  item={FAUCET_ITEM}
+                  isActive={activeTab === "faucet"}
+                  onClick={() => handleTabChange("faucet")}
+                />
+              </motion.li>
+            )}
+          </AnimatePresence>
         </ul>
       </nav>
 
       {/* Bottom utility links */}
       <div className="px-3 pb-3 mt-auto">
         <div className="border-t border-gray-200/60 pt-3 space-y-1">
-          <button 
+          <button
             onClick={() => window.dispatchEvent(new Event("show-tutorial"))}
             className="flex items-center gap-3 px-3 py-2 rounded-2xl text-[13px] text-gray-500 hover:text-gray-800 hover:emboss-card transition-all duration-200 w-full text-left"
           >
@@ -170,6 +221,11 @@ export function AppSidebar({ activeTab, onTabChange }: Props) {
         {/* Wallet button */}
         <div className="mt-3 px-1">
           <WalletButton />
+        </div>
+
+        {/* Network switch — prominent, below wallet */}
+        <div className="mt-2">
+          <NetworkSwitchButton />
         </div>
       </div>
     </div>

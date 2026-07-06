@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * Relayer URLs routed by chainId.
+ * Both Sepolia and Ethereum mainnet are proxied through this backend endpoint —
+ * this keeps relayer API keys server-side only (never exposed to the client).
+ * Parity with ShadowLine's stated security posture.
+ */
 const RELAYER_URLS: Record<string, string> = {
   "11155111": "https://relayer.testnet.zama.org/v2",
+  // Mainnet relayer — will be activated when API key is provisioned.
+  // Set NEXT_PUBLIC_MAINNET_RELAYER_URL env var or update this fallback.
+  "1": process.env.MAINNET_RELAYER_URL ?? "https://relayer.mainnet.zama.org/v2",
 };
 
 async function proxyRequest(request: NextRequest, method: string) {

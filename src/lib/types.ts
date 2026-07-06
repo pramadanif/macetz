@@ -23,6 +23,8 @@ export interface TokenPair {
   integrityStatus: IntegrityStatus;
   /** Human-readable reason when integrityStatus === "flagged". */
   integrityReason?: string;
+  /** Registry-only example from config — never offered in Shield/Decrypt/Distribute. */
+  configOnly?: boolean;
 }
 
 export interface CustomPairEntry {
@@ -32,6 +34,8 @@ export interface CustomPairEntry {
   decimals: number;
   source: "local-dev";
   iconUrl?: string;
+  /** When true, pair is a docs/registry example only — not deployed on-chain. */
+  configExample?: boolean;
 }
 
 export interface CustomPairsConfig {

@@ -202,14 +202,16 @@ export const DOCS_SECTIONS: DocsSection[] = [
       "erc7984": "0xe709e08De12Bc4768C6D2FeE8DFD1D6C71D7cF70",
       "symbol": "cDEMO1",
       "decimals": 18,
-      "source": "local-dev"
+      "source": "local-dev",
+      "configExample": true
     },
     {
       "erc20": "0xAB709e08De12Bc4768C6d2FeE8DfD1d6c71d7CF6",
       "erc7984": "0xBB709e08de12BC4768C6d2FeE8DFD1D6C71D7cf7",
       "symbol": "cDEMO2",
       "decimals": 6,
-      "source": "local-dev"
+      "source": "local-dev",
+      "configExample": true
     }
   ],
   "1": [

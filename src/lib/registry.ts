@@ -170,6 +170,7 @@ export function mapCustomEntryToPair(
   source: "local-dev" | "browser-preview"
 ): TokenPair {
   const baseSymbol = entry.symbol.replace(/^c/, "");
+  const configOnly = entry.configExample === true;
   return {
     erc20Address: getAddress(entry.erc20),
     erc7984Address: getAddress(entry.erc7984),
@@ -181,12 +182,12 @@ export function mapCustomEntryToPair(
     erc7984Decimals: Math.min(entry.decimals, 6),
     source,
     isMock: true,
-    isValid: source === "browser-preview",
-    integrityStatus: source === "browser-preview" ? "verified" : "flagged",
-    integrityReason:
-      source === "local-dev"
-        ? "Pending on-chain verification — config example until contracts are deployed."
-        : undefined,
+    configOnly,
+    isValid: false,
+    integrityStatus: "flagged",
+    integrityReason: configOnly
+      ? "Registry display only — example config entry."
+      : "Pending on-chain verification on the connected network.",
   };
 }
 

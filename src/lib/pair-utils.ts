@@ -1,17 +1,32 @@
-import type { PublicClient } from "viem";
+import { type PublicClient } from "viem";
+import { ERC165_ABI, ERC7984_INTERFACE_ID } from "./abis";
 import type { TokenPair } from "./types";
 
 /** True when pair is safe for Shield / Decrypt / Distribute (real on-chain wrapper). */
 export function isOperationalPair(pair: TokenPair): boolean {
+  if (pair.configOnly) return false;
+  if (pair.source === "registry") return pair.isValid;
   return pair.isValid && pair.integrityStatus === "verified";
 }
 
-/** Verify local-dev config pairs have deployed wrapper bytecode. */
-export async function enrichLocalDevPair(
+const CONFIG_ONLY_REASON =
+  "Registry display only — example config entry. Deploy via dev-guide or Add a Pair to use Shield/Decrypt.";
+
+/** Verify custom / preview pairs have a live ERC-7984 wrapper on the active network. */
+export async function enrichPairForOperations(
   publicClient: PublicClient,
   pair: TokenPair
 ): Promise<TokenPair> {
-  if (pair.source !== "local-dev") return pair;
+  if (pair.configOnly) {
+    return {
+      ...pair,
+      isValid: false,
+      integrityStatus: "flagged",
+      integrityReason: CONFIG_ONLY_REASON,
+    };
+  }
+
+  if (pair.source === "registry") return pair;
 
   try {
     const code = await publicClient.getBytecode({ address: pair.erc7984Address });
@@ -21,9 +36,26 @@ export async function enrichLocalDevPair(
         isValid: false,
         integrityStatus: "flagged",
         integrityReason:
-          "Config-only Dev Pair — no contract at this address. Deploy via dev-guide or use Add a Pair.",
+          "No contract at wrapper address on this network. Deploy contracts or pick an official registry pair.",
       };
     }
+
+    const isErc7984 = await publicClient.readContract({
+      address: pair.erc7984Address,
+      abi: ERC165_ABI,
+      functionName: "supportsInterface",
+      args: [ERC7984_INTERFACE_ID],
+    });
+
+    if (!isErc7984) {
+      return {
+        ...pair,
+        isValid: false,
+        integrityStatus: "flagged",
+        integrityReason: "Address has code but does not implement ERC-7984.",
+      };
+    }
+
     return { ...pair, isValid: true, integrityStatus: "verified" };
   } catch {
     return {
@@ -34,3 +66,6 @@ export async function enrichLocalDevPair(
     };
   }
 }
+
+/** @deprecated Use enrichPairForOperations */
+export const enrichLocalDevPair = enrichPairForOperations;

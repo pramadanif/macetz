@@ -7,7 +7,7 @@ import {
   loadCustomPairs,
   mapCustomEntryToPair,
 } from "@/lib/registry";
-import { enrichLocalDevPair } from "@/lib/pair-utils";
+import { enrichPairForOperations } from "@/lib/pair-utils";
 import { loadPreviewPairs } from "@/lib/preview-pairs";
 import type { TokenPair } from "@/lib/types";
 
@@ -17,7 +17,7 @@ export function useRegistryPairs() {
   const queryClient = useQueryClient();
 
   return useQuery<TokenPair[]>({
-    queryKey: ["registry-pairs", chainId],
+    queryKey: ["registry-pairs", "v2", chainId],
     queryFn: async () => {
       if (!publicClient) throw new Error("No public client");
       const onchainPairs = await fetchRegistryPairs(publicClient, chainId);
@@ -36,7 +36,7 @@ export function useRegistryPairs() {
       }
 
       return Promise.all(
-        merged.map((pair) => enrichLocalDevPair(publicClient, pair))
+        merged.map((pair) => enrichPairForOperations(publicClient, pair))
       );
     },
     enabled: !!publicClient,
@@ -49,5 +49,5 @@ export function useInvalidateRegistryPairs() {
   const queryClient = useQueryClient();
   const chainId = useChainId();
   return () =>
-    queryClient.invalidateQueries({ queryKey: ["registry-pairs", chainId] });
+    queryClient.invalidateQueries({ queryKey: ["registry-pairs", "v2", chainId] });
 }

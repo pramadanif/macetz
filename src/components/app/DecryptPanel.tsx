@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { isAddress, formatUnits } from "viem";
 import {
@@ -128,6 +128,18 @@ export function DecryptPanel() {
   const [customValid, setCustomValid] = useState(false);
   const [showResult, setShowResult] = useState(false);
 
+  const operationalPairs = useMemo(
+    () => (pairs ?? []).filter(isOperationalPair),
+    [pairs]
+  );
+
+  useEffect(() => {
+    if (selectedToken && !operationalPairs.some((p) => p.erc7984Address === selectedToken)) {
+      setSelectedToken("");
+      setShowResult(false);
+    }
+  }, [operationalPairs, selectedToken]);
+
   const handleValidChange = useCallback((valid: boolean) => {
     setCustomValid(valid);
   }, []);
@@ -173,9 +185,7 @@ export function DecryptPanel() {
           {mode === "registry" ? (
             <div className="mb-5">
               <TokenSelect
-                options={(pairs ?? [])
-                  .filter(isOperationalPair)
-                  .map((pair) => ({
+                options={operationalPairs.map((pair) => ({
                   value: pair.erc7984Address,
                   label: pair.erc7984Symbol,
                   sublabel: pair.erc7984Name,

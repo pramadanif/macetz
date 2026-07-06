@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { useAccount, usePublicClient, useWalletClient, useChainId } from "wagmi";
 import { isAddress, parseUnits, formatUnits } from "viem";
 import { useZamaSDK } from "@zama-fhe/react-sdk";
 import {
@@ -26,6 +26,7 @@ import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import { formatWalletError } from "@/lib/errors";
 import { isOperationalPair } from "@/lib/pair-utils";
+import { isMainnet } from "@/lib/config";
 import { CONFIDENTIAL_BALANCE_ABI } from "@/lib/abis";
 import {
   DISPERSE_SINGLETON_SEPOLIA,
@@ -167,6 +168,8 @@ export function DistributePanel() {
   const { data: walletClient } = useWalletClient();
   const zamaSDK = useZamaSDK();
   const queryClient = useQueryClient();
+  const chainId = useChainId();
+  const onMainnet = isMainnet(chainId);
   const { data: pairs } = useRegistryPairs();
 
   const [role, setRole] = useState<PanelRole>("sender");
@@ -196,6 +199,11 @@ export function DistributePanel() {
     parseUnits(r.amount, selectedPair?.erc7984Decimals ?? 6)
   );
   const totalAmount = amounts.reduce((a, b) => a + b, 0n);
+
+  const operationalPairs = useMemo(
+    () => (pairs ?? []).filter(isOperationalPair),
+    [pairs]
+  );
 
   const disperse = useDisperse({
     // Zama react-sdk relayer is structurally compatible; cast bridges v3 type drift.
@@ -231,11 +239,11 @@ export function DistributePanel() {
   });
 
   const { data: pendingTokens } = useQuery({
-    queryKey: ["recipient-pending", address, pairs?.length],
+    queryKey: ["recipient-pending", address, operationalPairs.length],
     queryFn: async () => {
-      if (!publicClient || !address || !pairs) return [];
+      if (!publicClient || !address) return [];
       const withBalance: TokenPair[] = [];
-      for (const pair of pairs) {
+      for (const pair of operationalPairs) {
         const status = await getRecipientClaimStatus(
           publicClient,
           pair.erc7984Address,
@@ -245,7 +253,7 @@ export function DistributePanel() {
       }
       return withBalance;
     },
-    enabled: !!publicClient && !!address && !!pairs && role === "recipient",
+    enabled: !!publicClient && !!address && operationalPairs.length > 0 && role === "recipient" && !onMainnet,
     refetchInterval: 20_000,
   });
 
@@ -255,15 +263,13 @@ export function DistributePanel() {
 
   const tokenOptions = useMemo(
     () =>
-      (pairs ?? [])
-        .filter(isOperationalPair)
-        .map((pair) => ({
+      operationalPairs.map((pair) => ({
         value: pair.erc7984Address,
         label: pair.erc7984Symbol,
         sublabel: `${pair.erc7984Name} · Shield first`,
         symbol: pair.erc7984Symbol,
       })),
-    [pairs]
+    [operationalPairs]
   );
 
   const updateRow = (id: string, patch: Partial<RecipientRow>) => {
@@ -352,6 +358,31 @@ export function DistributePanel() {
   };
 
   const activeCampaign = campaigns.find((c) => c.id === activeCampaignId) ?? campaigns[0];
+
+  if (onMainnet) {
+    return (
+      <div className="max-w-lg mx-auto">
+        <div className="emboss-card p-8 text-center">
+          <div className="relative z-10">
+            <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-amber-50 flex items-center justify-center">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-500">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold tracking-tight mb-3 text-gray-900">
+              Distribution unavailable on Mainnet
+            </h2>
+            <p className="text-gray-500 text-[15px] leading-relaxed">
+              TokenOps Confidential Disperse is wired to the official Sepolia singleton (
+              <span className="font-mono text-[12px">0x710d…DBb4</span>). Switch to Sepolia to run payroll batches.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">

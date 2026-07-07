@@ -16,6 +16,7 @@ import { isMainnet } from "@/lib/config";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
 import { AlertMessage } from "@/components/app/AlertMessage";
+import { MainnetFheBanner } from "@/components/app/MainnetFheBanner";
 import type { TokenPair } from "@/lib/types";
 import { isOperationalPair } from "@/lib/pair-utils";
 
@@ -142,6 +143,7 @@ export function WrapUnwrapPanel() {
 
   return (
     <div className="max-w-lg mx-auto">
+      <MainnetFheBanner />
       <div className="emboss-card p-6 sm:p-8 space-y-6">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -283,7 +285,7 @@ export function WrapUnwrapPanel() {
       )}
 
       {error && (
-        <AlertMessage type="error" title="Transaction Failed" message={formatWalletError(error)} />
+        <AlertMessage type="error" title="Transaction Failed" message={formatWalletError(error, chainId)} />
       )}
 
       {isPending && (

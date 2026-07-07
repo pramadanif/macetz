@@ -43,7 +43,7 @@ export const DOCS_SECTIONS: DocsSection[] = [
     blocks: [
       {
         type: "paragraph",
-        text: "Macetz uses hybrid sourcing. The onchain Zama Wrappers Registry is the primary source of truth for official pairs. Local config (config/custom-pairs.json) and in-browser preview pairs (Admin UI) add dev or custom pairs, clearly labeled Dev or Preview and excluded from production stats.",
+        text: "Macetz uses hybrid sourcing. The onchain Zama Wrappers Registry is the primary source of truth — every valid onchain pair is shown automatically (zero code changes after registration). Pairs in Zama's official docs table get a Docs-verified badge; other onchain pairs show a Registry badge with a caution note. Local config (config/custom-pairs.json) and in-browser preview pairs add dev or custom pairs, clearly labeled Dev or Preview.",
       },
       {
         type: "subheading",
@@ -57,7 +57,7 @@ export const DOCS_SECTIONS: DocsSection[] = [
         type: "list",
         items: [
           "Sepolia: full tutorial experience — Registry, Shield, Decrypt, Faucet (mock mints), Distribute.",
-          "Mainnet: Registry, Shield, Decrypt, Distribute. Faucet nav item hides automatically (real assets, no free mints).",
+          "Mainnet: Registry browse is fully supported. Shield/Decrypt depend on Zama's mainnet relayer (may fail until provisioned). Faucet nav hides automatically. Distribute is Sepolia-only.",
           "Switching networks re-fetches on-chain registry data and reloads chain-scoped local pairs.",
         ],
       },
@@ -278,7 +278,7 @@ cp .env.example .env
     blocks: [
       {
         type: "paragraph",
-        text: "FHE decrypt and unwrap flows use the Zama relayer. Browser clients call /api/relayer/[chainId] — a Next.js backend proxy that forwards to Zama's upstream relayer. This avoids CORS issues and keeps any relayer API keys server-side only; they are never bundled into client JavaScript.",
+        text: "FHE decrypt and unwrap flows use the Zama relayer. By default the browser routes through the same-origin proxy at {origin}/api/relayer/[chainId] (see getRelayerUrl in config.ts). Override with NEXT_PUBLIC_RELAYER_URL or NEXT_PUBLIC_MAINNET_RELAYER_URL to call Zama relayers directly. The proxy forwards requests only — no API keys are injected server-side.",
       },
       {
         type: "list",
@@ -309,7 +309,8 @@ cp .env.example .env
       {
         type: "list",
         items: [
-          "Testnet focus — Sepolia is the primary supported network for this bounty; Mainnet is architecturally ready but not audited for production use.",
+          "Testnet focus — Sepolia is the primary supported network for this bounty; Mainnet registry browse works; Shield/Decrypt are relayer-dependent.",
+          "Distribute payroll safety — TokenOps Distribute on Sepolia accepts docs-verified registry pairs only (isDistributeOperationalPair). Non-docs onchain pairs remain usable in Shield/Decrypt.",
           "Single-token batches — TokenOps Distribute processes one token per operation; multi-token batches are roadmapped.",
           "Injected wallet — Requires MetaMask or any EIP-1193 wallet; hardware wallets via WalletConnect.",
           "Relayer latency — Unwrap finalization depends on Zama's relayer (~30–90s on Sepolia).",

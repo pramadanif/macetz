@@ -25,6 +25,10 @@ export interface TokenPair {
   integrityReason?: string;
   /** Registry-only example from config — never offered in Shield/Decrypt/Distribute. */
   configOnly?: boolean;
+  /** True when wrapper address appears in Zama's official docs allowlist (config.ts). */
+  docsVerified?: boolean;
+  /** On-chain metadata (name/symbol/decimals) could not be read for this pair. */
+  metadataUnreadable?: boolean;
 }
 
 export interface CustomPairEntry {

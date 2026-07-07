@@ -7,6 +7,7 @@ import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import { AddPairSection } from "@/components/app/AddPairSection";
 import { isMainnet } from "@/lib/config";
+import type { TokenPair } from "@/lib/types";
 
 /** Returns the appropriate Etherscan block explorer URL for the current chain. */
 function explorerUrl(chainId: number, address: string): string {
@@ -41,6 +42,34 @@ function IntegrityBadge({ status, reason }: { status: "verified" | "flagged"; re
         <circle cx="5" cy="7.5" r="0.5" fill="currentColor" stroke="none" />
       </svg>
       Flagged
+    </span>
+  );
+}
+
+/** Docs-verified vs onchain-only registry source badge. */
+function DocsSourceBadge({ docsVerified, source }: { docsVerified?: boolean; source: TokenPair["source"] }) {
+  if (source !== "registry") return null;
+
+  if (docsVerified) {
+    return (
+      <span
+        title="Wrapper address appears in Zama's official docs table"
+        className="inline-flex items-center gap-1 text-[10px] font-semibold bg-green-50 text-green-700 border border-green-200/60 px-2 py-0.5 rounded-full cursor-default"
+      >
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="1.5,5 4,7.5 8.5,2.5" />
+        </svg>
+        Docs-verified
+      </span>
+    );
+  }
+
+  return (
+    <span
+      title="Listed onchain but not in Zama's official docs table"
+      className="inline-flex items-center gap-1 text-[10px] font-semibold bg-gray-50 text-gray-600 border border-gray-200/60 px-2 py-0.5 rounded-full cursor-help"
+    >
+      Registry
     </span>
   );
 }
@@ -196,11 +225,17 @@ export function RegistryBrowser() {
                 </div>
               </div>
 
-              {/* Integrity badge row */}
-              <div className="mb-3">
+              {/* Integrity + docs source badges */}
+              <div className="mb-3 flex flex-wrap items-center gap-2">
                 <IntegrityBadge status={pair.integrityStatus} reason={pair.integrityReason} />
+                <DocsSourceBadge docsVerified={pair.docsVerified} source={pair.source} />
+                {pair.source === "registry" && pair.docsVerified === false && (
+                  <p className="w-full text-[10px] text-gray-500 leading-relaxed">
+                    Listed onchain but not in Zama&apos;s official docs table.
+                  </p>
+                )}
                 {pair.integrityStatus === "flagged" && pair.integrityReason && (
-                  <p className="text-[10px] text-amber-600 mt-1 leading-relaxed">
+                  <p className="w-full text-[10px] text-amber-600 leading-relaxed">
                     {pair.integrityReason}
                   </p>
                 )}

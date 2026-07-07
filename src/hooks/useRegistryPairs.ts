@@ -6,6 +6,7 @@ import {
   fetchRegistryPairs,
   loadCustomPairs,
   mapCustomEntryToPair,
+  mergeRegistryPairs,
 } from "@/lib/registry";
 import { enrichPairForOperations } from "@/lib/pair-utils";
 import { loadPreviewPairs } from "@/lib/preview-pairs";
@@ -26,14 +27,7 @@ export function useRegistryPairs() {
         mapCustomEntryToPair(entry, "browser-preview")
       );
 
-      const seen = new Set<string>();
-      const merged: TokenPair[] = [];
-      for (const pair of [...onchainPairs, ...customPairs, ...previewPairs]) {
-        const key = pair.erc7984Address.toLowerCase();
-        if (seen.has(key)) continue;
-        seen.add(key);
-        merged.push(pair);
-      }
+      const merged = mergeRegistryPairs(onchainPairs, customPairs, previewPairs);
 
       return Promise.all(
         merged.map((pair) => enrichPairForOperations(publicClient, pair))

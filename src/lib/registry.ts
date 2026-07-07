@@ -4,7 +4,6 @@ import {
   getOfficialAddresses,
   KNOWN_MOCK_PAIRS,
   MAINNET_KNOWN_PAIRS,
-  MAINNET_CHAIN_ID,
   isMainnet,
 } from "./config";
 import { REGISTRY_ABI, ERC20_ABI } from "./abis";
@@ -15,6 +14,13 @@ interface RawRegistryPair {
   tokenAddress: `0x${string}`;
   confidentialTokenAddress: `0x${string}`;
   isValid: boolean;
+}
+
+interface TokenMetadata {
+  name: string;
+  symbol: string;
+  decimals: number;
+  unreadable: boolean;
 }
 
 /** Returns true if the wrapper address is a known Mock variant (testnet-only). */
@@ -28,7 +34,7 @@ function isMockWrapper(address: `0x${string}`, chainId: number): boolean {
 async function fetchTokenMetadata(
   client: PublicClient,
   address: `0x${string}`
-): Promise<{ name: string; symbol: string; decimals: number }> {
+): Promise<TokenMetadata> {
   try {
     const [name, symbol, decimals] = await Promise.all([
       client.readContract({ address, abi: ERC20_ABI, functionName: "name" }),
@@ -39,13 +45,16 @@ async function fetchTokenMetadata(
       name: name as string,
       symbol: symbol as string,
       decimals: Number(decimals),
+      unreadable: false,
     };
   } catch {
-    return { name: "Unknown", symbol: "???", decimals: 18 };
+    return { name: "Unknown", symbol: "???", decimals: 0, unreadable: true };
   }
 }
 
 // ─── Integrity Checker ────────────────────────────────────────────────────────
+
+type PairBeforeIntegrity = Omit<TokenPair, "integrityStatus" | "integrityReason">;
 
 /**
  * Checks a list of pairs for anomalies and annotates each with an integrity status.
@@ -54,13 +63,12 @@ async function fetchTokenMetadata(
  * 1. Duplicate detection — an "official + Mock" pair on the same base symbol is EXPECTED
  *    (e.g., ctGBP + ctGBPMock). Only flags if two non-Mock-distinguishable entries share
  *    the same base symbol pointing to different contract addresses.
- * 2. Wrapper decimals must be ≤ 6 (Zama ERC-7984 spec).
+ * 2. Wrapper decimals must be ≤ 6 (Zama ERC-7984 spec) — skipped when metadata is unreadable.
  * 3. Underlying token address must not be the zero address.
- * 4. isValid must be true (already filtered upstream, but double-checked here for visibility).
+ * 4. Unreadable on-chain metadata is flagged explicitly (not as a false decimals violation).
  */
-export function runIntegrityChecks(pairs: Omit<TokenPair, "integrityStatus" | "integrityReason">[]): TokenPair[] {
-  // Build a map: baseSymbol → list of pairs sharing that base (after stripping Mock suffix)
-  const baseSymbolMap = new Map<string, typeof pairs>();
+export function runIntegrityChecks(pairs: PairBeforeIntegrity[]): TokenPair[] {
+  const baseSymbolMap = new Map<string, PairBeforeIntegrity[]>();
   for (const pair of pairs) {
     const base = pair.erc7984Symbol.replace(/Mock$/, "");
     if (!baseSymbolMap.has(base)) baseSymbolMap.set(base, []);
@@ -71,23 +79,23 @@ export function runIntegrityChecks(pairs: Omit<TokenPair, "integrityStatus" | "i
     const reasons: string[] = [];
     const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-    // Check 1: Zero address on underlying
+    if (pair.metadataUnreadable) {
+      reasons.push("Token metadata unreadable on this network");
+    }
+
     if (pair.erc20Address.toLowerCase() === ZERO_ADDRESS) {
       reasons.push("Underlying token address is the zero address");
     }
 
-    // Check 2: Wrapper decimals must be ≤ 6
-    if (pair.erc7984Decimals > 6) {
+    if (!pair.metadataUnreadable && pair.erc7984Decimals > 6) {
       reasons.push(
         `Wrapper has ${pair.erc7984Decimals} decimals (expected ≤ 6 per ERC-7984 spec)`
       );
     }
 
-    // Check 3: Duplicate detection — only flag if NOT explainable by official/Mock split
     const base = pair.erc7984Symbol.replace(/Mock$/, "");
     const siblings = baseSymbolMap.get(base) ?? [];
     if (siblings.length > 1) {
-      // Check if all siblings are distinguishable by the official/Mock pattern
       const hasMock = siblings.some((s) =>
         s.erc7984Symbol.toLowerCase().endsWith("mock")
       );
@@ -97,7 +105,6 @@ export function runIntegrityChecks(pairs: Omit<TokenPair, "integrityStatus" | "i
       const isExplainableByMockSplit = hasMock && hasOfficial;
 
       if (!isExplainableByMockSplit) {
-        // Multiple entries that are NOT the official/Mock split — genuinely suspicious
         const addresses = siblings.map((s) => s.erc7984Address).join(", ");
         reasons.push(
           `Duplicate symbol "${base}" detected across ${siblings.length} entries: ${addresses}`
@@ -112,6 +119,23 @@ export function runIntegrityChecks(pairs: Omit<TokenPair, "integrityStatus" | "i
       integrityReason: reasons.length > 0 ? reasons.join("; ") : undefined,
     };
   });
+}
+
+/** Merge onchain, custom, and preview pairs — onchain wins on duplicate erc7984 address. */
+export function mergeRegistryPairs(
+  onchainPairs: TokenPair[],
+  customPairs: TokenPair[],
+  previewPairs: TokenPair[]
+): TokenPair[] {
+  const seen = new Set<string>();
+  const merged: TokenPair[] = [];
+  for (const pair of [...onchainPairs, ...customPairs, ...previewPairs]) {
+    const key = pair.erc7984Address.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push(pair);
+  }
+  return merged;
 }
 
 // ─── Registry Fetcher ─────────────────────────────────────────────────────────
@@ -129,38 +153,38 @@ export async function fetchRegistryPairs(
     functionName: "getTokenConfidentialTokenPairs",
   })) as RawRegistryPair[];
 
-  // Only surface wrappers that appear in Zama's official docs table for this chain.
-  const validPairs = rawPairs.filter(
-    (p) =>
-      p.isValid &&
-      officialAddresses.has(p.confidentialTokenAddress.toLowerCase())
+  const validPairs = rawPairs.filter((p) => p.isValid);
+
+  const pairs: PairBeforeIntegrity[] = await Promise.all(
+    validPairs.map(async (raw) => {
+      const [erc20Meta, erc7984Meta] = await Promise.all([
+        fetchTokenMetadata(client, raw.tokenAddress),
+        fetchTokenMetadata(client, raw.confidentialTokenAddress),
+      ]);
+
+      const metadataUnreadable = erc20Meta.unreadable || erc7984Meta.unreadable;
+      const wrapperInDocs = officialAddresses.has(
+        raw.confidentialTokenAddress.toLowerCase()
+      );
+
+      return {
+        erc20Address: raw.tokenAddress,
+        erc7984Address: raw.confidentialTokenAddress,
+        erc20Symbol: erc20Meta.symbol,
+        erc20Name: erc20Meta.name,
+        erc20Decimals: erc20Meta.decimals,
+        erc7984Symbol: erc7984Meta.symbol,
+        erc7984Name: erc7984Meta.name,
+        erc7984Decimals: erc7984Meta.decimals,
+        source: "registry" as const,
+        isMock: isMockWrapper(raw.confidentialTokenAddress, chainId),
+        isValid: true,
+        docsVerified: wrapperInDocs,
+        metadataUnreadable,
+      };
+    })
   );
 
-  const pairs: Omit<TokenPair, "integrityStatus" | "integrityReason">[] =
-    await Promise.all(
-      validPairs.map(async (raw) => {
-        const [erc20Meta, erc7984Meta] = await Promise.all([
-          fetchTokenMetadata(client, raw.tokenAddress),
-          fetchTokenMetadata(client, raw.confidentialTokenAddress),
-        ]);
-
-        return {
-          erc20Address: raw.tokenAddress,
-          erc7984Address: raw.confidentialTokenAddress,
-          erc20Symbol: erc20Meta.symbol,
-          erc20Name: erc20Meta.name,
-          erc20Decimals: erc20Meta.decimals,
-          erc7984Symbol: erc7984Meta.symbol,
-          erc7984Name: erc7984Meta.name,
-          erc7984Decimals: erc7984Meta.decimals,
-          source: "registry" as const,
-          isMock: isMockWrapper(raw.confidentialTokenAddress, chainId),
-          isValid: true,
-        };
-      })
-    );
-
-  // Run integrity checks on all fetched pairs
   return runIntegrityChecks(pairs);
 }
 
@@ -183,6 +207,7 @@ export function mapCustomEntryToPair(
     source,
     isMock: true,
     configOnly,
+    docsVerified: false,
     isValid: false,
     integrityStatus: "flagged",
     integrityReason: configOnly

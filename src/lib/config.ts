@@ -30,16 +30,24 @@ export function getRegistryAddress(chainId: number): `0x${string}` {
 }
 
 // ─── Relayer URLs ─────────────────────────────────────────────────────────────
-/** Zama relayer-sdk requires absolute http(s) URL. */
-export function getRelayerUrl(chainId?: number): string {
+/**
+ * Zama relayer-sdk requires an absolute http(s) URL.
+ * In the browser, defaults to the same-origin Next.js proxy (`/api/relayer/<chainId>`).
+ * Override with NEXT_PUBLIC_RELAYER_URL / NEXT_PUBLIC_MAINNET_RELAYER_URL.
+ */
+export function getRelayerUrl(chainId?: number, origin?: string): string {
+  const base = origin?.replace(/\/$/, "");
+
   if (chainId === MAINNET_CHAIN_ID) {
     const env = process.env.NEXT_PUBLIC_MAINNET_RELAYER_URL;
     if (env?.startsWith("http")) return env;
-    // Mainnet relayer — will be filled in when API key is provided
+    if (base) return `${base}/api/relayer/1`;
     return "https://relayer.mainnet.zama.org/v2";
   }
+
   const env = process.env.NEXT_PUBLIC_RELAYER_URL;
   if (env?.startsWith("http")) return env;
+  if (base) return `${base}/api/relayer/11155111`;
   return "https://relayer.testnet.zama.org/v2";
 }
 
@@ -119,7 +127,7 @@ export const KNOWN_MOCK_PAIRS = [
   },
 ] as const;
 
-/** Wrapper addresses listed in Zama Sepolia docs — on-chain extras are excluded. */
+/** Wrapper addresses listed in Zama Sepolia docs — used for docs-verified badge only. */
 export const OFFICIAL_DOC_WRAPPER_ADDRESSES = new Set(
   KNOWN_MOCK_PAIRS.map((p) => p.wrapper.toLowerCase())
 );

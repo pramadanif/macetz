@@ -25,7 +25,7 @@ import { TokenSelect } from "@/components/app/TokenSelect";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import { formatWalletError } from "@/lib/errors";
-import { isOperationalPair } from "@/lib/pair-utils";
+import { isDistributeOperationalPair } from "@/lib/pair-utils";
 import { isMainnet } from "@/lib/config";
 import { CONFIDENTIAL_BALANCE_ABI } from "@/lib/abis";
 import {
@@ -51,7 +51,7 @@ function newRow(): RecipientRow {
   return { id: crypto.randomUUID(), address: "", amount: "" };
 }
 
-function RecipientDecryptCard({ tokenAddress }: { tokenAddress: `0x${string}` }) {
+function RecipientDecryptCard({ tokenAddress, chainId }: { tokenAddress: `0x${string}`; chainId: number }) {
   const { address } = useAccount();
   const { data: meta } = useMetadata(tokenAddress);
   const {
@@ -92,7 +92,7 @@ function RecipientDecryptCard({ tokenAddress }: { tokenAddress: `0x${string}` })
         <AlertMessage
           type="error"
           title="Decryption Failed"
-          message={formatWalletError(error)}
+          message={formatWalletError(error, chainId)}
         />
       )}
 
@@ -201,7 +201,7 @@ export function DistributePanel() {
   const totalAmount = amounts.reduce((a, b) => a + b, 0n);
 
   const operationalPairs = useMemo(
-    () => (pairs ?? []).filter(isOperationalPair),
+    () => (pairs ?? []).filter(isDistributeOperationalPair),
     [pairs]
   );
 
@@ -353,7 +353,7 @@ export function DistributePanel() {
       setActiveCampaignId(campaign.id);
       setStep(4);
     } catch (e) {
-      setExecError(formatWalletError(e));
+      setExecError(formatWalletError(e, chainId));
     }
   };
 
@@ -444,6 +444,7 @@ export function DistributePanel() {
                 <RecipientDecryptCard
                   key={pair.erc7984Address}
                   tokenAddress={pair.erc7984Address}
+                  chainId={chainId}
                 />
               ))}
             </>

@@ -2,10 +2,20 @@ import { type PublicClient } from "viem";
 import { ERC165_ABI, ERC7984_INTERFACE_ID } from "./abis";
 import type { TokenPair } from "./types";
 
-/** True when pair is safe for Shield / Decrypt / Distribute (real on-chain wrapper). */
+/** True when pair is safe for Shield / Decrypt (valid on-chain registry or verified custom). */
 export function isOperationalPair(pair: TokenPair): boolean {
   if (pair.configOnly) return false;
   if (pair.source === "registry") return pair.isValid;
+  return pair.isValid && pair.integrityStatus === "verified";
+}
+
+/**
+ * Stricter gate for TokenOps Distribute (payroll safety).
+ * Registry pairs must be docs-verified; custom/preview pairs need on-chain verification.
+ */
+export function isDistributeOperationalPair(pair: TokenPair): boolean {
+  if (pair.configOnly) return false;
+  if (pair.source === "registry") return pair.isValid && pair.docsVerified === true;
   return pair.isValid && pair.integrityStatus === "verified";
 }
 

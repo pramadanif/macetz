@@ -32,8 +32,97 @@ export const DOCS_SECTIONS: DocsSection[] = [
         text: "Macetz is a browser dApp for Zama FHE confidential tokens (ERC-7984). You start with a normal ERC-20, wrap it into a confidential wrapper so balances stay encrypted on-chain, decrypt your own balance when you need to read it, and unwrap back to the underlying token when you are done. No FHE background required: connect a wallet, pick a token pair from the Registry, Shield to wrap, Decrypt to view your balance, then Unshield to get ERC-20 back.",
       },
       {
+        type: "subheading",
+        text: "Run locally — from git clone to a running app",
+      },
+      {
         type: "paragraph",
-        text: "Typical flow: Registry → Shield (wrap) → Decrypt (read balance) → Shield tab Unshield (two-step via Zama relayer). On Sepolia, the Faucet mints mock underlying tokens for official tutorial pairs.",
+        text: "Prerequisites: Node.js 20+, MetaMask (or any EIP-1193 wallet), and a little Sepolia ETH for gas (any public Sepolia faucet works). Then it is copy-paste all the way:",
+      },
+      {
+        type: "code",
+        blockId: "quickstart-clone",
+      },
+      {
+        type: "paragraph",
+        text: "Environment variables are optional — the app defaults to a public Sepolia RPC and the built-in relayer proxy. Only create .env.local if you want your own RPC or WalletConnect:",
+      },
+      {
+        type: "code",
+        blockId: "quickstart-env",
+      },
+      {
+        type: "paragraph",
+        text: "Start the dev server and open the app:",
+      },
+      {
+        type: "code",
+        blockId: "quickstart-dev",
+      },
+      {
+        type: "list",
+        items: [
+          "Landing page: http://localhost:3000 — dApp: http://localhost:3000/app",
+          "Connect MetaMask and switch to Sepolia (the in-app network switcher can trigger the switch for you).",
+          "First decrypt asks for one EIP-712 signature — that is expected.",
+        ],
+      },
+      {
+        type: "subheading",
+        text: "The full bounty flow, in order",
+      },
+      {
+        type: "list",
+        items: [
+          "1. Faucet tab → Mint All (or mint cUSDCMock) — get free mock ERC-20s.",
+          "2. Shield tab → pick cUSDCMock → enter amount → Approve & Wrap.",
+          "3. Decrypt tab → select the pair → sign EIP-712 → see your confidential balance.",
+          "4. Shield tab → Unshield → wait ~30–90s for relayer finalization → ERC-20 is back.",
+          "5. Decrypt tab → Any ERC-7984 → paste any wrapper address (try your own from the dev-guide) → universal decrypt.",
+          "6. Distribute tab (optional) → CSV of recipients → one confidential payroll tx.",
+        ],
+      },
+      {
+        type: "subheading",
+        text: "Verify and production build",
+      },
+      {
+        type: "paragraph",
+        text: "Run the same checks CI would — typecheck, production build, and 21 automated assertions against the real app modules:",
+      },
+      {
+        type: "code",
+        blockId: "quickstart-verify",
+      },
+    ],
+    codeBlocks: [
+      {
+        id: "quickstart-clone",
+        language: "bash",
+        code: `git clone https://github.com/pramadanif/macetz.git
+cd macetz
+npm install`,
+      },
+      {
+        id: "quickstart-env",
+        language: "bash",
+        code: `# OPTIONAL — defaults work out of the box
+cp .env.example .env.local
+# then edit NEXT_PUBLIC_RPC_URL / NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`,
+      },
+      {
+        id: "quickstart-dev",
+        language: "bash",
+        code: `npm run dev
+# → open http://localhost:3000/app`,
+      },
+      {
+        id: "quickstart-verify",
+        language: "bash",
+        code: `npm run verify
+# production build + start:
+npm run build
+npm run start`,
       },
     ],
   },

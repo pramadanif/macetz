@@ -44,15 +44,15 @@ type ZamaConfig = ReturnType<typeof createZamaConfig>;
 /** Survives dev HMR remounts — avoids re-init + startup flash on every save. */
 let zamaCache: ZamaConfig | "failed" | null = null;
 
-function buildZamaConfig(): ZamaConfig {
+function buildZamaConfig(origin?: string): ZamaConfig {
   const mySepolia = {
     ...sepoliaFhe,
-    relayerUrl: getRelayerUrl(SEPOLIA_CHAIN_ID),
+    relayerUrl: getRelayerUrl(SEPOLIA_CHAIN_ID, origin),
   } as const satisfies FheChain;
 
   const myMainnet = {
     ...mainnetFhe,
-    relayerUrl: getRelayerUrl(MAINNET_CHAIN_ID),
+    relayerUrl: getRelayerUrl(MAINNET_CHAIN_ID, origin),
   } as const satisfies FheChain;
 
   return createZamaConfig({
@@ -76,7 +76,8 @@ function resolveZamaInit(): { config: ZamaConfig | null; failed: boolean } {
     return { config: zamaCache, failed: false };
   }
   try {
-    zamaCache = buildZamaConfig();
+    const origin = typeof window !== "undefined" ? window.location.origin : undefined;
+    zamaCache = buildZamaConfig(origin);
     return { config: zamaCache, failed: false };
   } catch (err) {
     console.error("[Macetz] FHE relayer init failed, running in browse-only mode:", err);

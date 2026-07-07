@@ -43,6 +43,9 @@ export const KNOWN_TOKEN_ICONS: Record<string, string> = {
   tGBPMock: "/icons/tgbp.svg",
   ctGBP: "/icons/tgbp.svg",
   ctGBPMock: "/icons/tgbp.svg",
+
+  steakcUSDC: "/icons/steakcusdc.svg",
+  csteakcUSDC: "/icons/steakcusdc.svg",
 };
 
 export const CURRENCY_SYMBOL_MAP: Record<string, string> = {

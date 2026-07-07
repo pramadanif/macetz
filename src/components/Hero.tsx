@@ -83,16 +83,21 @@ export function Hero() {
             >
               {/* Elegant Buttons */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                <button className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
+                <a href="/app" className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
                   Launch Registry <ArrowUpRight className="w-4 h-4 opacity-70" />
-                </button>
-                <button className="bg-white/70 hover:bg-white backdrop-blur-md border border-white/80 text-gray-800 font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-light inline-flex items-center gap-2">
-                  View Live Demo
-                </button>
+                </a>
+                <a
+                  href="https://github.com/pramadanif/macetz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/70 hover:bg-white backdrop-blur-md border border-white/80 text-gray-800 font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-light inline-flex items-center gap-2"
+                >
+                  View on GitHub
+                </a>
               </div>
 
               <p className="text-[11px] font-semibold text-gray-400 tracking-[0.1em] uppercase mt-2 opacity-80 text-left">
-                Built on Zama Protocol • FHEVM • Live on Sepolia
+                Built on Zama Protocol • FHEVM • Sepolia + Mainnet
               </p>
             </motion.div>
           </div>
@@ -120,15 +125,15 @@ export function Hero() {
                 ))}
 
                 {/* Main Hero Image */}
-                <div className="hero-section__asset-image relative z-10 w-full flex justify-center transform transition-transform duration-1000 hover:scale-[1.02]">
+                <div className="hero-section__asset-image relative z-10 w-full flex justify-center transform transition-transform duration-1000 hover:scale-[1.01]">
                   <Image
                     src={heroAsset}
                     alt="Hero asset"
                     width={658}
                     height={689}
                     priority
-                    sizes="(max-width: 768px) 88vw, (max-width: 1280px) 55vw, 750px"
-                    className="hero-section__hero-img !w-full !max-w-[110%] lg:!max-w-[120%] lg:-mr-10 h-auto object-contain filter drop-shadow-[0_30px_60px_rgba(0,0,0,0.1)]"
+                    sizes="(max-width: 768px) 80vw, (max-width: 1280px) 45vw, 600px"
+                    className="hero-section__hero-img !w-[90%] lg:!w-[85%] lg:-mr-10 h-auto object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
                   />
                 </div>
               </div>

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * Optional same-origin relayer proxy for Zama FHE operations.
+ * Default client wiring routes through `/api/relayer/<chainId>` (see getRelayerUrl in config.ts).
+ * Forwards requests to Zama's public relayer hosts — no API keys are injected server-side.
+ */
 const RELAYER_URLS: Record<string, string> = {
   "11155111": "https://relayer.testnet.zama.org/v2",
+  "1": process.env.MAINNET_RELAYER_URL ?? "https://relayer.mainnet.zama.org/v2",
 };
 
 async function proxyRequest(request: NextRequest, method: string) {

@@ -45,8 +45,9 @@ export function SupportedAssets() {
           Supported Ecosystem Assets
         </h2>
         <p className="text-[#6B7280] font-medium text-[15px] md:text-[16px] mb-10 max-w-2xl leading-[1.7]">
-          Based on zero knowledge proofs, standard crypto passes through a
-          'shielding' threshold, transforming to confidential versions.
+          Powered by Zama's fully homomorphic encryption (FHE), standard ERC-20
+          tokens pass through a 'shielding' threshold and become their
+          confidential ERC-7984 versions.
         </p>
       </div>
 

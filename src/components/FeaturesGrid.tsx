@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import faucetAsset from "../../assets/faucet2.png";
 import { RegistryToggle } from "./RegistryToggle";
 import { motion } from "motion/react";
+import { TokenIcon } from "@/components/app/TokenIcon";
 
 export function FeaturesGrid() {
   return (
@@ -31,6 +32,16 @@ export function FeaturesGrid() {
           directly with the official onchain Zama Wrapper Registry, ensuring every ERC-20 ↔ ERC-7984 
           pair is canonical and verified. Eliminate ambiguity and build with absolute confidence.
         </p>
+
+        {/* Confidential Token Logos */}
+        <div className="flex items-center justify-center gap-3 sm:gap-4 mt-10 flex-wrap">
+          {["cUSDC", "cUSDT", "cZAMA", "cWETH", "cBRON", "cXAUt", "ctGBP"].map((symbol) => (
+             <div key={symbol} className="flex items-center gap-2.5 bg-white/60 backdrop-blur-sm shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-white/80 px-4 py-2.5 rounded-2xl hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(0,0,0,0.06)] transition-all duration-300 cursor-default">
+               <TokenIcon symbol={symbol} size={24} />
+               <span className="text-[13px] font-bold text-[#3F3F46] tracking-tight">{symbol}</span>
+             </div>
+          ))}
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-[minmax(0,34%)_minmax(168px,22%)_minmax(0,44%)] gap-6 md:gap-8 md:items-stretch md:min-h-[460px] max-w-6xl mx-auto">
@@ -81,12 +92,12 @@ export function FeaturesGrid() {
             </div>
           </div>
 
-          <button
-            type="button"
+          <a
+            href="/app"
             className="shrink-0 self-start bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] shadow-inset-dark hover:-translate-y-0.5 flex items-center gap-2"
           >
             Explore the Registry <span className="text-gray-400">→</span>
-          </button>
+          </a>
         </motion.div>
 
         {/* Center — faucet fills entire card */}

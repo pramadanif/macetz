@@ -135,6 +135,37 @@ export const ERC20_ABI = [
 
 export const ERC7984_INTERFACE_ID = "0x4958f2a4" as const;
 
+/** Read encrypted balance handles without decrypting — used for disperse claim-status checks. */
+export const CONFIDENTIAL_BALANCE_ABI = [
+  {
+    inputs: [{ name: "account", type: "address" }],
+    name: "confidentialBalanceOf",
+    outputs: [{ name: "", type: "bytes32" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "holder", type: "address" },
+      { name: "spender", type: "address" },
+    ],
+    name: "isOperator",
+    outputs: [{ name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { name: "operator", type: "address" },
+      { name: "until", type: "uint48" },
+    ],
+    name: "setOperator",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+] as const;
+
 export const ERC165_ABI = [
   {
     inputs: [{ name: "interfaceId", type: "bytes4" }],

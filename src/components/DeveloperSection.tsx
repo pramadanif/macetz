@@ -41,7 +41,9 @@ export function DeveloperSection() {
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2A2A]">
             <span className="text-[13px] text-[#A1A1AA]">Confidential Token Standard</span>
             <a
-              href="#"
+              href="https://docs.zama.ai"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center bg-[#FFD600] text-black text-xs font-bold px-3 py-1.5 rounded hover:bg-[#FFD600]/90 transition-colors"
             >
               Docs ↗

@@ -1,4 +1,11 @@
-export type PairSource = "registry" | "local-dev";
+export type PairSource = "registry" | "local-dev" | "browser-preview";
+
+/**
+ * Integrity status computed by the registry integrity checker.
+ * - "verified": pair passed all sanity checks
+ * - "flagged": pair has at least one anomaly (see integrityReason)
+ */
+export type IntegrityStatus = "verified" | "flagged";
 
 export interface TokenPair {
   erc20Address: `0x${string}`;
@@ -12,6 +19,16 @@ export interface TokenPair {
   source: PairSource;
   isMock: boolean;
   isValid: boolean;
+  /** Integrity check result — computed after registry load. */
+  integrityStatus: IntegrityStatus;
+  /** Human-readable reason when integrityStatus === "flagged". */
+  integrityReason?: string;
+  /** Registry-only example from config — never offered in Shield/Decrypt/Distribute. */
+  configOnly?: boolean;
+  /** True when wrapper address appears in Zama's official docs allowlist (config.ts). */
+  docsVerified?: boolean;
+  /** On-chain metadata (name/symbol/decimals) could not be read for this pair. */
+  metadataUnreadable?: boolean;
 }
 
 export interface CustomPairEntry {
@@ -21,10 +38,13 @@ export interface CustomPairEntry {
   decimals: number;
   source: "local-dev";
   iconUrl?: string;
+  /** When true, pair is a docs/registry example only — not deployed on-chain. */
+  configExample?: boolean;
 }
 
 export interface CustomPairsConfig {
-  pairs: CustomPairEntry[];
+  /** ChainId-keyed pairs — e.g. "11155111" (Sepolia), "1" (Mainnet). */
+  [chainId: string]: CustomPairEntry[];
 }
 
 export interface UnwrapRequest {

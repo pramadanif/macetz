@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAccount } from "wagmi";
-import { Shield, Database, Key, Droplet } from "lucide-react";
+import { Shield, Database, Key, Droplet, Users } from "lucide-react";
 import { WalletButton } from "@/components/app/WalletButton";
 
 interface DashboardProps {
@@ -41,6 +41,14 @@ const features = [
     icon: Droplet,
     color: "text-[#16171C]",
     bg: "bg-gray-200/60",
+  },
+  {
+    title: "Distribute Payroll",
+    description: "Batch confidential salaries via TokenOps Disperse SDK.",
+    tab: "distribute",
+    icon: Users,
+    color: "text-[#16171C]",
+    bg: "bg-[#F5C518]/20",
   },
 ];
 

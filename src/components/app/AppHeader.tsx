@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { WalletButton } from "@/components/app/WalletButton";
-import { CoinPlaceholder } from "@/components/CoinPlaceholder";
 
 type Tab = "registry" | "wrap" | "decrypt" | "faucet";
 
@@ -26,10 +25,10 @@ export function AppHeader({ activeTab, onTabChange }: Props) {
     <header className="fixed top-0 inset-x-0 z-50 flex flex-col items-center pt-4 px-4">
       <div className="w-full max-w-6xl flex items-center justify-between h-[64px] px-4 sm:px-6 bg-white/70 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-[32px]">
         <a href="/" className="flex items-center gap-2.5 shrink-0 group">
-          <CoinPlaceholder
-            type="silver"
-            size="sm"
-            className="w-8 h-8 transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-sm"
+          <img
+            src="/icons/logo.png"
+            alt="Macetz Logo"
+            className="w-8 h-8 object-contain mix-blend-multiply transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110"
           />
           <span className="font-bold text-[22px] tracking-tight text-[#16171C]">
             Macetz

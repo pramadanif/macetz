@@ -14,55 +14,50 @@ type FooterColumn = {
 
 const FOOTER_COLUMNS: FooterColumn[] = [
   {
-    title: "Protocol",
+    title: "Product",
     links: [
-      { label: "Macetz App", href: "#", external: true },
-      { label: "Wrapper Registry", href: "#" },
-      { label: "ERC-7984 Bridge", href: "#", external: true },
-      { label: "Shielded Report", href: "#" },
-      { label: "Litepaper", href: "#", external: true },
+      { label: "Launch App", href: "/app" },
+      { label: "Registry Browser", href: "#registry" },
+      { label: "Universal Decrypt", href: "#decrypt" },
+      { label: "Confidential Distribution", href: "#distribute" },
+      { label: "Extensibility", href: "#extensibility" },
     ],
   },
   {
-    title: "Solutions",
+    title: "Repository",
     links: [
-      { label: "Confidential RWA", href: "#" },
-      { label: "Confidential Payments", href: "#" },
-      { label: "Confidential Payroll", href: "#" },
-      { label: "Confidential DeFi", href: "#" },
-      { label: "Token Distribution", href: "#" },
+      { label: "GitHub", href: "https://github.com/pramadanif/macetz", external: true },
+      { label: "README", href: "https://github.com/pramadanif/macetz#readme", external: true },
+      { label: "Deploy Your Own Pair", href: "https://github.com/pramadanif/macetz/tree/main/dev-guide", external: true },
+      { label: "MIT License", href: "https://github.com/pramadanif/macetz/blob/main/LICENSE", external: true },
     ],
   },
   {
-    title: "Resources",
+    title: "Onchain",
     links: [
-      { label: "Developer Hub", href: "#" },
-      { label: "Documentation", href: "#", external: true },
-      { label: "Github", href: "#", external: true },
-      { label: "Research Papers", href: "#", external: true },
-      { label: "Introduction to FHE", href: "#" },
+      {
+        label: "Registry (Sepolia)",
+        href: "https://sepolia.etherscan.io/address/0x2f0750Bbb0A246059d80e94c454586a7F27a128e",
+        external: true,
+      },
+      {
+        label: "Registry (Mainnet)",
+        href: "https://etherscan.io/address/0xeb5015fF021DB115aCe010f23F55C2591059bBA0",
+        external: true,
+      },
+      {
+        label: "TokenOps Disperse Singleton",
+        href: "https://sepolia.etherscan.io/address/0x710dD9885Cc9986EfD234E7719483147a6d8DBb4",
+        external: true,
+      },
     ],
   },
   {
-    title: "Community",
+    title: "Ecosystem",
     links: [
-      { label: "X", href: "#", external: true },
-      { label: "Telegram", href: "#", external: true },
-      { label: "LinkedIn", href: "#", external: true },
-      { label: "Events", href: "#" },
-      { label: "All Channels", href: "#" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About", href: "#" },
-      { label: "Contact", href: "#" },
-      { label: "Jobs", href: "#", external: true },
-      { label: "Press & Media", href: "#" },
-      { label: "Brand Kit", href: "#" },
-      { label: "Legal", href: "#" },
-      { label: "Cookie Preferences", href: "#" },
+      { label: "Zama", href: "https://www.zama.ai", external: true },
+      { label: "Zama Docs", href: "https://docs.zama.ai", external: true },
+      { label: "Developer Program", href: "https://www.zama.ai/programs/developer-program", external: true },
     ],
   },
 ];
@@ -86,7 +81,7 @@ export function Footer() {
   return (
     <footer className="site-footer bg-[#f1f1ef] border-t border-[#e5e5e3]">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-14 pb-0">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-10 mb-10 lg:mb-14">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10 mb-10 lg:mb-14">
           {FOOTER_COLUMNS.map((column) => (
             <div key={column.title}>
               <h3 className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#16171C] mb-4">
@@ -111,9 +106,15 @@ export function Footer() {
 
         <div className="border-t border-[#e5e5e3] mt-2 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 relative z-10">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#16171C]">
-            {["Registry", "Decrypt", "Distribute", "Docs", "GitHub"].map((link) => (
-              <a key={link} href="#" className="hover:text-[#16171C]/70 transition-colors">
-                {link}
+            {[
+              { label: "Registry", href: "#registry" },
+              { label: "Decrypt", href: "#decrypt" },
+              { label: "Distribute", href: "#distribute" },
+              { label: "Docs", href: "https://docs.zama.ai" },
+              { label: "GitHub", href: "https://github.com/pramadanif/macetz" },
+            ].map((link) => (
+              <a key={link.label} href={link.href} className="hover:text-[#16171C]/70 transition-colors">
+                {link.label}
               </a>
             ))}
           </div>

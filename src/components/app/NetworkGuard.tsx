@@ -1,30 +1,52 @@
 "use client";
 
 import React, { useState, useEffect, useRef, type ReactNode } from "react";
-import { useConnection, useSwitchChain } from "wagmi";
-import { CHAIN_ID } from "@/lib/config";
+import { useConnection, useConfig, useAccount } from "wagmi";
+import { switchChain } from "wagmi/actions";
+import { isSupportedChain, SEPOLIA_CHAIN_ID } from "@/lib/config";
 
 export function NetworkGuard({ children }: { children: ReactNode }) {
+  const config = useConfig();
   const { isConnected, chainId } = useConnection();
-  const { switchChain, isPending } = useSwitchChain();
+  const { connector } = useAccount();
   const [mounted, setMounted] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const promptedRef = useRef(false);
 
   useEffect(() => setMounted(true), []);
 
-  const wrongNetwork = mounted && isConnected && chainId !== undefined && chainId !== CHAIN_ID;
+  // Wrong network = connected to something OTHER than Sepolia or Mainnet
+  const wrongNetwork =
+    mounted &&
+    isConnected &&
+    chainId !== undefined &&
+    !isSupportedChain(chainId);
 
   useEffect(() => {
-    if (!wrongNetwork) {
+    if (!wrongNetwork || !connector) {
       promptedRef.current = false;
       return;
     }
     if (promptedRef.current) return;
     promptedRef.current = true;
-    switchChain({ chainId: CHAIN_ID });
-  }, [wrongNetwork, switchChain]);
+    setIsPending(true);
+    switchChain(config, { chainId: SEPOLIA_CHAIN_ID, connector })
+      .catch(() => {})
+      .finally(() => setIsPending(false));
+  }, [wrongNetwork, connector, config]);
 
-  if (!mounted || !isConnected || chainId === CHAIN_ID) {
+  const handleSwitchSepolia = async () => {
+    if (!connector) return;
+    setIsPending(true);
+    try {
+      await switchChain(config, { chainId: SEPOLIA_CHAIN_ID, connector });
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  // Supported network (Sepolia or Mainnet) or not connected — render children
+  if (!mounted || !isConnected || !wrongNetwork) {
     return <>{children}</>;
   }
 
@@ -50,13 +72,15 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
             </svg>
           </div>
           <h2 className="text-2xl font-semibold tracking-tight mb-3">
-            Wrong network
+            Unsupported network
           </h2>
           <p className="text-gray-500 text-[15px] leading-relaxed mb-6">
-            Macetz runs on Sepolia testnet. Approve the network switch in your wallet to continue.
+            Macetz supports <strong>Sepolia testnet</strong> and{" "}
+            <strong>Ethereum mainnet</strong>. Switch to one of these networks
+            to continue.
           </p>
           <button
-            onClick={() => switchChain({ chainId: CHAIN_ID })}
+            onClick={handleSwitchSepolia}
             disabled={isPending}
             className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
           >

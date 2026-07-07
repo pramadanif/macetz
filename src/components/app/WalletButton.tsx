@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 import { injected } from "wagmi/connectors";
 import { CHAIN_ID } from "@/lib/config";
 
 const connector = injected();
 
 export function WalletButton() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId } = useAccount();
   const { connect, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const { switchChain, isPending: isSwitching } = useSwitchChain();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -27,6 +28,21 @@ export function WalletButton() {
   }
 
   if (isConnected && address) {
+    if (!chainId || (chainId !== 11155111 && chainId !== 1)) {
+      return (
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-amber-600 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+            Unsupported Network
+          </span>
+          <button
+            onClick={() => disconnect()}
+            className="text-xs text-gray-500 hover:text-red-600 bg-white/60 px-3 py-1.5 rounded-full border border-white/60 transition-colors"
+          >
+            Disconnect
+          </button>
+        </div>
+      );
+    }
     return (
       <div className="flex items-center gap-2">
         <span className="text-xs font-mono text-gray-500 bg-white/60 px-3 py-1.5 rounded-full border border-white/60">

@@ -9,25 +9,43 @@
 const COINGECKO_CDN = "https://assets.coingecko.com/coins/images";
 
 export const KNOWN_TOKEN_ICONS: Record<string, string> = {
-  USDC: `${COINGECKO_CDN}/6319/small/usdc.png`,
-  USDCMock: `${COINGECKO_CDN}/6319/small/usdc.png`,
-  cUSDCMock: `${COINGECKO_CDN}/6319/small/usdc.png`,
+  USDC: "/icons/usdc.svg",
+  USDCMock: "/icons/usdc.svg",
+  cUSDC: "/icons/usdc.svg",
+  cUSDCMock: "/icons/usdc.svg",
 
-  USDT: `${COINGECKO_CDN}/325/small/Tether.png`,
-  USDTMock: `${COINGECKO_CDN}/325/small/Tether.png`,
-  cUSDTMock: `${COINGECKO_CDN}/325/small/Tether.png`,
+  USDT: "/icons/usdt.svg",
+  USDTMock: "/icons/usdt.svg",
+  cUSDT: "/icons/usdt.svg",
+  cUSDTMock: "/icons/usdt.svg",
 
-  WETH: `${COINGECKO_CDN}/2518/small/weth.png`,
-  WETHMock: `${COINGECKO_CDN}/2518/small/weth.png`,
-  cWETHMock: `${COINGECKO_CDN}/2518/small/weth.png`,
+  WETH: "/icons/weth.svg",
+  WETHMock: "/icons/weth.svg",
+  cWETH: "/icons/weth.svg",
+  cWETHMock: "/icons/weth.svg",
 
-  XAUt: `${COINGECKO_CDN}/10481/small/Tether_Gold.png`,
-  XAUtMock: `${COINGECKO_CDN}/10481/small/Tether_Gold.png`,
-  cXAUtMock: `${COINGECKO_CDN}/10481/small/Tether_Gold.png`,
+  XAUt: "/icons/xaut.svg",
+  XAUtMock: "/icons/xaut.svg",
+  cXAUt: "/icons/xaut.svg",
+  cXAUtMock: "/icons/xaut.svg",
 
-  ZAMA: "https://zama.ai/favicon.ico",
-  ZAMAMock: "https://zama.ai/favicon.ico",
-  cZAMAMock: "https://zama.ai/favicon.ico",
+  ZAMA: "/icons/zama.svg",
+  ZAMAMock: "/icons/zama.svg",
+  cZAMA: "/icons/zama.svg",
+  cZAMAMock: "/icons/zama.svg",
+
+  BRON: "/icons/bron-bron-coin-logo.webp",
+  BRONMock: "/icons/bron-bron-coin-logo.webp",
+  cBRON: "/icons/bron-bron-coin-logo.webp",
+  cBRONMock: "/icons/bron-bron-coin-logo.webp",
+
+  tGBP: "/icons/tgbp.svg",
+  tGBPMock: "/icons/tgbp.svg",
+  ctGBP: "/icons/tgbp.svg",
+  ctGBPMock: "/icons/tgbp.svg",
+
+  steakcUSDC: "/icons/steakcusdc.svg",
+  csteakcUSDC: "/icons/steakcusdc.svg",
 };
 
 export const CURRENCY_SYMBOL_MAP: Record<string, string> = {
@@ -63,11 +81,24 @@ export function getMonogramColor(symbol: string): [string, string] {
   return MONOGRAM_COLORS[idx] as [string, string];
 }
 
+/**
+ * On-chain token symbols aren't always clean — some contracts embed the
+ * "Mock" marker as literal text like "csteakcUSDC (Mock)" instead of the
+ * "csteakcUSDCMock" suffix convention. Strip both forms + surrounding
+ * whitespace so icon/monogram lookups aren't tripped up by formatting.
+ */
+function stripMockMarker(symbol: string): string {
+  return symbol
+    .replace(/\s*\(mock\)\s*$/i, "")
+    .replace(/mock$/i, "")
+    .trim();
+}
+
 export function getMonogramText(symbol: string): string {
-  const currency = CURRENCY_SYMBOL_MAP[symbol];
+  const currency = CURRENCY_SYMBOL_MAP[symbol] ?? CURRENCY_SYMBOL_MAP[stripMockMarker(symbol)];
   if (currency) return currency;
 
-  const clean = symbol.replace(/^c/i, "").replace(/Mock$/i, "");
+  const clean = stripMockMarker(symbol).replace(/^c/i, "");
   return clean.slice(0, 2).toUpperCase();
 }
 
@@ -79,7 +110,7 @@ export function resolveTokenIcon(
     return { type: "url", url: iconUrl };
   }
 
-  const knownUrl = KNOWN_TOKEN_ICONS[symbol];
+  const knownUrl = KNOWN_TOKEN_ICONS[symbol] ?? KNOWN_TOKEN_ICONS[stripMockMarker(symbol)];
   if (knownUrl) {
     return { type: "url", url: knownUrl };
   }

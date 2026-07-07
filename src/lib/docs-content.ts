@@ -65,16 +65,25 @@ export const DOCS_SECTIONS: DocsSection[] = [
   },
   {
     id: "adding-a-pair",
-    title: "Adding a New Pair — Three Ways",
+    title: "Adding a New Pair — Four Ways",
     blocks: [
       {
         type: "paragraph",
-        text: "You can register a confidential token pair three ways. Pick based on permanence: local JSON for repo commits, Admin UI for quick browser-only tests, or the dev-guide for deploying your own contracts from scratch.",
+        text: "You can surface a confidential token pair four ways. Pick based on permanence: official onchain registration for production, local JSON for repo commits, Admin UI for quick browser-only tests, or the dev-guide for deploying your own contracts from scratch.",
+      },
+      {
+        type: "anchor",
+        id: "official-registration",
+        label: "1. Official onchain registration (recommended for production)",
+      },
+      {
+        type: "paragraph",
+        text: "Register the pair in the Zama Wrappers Registry contract (0x2f0750Bb…128e on Sepolia, 0xeb5015fF…bBA0 on Mainnet). Once isValid, Macetz surfaces it automatically on the next load — zero code changes. Pairs listed in Zama's official docs additionally get the Docs-verified badge.",
       },
       {
         type: "anchor",
         id: "local-config",
-        label: "1. Local config (config/custom-pairs.json)",
+        label: "2. Local config (config/custom-pairs.json)",
       },
       {
         type: "paragraph",
@@ -87,7 +96,7 @@ export const DOCS_SECTIONS: DocsSection[] = [
       {
         type: "anchor",
         id: "admin-ui",
-        label: "2. In-app Admin UI",
+        label: "3. In-app Admin UI",
       },
       {
         type: "paragraph",
@@ -104,7 +113,7 @@ export const DOCS_SECTIONS: DocsSection[] = [
       {
         type: "anchor",
         id: "deploy-from-scratch",
-        label: "3. Deploy your own token from scratch (dev-guide)",
+        label: "4. Deploy your own token from scratch (dev-guide)",
       },
       {
         type: "paragraph",
@@ -220,7 +229,8 @@ export const DOCS_SECTIONS: DocsSection[] = [
       "erc7984": "0xdD709e08De12bC4768c6D2FEe8DFD1D6C71D7CF7",
       "symbol": "cMDEMO",
       "decimals": 18,
-      "source": "local-dev"
+      "source": "local-dev",
+      "configExample": true
     }
   ]
 }`,
@@ -329,6 +339,7 @@ export const DOCS_TOC_EXTENDED: { id: string; title: string; depth: number }[] =
   { id: "getting-started", title: "Getting Started", depth: 0 },
   { id: "how-registry-works", title: "How the Registry Works", depth: 0 },
   { id: "adding-a-pair", title: "Adding a New Pair", depth: 0 },
+  { id: "official-registration", title: "Official registration", depth: 1 },
   { id: "local-config", title: "Local config", depth: 1 },
   { id: "admin-ui", title: "Admin UI", depth: 1 },
   { id: "deploy-from-scratch", title: "Deploy from scratch", depth: 1 },

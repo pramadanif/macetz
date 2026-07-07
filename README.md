@@ -601,6 +601,8 @@ git clone https://github.com/pramadanif/macetz.git
 cd macetz
 
 # 2. Install dependencies
+# (the repo-level .npmrc sets legacy-peer-deps for the TokenOps SDK,
+#  so a plain npm install works out of the box)
 npm install
 
 # 3. Configure environment variables

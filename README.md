@@ -20,7 +20,7 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 
 <br/>
 
-<img src="public/screenshot-app.png" alt="Macetz dApp — the Zama Wrappers Registry interface: browse, wrap, decrypt and faucet" width="900" />
+<img src="assets/demo/01-registry-browse.png" alt="Macetz dApp — the Zama Wrappers Registry interface: browse, wrap, decrypt and faucet" width="900" />
 
 </div>
 
@@ -88,7 +88,7 @@ The complete bounty flow, captured live on Sepolia. Every GIF below maps 1:1 to 
 
 ### 1. Browse the Registry — every onchain pair, badged
 Live read of `getTokenConfidentialTokenPairs()` on Sepolia: **✓ Docs-verified** badges, integrity checks, Dev-pair labels, and one-click network switch to Mainnet and back.
-<img src="assets/demo/01-registry-browse.gif" alt="Browsing the Zama Wrappers Registry with docs-verified badges" width="900"/>
+<img src="assets/demo/01-registry-browse.png" alt="Browsing the Zama Wrappers Registry with docs-verified badges" width="900"/>
 
 ### 2. Faucet — all 7 official cTokenMocks in one click
 `Mint All` mints every public cTokenMock (cUSDC, cUSDT, cWETH, cBRON, cZAMA, ctGBP, cXAUt mocks) straight from the official Sepolia contracts.

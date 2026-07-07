@@ -23,6 +23,7 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 
 - [Overview](#-overview)
 - [Live Deployment](#-live-deployment)
+- [Product Demo](#-product-demo-gif-walkthrough)
 - [Features](#-features)
 - [Architecture](#-architecture)
 - [How the Registry is Sourced](#-how-the-registry-is-sourced)
@@ -71,6 +72,62 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 > **Note for Judges:** Connect MetaMask to **Sepolia** for the full bounty flow (registry → faucet → shield → decrypt → unshield → arbitrary ERC-7984 decrypt). Ethereum mainnet is supported for browse and relayer-dependent shield/decrypt with a real-funds confirmation gate. **Confidential Distribute (TokenOps) is Sepolia-only** — the official disperse singleton is deployed on testnet.
 >
 > The app is fully self-contained — it can also be run locally in one command (`npm run dev`) or redeployed anywhere with the included `vercel.json`.
+
+---
+
+## 🎬 Product Demo (GIF Walkthrough)
+
+The complete bounty flow, captured live on Sepolia. Every GIF below maps 1:1 to a hard requirement of the Wrappers Registry bounty.
+
+<!--
+  RECORDING GUIDE (delete this comment when all GIFs are in):
+  • Save each GIF to assets/demo/ with the EXACT filename shown, then uncomment its <img> line.
+  • Tools: Kap (macOS, exports GIF directly) or QuickTime + gifski. Browser window ~1100px wide.
+  • 12–15 fps, keep each GIF under 15 MB (GitHub hard limit is ~100 MB but big GIFs load slowly), 10–30s each.
+  • Hide bookmarks bar + wallet seed. Use a throwaway wallet. NEVER record the dev-guide/.env folder.
+-->
+
+### 1. Browse the Registry — every onchain pair, badged
+Live read of `getTokenConfidentialTokenPairs()` on Sepolia: **✓ Docs-verified** badges, integrity checks, Dev-pair labels, and one-click network switch to Mainnet and back.
+<!-- RECORD: open /app → Registry tab → scroll pairs → hover a Docs-verified badge → toggle network to Mainnet (registry reloads, 9 pairs) → back to Sepolia. ~20s -->
+<!-- <img src="assets/demo/01-registry-browse.gif" alt="Browsing the Zama Wrappers Registry with docs-verified badges" width="900"/> -->
+
+### 2. Faucet — all 7 official cTokenMocks in one click
+`Mint All` mints every public cTokenMock (cUSDC, cUSDT, cWETH, cBRON, cZAMA, ctGBP, cXAUt mocks) straight from the official Sepolia contracts.
+<!-- RECORD: Faucet tab → click Mint All → show progress states → one MetaMask confirm → success toasts. ~20s -->
+<!-- <img src="assets/demo/02-faucet-mint-all.gif" alt="Minting all 7 official cTokenMocks with Mint All" width="900"/> -->
+
+### 3. Shield — ERC-20 → confidential ERC-7984
+Auto allowance detection, then a single **Approve & Wrap** with the live step indicator (`Approving → Wrapping → Confirmed`).
+<!-- RECORD: Shield tab → pick cUSDCMock → amount 50 → Approve & Wrap → 2 MetaMask confirms → success. ~25s -->
+<!-- <img src="assets/demo/03-shield-wrap.gif" alt="Wrapping ERC-20 into confidential ERC-7984 with one click" width="900"/> -->
+
+### 4. Decrypt — one EIP-712 signature, your balance only
+The encrypted `euint64` balance becomes readable after a single EIP-712 signature. The signature can only ever decrypt the signer's own balance.
+<!-- RECORD: Decrypt tab → select cUSDCMock → Decrypt → MetaMask EIP-712 signature prompt (show the typed-data!) → balance appears. ~15s -->
+<!-- <img src="assets/demo/04-decrypt-eip712.gif" alt="Decrypting a confidential balance via EIP-712 signature" width="900"/> -->
+
+### 5. Unshield — the honest two-phase unwrap
+`unwrap()` → Zama relayer decrypts → `finalizeUnwrap()`. The UI shows a real *Pending Finalization* state (~30–90s) instead of faking instant success.
+<!-- RECORD: Shield tab → Unshield 10 → confirm → show Pending Finalization card with timer → (cut/speed up) → Confirmed + ERC-20 back. ~30s, timelapse the wait -->
+<!-- <img src="assets/demo/05-unshield-two-phase.gif" alt="Two-phase unshield with relayer finalization" width="900"/> -->
+
+### 6. Universal Decrypt — ANY ERC-7984, not just registry pairs
+Paste an arbitrary wrapper address (here: our own `cMTUSD`, deployed via the dev-guide and **not** in the official registry) → validated onchain via ERC-165 → decrypted.
+<!-- RECORD: Decrypt tab → "Any ERC-7984" mode → paste 0x3A1E3F5a8C5975078C587C73E80A916505538C4B → validation ✓ → decrypt → balance. ~20s. THIS IS THE MONEY SHOT for the bounty. -->
+<!-- <img src="assets/demo/06-universal-decrypt.gif" alt="Universal decrypt of an arbitrary ERC-7984 address" width="900"/> -->
+
+### 7. Add a Pair — extensibility without redeploying
+The in-app Admin UI validates a new pair onchain (ERC-165 + decimals), previews it instantly, and emits a copy-paste `custom-pairs.json` snippet.
+<!-- RECORD: Registry → Add a Pair → paste MTUSD + cMTUSD addresses → validation passes → Preview badge appears → Copy Config Snippet. ~25s -->
+<!-- <img src="assets/demo/07-add-pair.gif" alt="Adding a new pair through the validated Admin UI" width="900"/> -->
+
+### 8. Confidential Distribution — payroll nobody can read
+CSV of recipients in, one TokenOps disperse tx out. Recipients are visible onchain; **amounts never are**. Each recipient decrypts only their own slice.
+<!-- RECORD: Distribute tab → upload CSV (2-3 recipients) → preflight review → approve operator + disperse → switch to recipient view → Decrypt & Claim. ~30s -->
+<!-- <img src="assets/demo/08-confidential-distribute.gif" alt="Confidential payroll distribution via TokenOps" width="900"/> -->
+
+> 🎥 **Full narrated demo video:** [VIDEO_LINK — add before submitting] <!-- HUMAN: replace with YouTube/Loom link -->
 
 ---
 

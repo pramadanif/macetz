@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { useAccount, usePublicClient, useWalletClient, useChainId } from "wagmi";
-import { isAddress, parseUnits, formatUnits } from "viem";
+import { isAddress, parseUnits, formatUnits, hexToBytes } from "viem";
 import { useZamaSDK } from "@zama-fhe/react-sdk";
 import {
   useConfidentialBalance,
@@ -206,8 +206,27 @@ export function DistributePanel() {
   );
 
   const disperse = useDisperse({
-    // Zama react-sdk relayer is structurally compatible; cast bridges v3 type drift.
-    encryptor: () => zamaSDK.relayer as unknown as Encryptor,
+    // Zama's encrypt() returns { encryptedValues: hex[], inputProof: hex }, but
+    // TokenOps' Encryptor requires { handles: Uint8Array[], inputProof: Uint8Array }.
+    // Adapt the shape (hex -> bytes) — same proven path as scripts/sepolia-bounty-e2e.ts.
+    encryptor: () =>
+      ({
+        encrypt: async (params: {
+          values: { value: bigint | boolean; type: string }[];
+          contractAddress: `0x${string}`;
+          userAddress: `0x${string}`;
+        }) => {
+          const result = await zamaSDK.encrypt({
+            values: params.values as { value: bigint; type: "euint64" }[],
+            contractAddress: params.contractAddress,
+            userAddress: params.userAddress,
+          });
+          return {
+            handles: result.encryptedValues.map((v) => hexToBytes(v as `0x${string}`)),
+            inputProof: hexToBytes(result.inputProof as `0x${string}`),
+          };
+        },
+      }) as unknown as Encryptor,
   });
 
   const preflight = usePreflightDisperse({

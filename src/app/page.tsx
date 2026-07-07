@@ -14,7 +14,7 @@ const STRUCTURED_DATA = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Macetz — Zama Wrappers Registry',
-  url: 'https://macetz.vercel.app',
+  url: 'https://www.macetz.web.id',
   applicationCategory: 'FinanceApplication',
   operatingSystem: 'Web',
   description:

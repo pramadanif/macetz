@@ -1,11 +1,14 @@
 <div align="center">
 
-# 🔐 Macetz — The Confidential Wrapper Registry
+<img src="public/icons/logo.png" alt="Macetz logo" width="96" height="96" />
+
+# Macetz — The Confidential Wrapper Registry
 
 **The canonical interface for the Zama Wrappers Registry.**  
 Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero friction.
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-macetz.vercel.app-black?style=for-the-badge&logo=vercel)](https://macetz.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live-www.macetz.web.id-black?style=for-the-badge&logo=vercel)](https://www.macetz.web.id)
+[![Demo Video](https://img.shields.io/badge/Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/IfY9iK8THK8)
 [![Network](https://img.shields.io/badge/Network-Sepolia_%2B_Mainnet-627EEA?style=for-the-badge&logo=ethereum)](https://etherscan.io)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
 [![Built with Zama](https://img.shields.io/badge/Built_with-Zama_FHEVM-ff6b35?style=for-the-badge)](https://www.zama.ai)
@@ -15,32 +18,36 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 
 *Built for the Zama Developer Program — Season 3 · Wrappers Registry Bounty Track*
 
+<br/>
+
+<img src="public/screenshot-app.png" alt="Macetz dApp — the Zama Wrappers Registry interface: browse, wrap, decrypt and faucet" width="900" />
+
 </div>
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Overview](#-overview)
-- [Live Deployment](#-live-deployment)
-- [Product Demo](#-product-demo-gif-walkthrough)
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [How the Registry is Sourced](#-how-the-registry-is-sourced)
-- [How to Add a New Pair](#-how-to-add-a-new-erc-20--erc-7984-pair)
-- [Official Sepolia cTokenMocks](#-official-sepolia-ctokenmocks)
-- [Technical Deep Dive](#-technical-deep-dive)
-- [Tech Stack](#-tech-stack)
-- [Local Development](#-local-development)
-- [Deployment](#-deployment)
-- [Environment Variables](#-environment-variables)
-- [Bounty Submission Checklist](#-bounty-submission-checklist-wrappers-registry-track)
-- [Verified On-Chain Evidence](#-verified-on-chain-evidence-sepolia)
-- [Known Limitations](#-known-limitations)
+- [Overview](#overview)
+- [Live Deployment](#live-deployment)
+- [Product Demo](#product-demo-gif-walkthrough)
+- [Features](#features)
+- [Architecture](#architecture)
+- [How the Registry is Sourced](#how-the-registry-is-sourced)
+- [How to Add a New Pair](#how-to-add-a-new-erc-20--erc-7984-pair)
+- [Official Sepolia cTokenMocks](#official-sepolia-ctokenmocks)
+- [Technical Deep Dive](#technical-deep-dive)
+- [Tech Stack](#tech-stack)
+- [Local Development](#local-development)
+- [Deployment](#deployment)
+- [Environment Variables](#environment-variables)
+- [Bounty Submission Checklist](#bounty-submission-checklist-wrappers-registry-track)
+- [Verified On-Chain Evidence](#verified-on-chain-evidence-sepolia)
+- [Known Limitations](#known-limitations)
 
 ---
 
-## 🎯 Overview
+## Overview
 
 Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrappers instead of using the ones that already exist in the official Zama Wrappers Registry. This fragments the ecosystem — every team ships against a slightly different set of tokens, integrations don't compose, and users end up with a wallet full of look-alike confidential assets that don't actually interoperate.
 
@@ -61,12 +68,12 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 
 ---
 
-## 🚀 Live Deployment
+## Live Deployment
 
 | Environment | URL | Network |
 |---|---|---|
-| **Production** | [https://macetz.vercel.app](https://macetz.vercel.app) | Sepolia + Mainnet |
-| **App (dApp)** | [https://macetz.vercel.app/app](https://macetz.vercel.app/app) | Sepolia + Mainnet |
+| **Production** | [https://www.macetz.web.id](https://www.macetz.web.id) | Sepolia + Mainnet |
+| **App (dApp)** | [https://www.macetz.web.id/app](https://www.macetz.web.id/app) | Sepolia + Mainnet |
 | **Local dev** | `npm run dev` → [http://localhost:3000/app](http://localhost:3000/app) | Sepolia (recommended for judges) |
 
 > **Note for Judges:** Connect MetaMask to **Sepolia** for the full bounty flow (registry → faucet → shield → decrypt → unshield → arbitrary ERC-7984 decrypt). Ethereum mainnet is supported for browse and relayer-dependent shield/decrypt with a real-funds confirmation gate. **Confidential Distribute (TokenOps) is Sepolia-only** — the official disperse singleton is deployed on testnet.
@@ -75,63 +82,47 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 
 ---
 
-## 🎬 Product Demo (GIF Walkthrough)
+## Product Demo (GIF Walkthrough)
 
 The complete bounty flow, captured live on Sepolia. Every GIF below maps 1:1 to a hard requirement of the Wrappers Registry bounty.
 
-<!--
-  RECORDING GUIDE (delete this comment when all GIFs are in):
-  • Save each GIF to assets/demo/ with the EXACT filename shown, then uncomment its <img> line.
-  • Tools: Kap (macOS, exports GIF directly) or QuickTime + gifski. Browser window ~1100px wide.
-  • 12–15 fps, keep each GIF under 15 MB (GitHub hard limit is ~100 MB but big GIFs load slowly), 10–30s each.
-  • Hide bookmarks bar + wallet seed. Use a throwaway wallet. NEVER record the dev-guide/.env folder.
--->
-
 ### 1. Browse the Registry — every onchain pair, badged
 Live read of `getTokenConfidentialTokenPairs()` on Sepolia: **✓ Docs-verified** badges, integrity checks, Dev-pair labels, and one-click network switch to Mainnet and back.
-<!-- RECORD: open /app → Registry tab → scroll pairs → hover a Docs-verified badge → toggle network to Mainnet (registry reloads, 9 pairs) → back to Sepolia. ~20s -->
-<!-- <img src="assets/demo/01-registry-browse.gif" alt="Browsing the Zama Wrappers Registry with docs-verified badges" width="900"/> -->
+<img src="assets/demo/01-registry-browse.gif" alt="Browsing the Zama Wrappers Registry with docs-verified badges" width="900"/>
 
 ### 2. Faucet — all 7 official cTokenMocks in one click
 `Mint All` mints every public cTokenMock (cUSDC, cUSDT, cWETH, cBRON, cZAMA, ctGBP, cXAUt mocks) straight from the official Sepolia contracts.
-<!-- RECORD: Faucet tab → click Mint All → show progress states → one MetaMask confirm → success toasts. ~20s -->
-<!-- <img src="assets/demo/02-faucet-mint-all.gif" alt="Minting all 7 official cTokenMocks with Mint All" width="900"/> -->
+<img src="assets/demo/02-faucet-mint-all.gif" alt="Minting all 7 official cTokenMocks with Mint All" width="900"/>
 
 ### 3. Shield — ERC-20 → confidential ERC-7984
 Auto allowance detection, then a single **Approve & Wrap** with the live step indicator (`Approving → Wrapping → Confirmed`).
-<!-- RECORD: Shield tab → pick cUSDCMock → amount 50 → Approve & Wrap → 2 MetaMask confirms → success. ~25s -->
-<!-- <img src="assets/demo/03-shield-wrap.gif" alt="Wrapping ERC-20 into confidential ERC-7984 with one click" width="900"/> -->
+<img src="assets/demo/03-shield-wrap.gif" alt="Wrapping ERC-20 into confidential ERC-7984 with one click" width="900"/>
 
 ### 4. Decrypt — one EIP-712 signature, your balance only
 The encrypted `euint64` balance becomes readable after a single EIP-712 signature. The signature can only ever decrypt the signer's own balance.
-<!-- RECORD: Decrypt tab → select cUSDCMock → Decrypt → MetaMask EIP-712 signature prompt (show the typed-data!) → balance appears. ~15s -->
-<!-- <img src="assets/demo/04-decrypt-eip712.gif" alt="Decrypting a confidential balance via EIP-712 signature" width="900"/> -->
+<img src="assets/demo/04-decrypt-eip712.gif" alt="Decrypting a confidential balance via EIP-712 signature" width="900"/>
 
 ### 5. Unshield — the honest two-phase unwrap
 `unwrap()` → Zama relayer decrypts → `finalizeUnwrap()`. The UI shows a real *Pending Finalization* state (~30–90s) instead of faking instant success.
-<!-- RECORD: Shield tab → Unshield 10 → confirm → show Pending Finalization card with timer → (cut/speed up) → Confirmed + ERC-20 back. ~30s, timelapse the wait -->
-<!-- <img src="assets/demo/05-unshield-two-phase.gif" alt="Two-phase unshield with relayer finalization" width="900"/> -->
+<img src="assets/demo/05-unshield-two-phase.gif" alt="Two-phase unshield with relayer finalization" width="900"/>
 
 ### 6. Universal Decrypt — ANY ERC-7984, not just registry pairs
 Paste an arbitrary wrapper address (here: our own `cMTUSD`, deployed via the dev-guide and **not** in the official registry) → validated onchain via ERC-165 → decrypted.
-<!-- RECORD: Decrypt tab → "Any ERC-7984" mode → paste 0x3A1E3F5a8C5975078C587C73E80A916505538C4B → validation ✓ → decrypt → balance. ~20s. THIS IS THE MONEY SHOT for the bounty. -->
-<!-- <img src="assets/demo/06-universal-decrypt.gif" alt="Universal decrypt of an arbitrary ERC-7984 address" width="900"/> -->
+<img src="assets/demo/06-universal-decrypt.gif" alt="Universal decrypt of an arbitrary ERC-7984 address" width="900"/>
 
 ### 7. Add a Pair — extensibility without redeploying
 The in-app Admin UI validates a new pair onchain (ERC-165 + decimals), previews it instantly, and emits a copy-paste `custom-pairs.json` snippet.
-<!-- RECORD: Registry → Add a Pair → paste MTUSD + cMTUSD addresses → validation passes → Preview badge appears → Copy Config Snippet. ~25s -->
-<!-- <img src="assets/demo/07-add-pair.gif" alt="Adding a new pair through the validated Admin UI" width="900"/> -->
+<img src="assets/demo/07-add-pair.gif" alt="Adding a new pair through the validated Admin UI" width="900"/>
 
 ### 8. Confidential Distribution — payroll nobody can read
 CSV of recipients in, one TokenOps disperse tx out. Recipients are visible onchain; **amounts never are**. Each recipient decrypts only their own slice.
-<!-- RECORD: Distribute tab → upload CSV (2-3 recipients) → preflight review → approve operator + disperse → switch to recipient view → Decrypt & Claim. ~30s -->
-<!-- <img src="assets/demo/08-confidential-distribute.gif" alt="Confidential payroll distribution via TokenOps" width="900"/> -->
+<img src="assets/demo/08-confidential-distribute.gif" alt="Confidential payroll distribution via TokenOps" width="900"/>
 
-> 🎥 **Full narrated demo video:** [VIDEO_LINK — add before submitting] <!-- HUMAN: replace with YouTube/Loom link -->
+> **Full narrated demo video:** https://youtu.be/IfY9iK8THK8
 
 ---
 
-## 🌐 Dual-Network Support
+## Dual-Network Support
 
 Macetz is the first Wrappers Registry interface to explicitly support **both** networks listed in Zama's official documentation.
 
@@ -152,7 +143,7 @@ Wrap and unwrap on Ethereum mainnet show an explicit confirmation dialog before 
 
 ---
 
-## 🔍 Registry Integrity Detection
+## Registry Integrity Detection
 
 Macetz automatically flags registry anomalies rather than blindly rendering every entry — a feature no known competitor has shipped as a live product feature.
 
@@ -175,9 +166,9 @@ Some symbols legitimately have two entries: an official production wrapper (e.g.
 
 ---
 
-## ✨ Features
+## Features
 
-### 🗂️ Browse the Registry
+### Browse the Registry
 - Displays every official ERC-20 ↔ ERC-7984 wrapper pair from the onchain Zama Wrappers Registry
 - Shows token metadata: symbol, name, decimals, and both contract addresses with Etherscan links
 - **Network-aware**: auto-switches between Sepolia and Mainnet registry contracts based on wallet connection
@@ -185,29 +176,36 @@ Some symbols legitimately have two entries: an official production wrapper (e.g.
 - Clearly labels mock (testnet-only) vs. production tokens
 - Merges local dev-only pairs with a **"Dev Pair"** badge — `configExample` entries are **registry display only** (not offered in Shield/Decrypt/Distribute until real contracts are deployed)
 
-### 📖 In-App Documentation
-- Sidebar **Docs** tab with table of contents, copyable code blocks, and the full `dev-guide/` deploy walkthrough
-- Structured content in `src/lib/docs-content.ts` — edit docs without touching layout code
+### Developer-Friendly Onboarding — Guided Tutorial + In-App Docs
+Macetz is built to get a developer productive in minutes, not hours:
+- **Show Tutorial** — an interactive spotlight tour (triggered from the sidebar, and auto-shown on first visit) walks you through the whole app tab by tab: Faucet → Registry → Shield → Decrypt → Distribute. It highlights each control instead of making you read a manual.
+- **In-App Docs** — a sidebar **Docs** tab with a table of contents and copyable code blocks. It covers a full quickstart *from `git clone` to a running app*, all four ways to add a pair, security notes, and the complete `dev-guide/` Hardhat walkthrough to deploy your own confidential token — copy-paste, end to end.
+- Docs content is structured data in `src/lib/docs-content.ts` — edit copy without touching layout code.
 
-### 💼 Confidential Distribution (TokenOps — Sepolia)
+### SEO-Optimized & Discoverable
+- Keyword-rich metadata (title, description, Open Graph, Twitter cards) targeting *Zama faucet*, *Zama wrapper*, *Zama Wrappers Registry*, *ERC-7984*, *confidential token*, *FHE/FHEVM*
+- Auto-generated `/sitemap.xml` and `/robots.txt` (Next.js metadata routes) + `WebApplication` JSON-LD structured data for rich results
+- Google Search Console verification file served from `public/` — ready to submit the sitemap
+
+### Confidential Distribution (TokenOps — Sepolia)
 - 4-step sender wizard: token → recipients (CSV) → preflight review → disperse tx
 - Recipient view: detect pending allocations → EIP-712 decrypt own payroll amount
 - Uses official TokenOps singleton `0x710dD9885Cc9986EfD234E7719483147a6d8DBb4` on Sepolia
 
-### 🔒 Wrap (ERC-20 → ERC-7984)
+### Wrap (ERC-20 → ERC-7984)
 - Auto-detects current ERC-20 allowance before submitting
 - One-click "Approve & Wrap" or a clean two-step flow for transparency
 - Shows real-time step indicator: `Approving → Wrapping → Confirmed`
 - **Mainnet safety**: explicit real-funds confirmation dialog before any mainnet transaction
 - Displays updated ERC-7984 balance immediately after wrap
 
-### 🔓 Unwrap (ERC-7984 → ERC-20)
+### Unwrap (ERC-7984 → ERC-20)
 - Full two-step async unwrap: `unwrap()` → relayer decryption → `finalizeUnwrap()`
 - Shows a "Pending Finalization" state with timer and human-readable explanation
 - Tracks unwrap request IDs onchain for auditability
 - **Mainnet safety**: explicit real-funds confirmation dialog before any mainnet transaction
 
-### 🔑 Decrypt Balances (Universal)
+### Decrypt Balances (Universal)
 - Decrypts any ERC-7984 balance via EIP-712 user-decryption
 - Works for **any** ERC-7984 contract address — not only registry pairs
 - **Works on both networks**: decrypt is read-only/EIP-712 and fully supported on Ethereum mainnet
@@ -215,7 +213,7 @@ Some symbols legitimately have two entries: an official production wrapper (e.g.
   - **Registry mode**: Select from the official pair dropdown
   - **Universal mode**: Paste any address — validated via `supportsInterface(0x4958f2a4)` before attempting decrypt
 
-### 🚰 Testnet Faucet
+### Testnet Faucet
 - Claims official cTokenMock test tokens (up to 1,000 per mint call)
 - Covers all 7 public-mint Sepolia cTokenMocks listed in the Zama docs
 - One-click mint with real-time transaction status feedback
@@ -223,7 +221,7 @@ Some symbols legitimately have two entries: an official production wrapper (e.g.
 
 ---
 
-## 🏛️ Architecture
+## Architecture
 
 ### System Overview
 
@@ -339,7 +337,7 @@ sequenceDiagram
 
 ---
 
-## 🔗 How the Registry is Sourced
+## How the Registry is Sourced
 
 Macetz uses a **hybrid registry model** — the onchain registry is always the authoritative source, while a local config allows dev-only extensions without fragmenting the canonical set.
 
@@ -413,7 +411,7 @@ flowchart LR
 
 ---
 
-## ➕ How to Add a New ERC-20 ↔ ERC-7984 Pair
+## How to Add a New ERC-20 ↔ ERC-7984 Pair
 
 Macetz supports **four paths** for adding pairs:
 
@@ -486,7 +484,7 @@ Cross-platform Hardhat guide (macOS + Windows): [`dev-guide/README.md`](./dev-gu
 
 ---
 
-## 🪙 Official Sepolia cTokenMocks
+## Official Sepolia cTokenMocks
 
 All 8 official Sepolia confidential wrappers from the Zama docs are hardcoded in `src/lib/config.ts` (7 mocks + ctGBP). The Faucet tab shows the 7 public-mint mocks only:
 
@@ -503,7 +501,7 @@ All 8 official Sepolia confidential wrappers from the Zama docs are hardcoded in
 
 ---
 
-## 🔬 Technical Deep Dive
+## Technical Deep Dive
 
 ### Wrap Flow (ERC-20 → ERC-7984)
 
@@ -625,7 +623,7 @@ export function formatWalletError(error: unknown, chainId?: number): string {
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology | Version | Purpose |
 |---|---|---|---|
@@ -642,7 +640,7 @@ export function formatWalletError(error: unknown, chainId?: number): string {
 
 ---
 
-## 💻 Local Development
+## Local Development
 
 ### Prerequisites
 
@@ -659,7 +657,7 @@ cd macetz
 
 # 2. Install dependencies
 # (the repo-level .npmrc sets legacy-peer-deps for the TokenOps SDK,
-#  so a plain npm install works out of the box)
+# so a plain npm install works out of the box)
 npm install
 
 # 3. Configure environment variables
@@ -688,7 +686,7 @@ npm run start
 
 ---
 
-## 🚢 Deployment
+## Deployment
 
 ### Vercel (Recommended)
 
@@ -712,7 +710,7 @@ NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_wc_project_id
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
@@ -742,7 +740,7 @@ NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
 
 ---
 
-## 💼 Special Bounty Track — Confidential Payroll (TokenOps)
+## Special Bounty Track — Confidential Payroll (TokenOps)
 
 Macetz integrates **TokenOps Confidential Disperse** (`@tokenops/sdk/fhe-disperse`) in the same app as the Wrappers Registry bounty — no separate deployment.
 
@@ -781,12 +779,12 @@ Encryptor uses the live Zama relayer from `@zama-fhe/react-sdk` (`useZamaSDK().r
 
 ---
 
-## ✅ Bounty Submission Checklist (Wrappers Registry Track)
+## Bounty Submission Checklist (Wrappers Registry Track)
 
 | Requirement | Status | Where |
 |---|---|---|
 | Public GitHub repo | ✅ | This repository |
-| Live URL (wallet connect) | ✅ https://macetz.vercel.app <!-- HUMAN: verify this URL is live before submitting --> | [Live Deployment](#-live-deployment) |
+| Live URL (wallet connect) | ✅ https://www.macetz.web.id <!-- HUMAN: verify this URL is live before submitting --> | [Live Deployment](#live-deployment) |
 | Sepolia: browse registry | ✅ | Registry tab — all valid onchain pairs + docs-verified badge |
 | Sepolia: all 7 cTokenMock faucet mints | ✅ | Faucet tab — `KNOWN_MOCK_PAIRS` + Mint All |
 | Sepolia: wrap / unwrap every registry pair | ✅ | Shield tab — `useShield` / `useUnshield` |
@@ -796,7 +794,8 @@ Encryptor uses the live Zama relayer from `@zama-fhe/react-sdk` (`useZamaSDK().r
 | EIP-712 user-decryption | ✅ | `@zama-fhe/react-sdk` `useConfidentialBalance` |
 | Relayer SDK integration | ✅ | `Web3Provider` defaults to `/api/relayer/<chainId>` proxy |
 | Error handling (approval, balance, network) | ✅ | `src/lib/errors.ts` + UI guards |
-| Demo video + X thread | 🔲 Submitter delivers | — |
+| Demo video | ✅ [youtu.be/IfY9iK8THK8](https://youtu.be/IfY9iK8THK8) | Full narrated walkthrough |
+| X thread | 🔲 Submitter delivers | — |
 
 **Judge quick path (Sepolia):** Faucet mint `cUSDCMock` → Shield wrap → Decrypt balance → Unshield → Decrypt tab paste arbitrary wrapper from `dev-guide` deploy.
 
@@ -804,7 +803,7 @@ Run automated checks: `npm run verify`
 
 ---
 
-## 🧾 Verified On-Chain Evidence (Sepolia)
+## Verified On-Chain Evidence (Sepolia)
 
 Every hash below was produced by the reproducible E2E script [`scripts/sepolia-bounty-e2e.ts`](./scripts/sepolia-bounty-e2e.ts) (run it with your own funded key to regenerate). The dev-guide deployment record lives in [`dev-guide/deployed-addresses.json`](./dev-guide/deployed-addresses.json).
 
@@ -823,7 +822,7 @@ Every hash below was produced by the reproducible E2E script [`scripts/sepolia-b
 
 ---
 
-## ⚠️ Known Limitations
+## Known Limitations
 
 - **Bounty E2E on Sepolia** — Full wrap/unwrap/faucet/distribute flow is validated on Sepolia testnet. Mainnet supports registry browse; shield/decrypt are relayer-dependent and may fail until Zama provisions the mainnet relayer.
 - **Config examples** — `configExample: true` dev pairs are registry display-only until replaced with deployed addresses
@@ -834,7 +833,7 @@ Every hash below was produced by the reproducible E2E script [`scripts/sepolia-b
 
 ---
 
-## 📄 License
+## License
 
 [MIT](./LICENSE)
 
@@ -842,8 +841,8 @@ Every hash below was produced by the reproducible E2E script [`scripts/sepolia-b
 
 <div align="center">
 
-**Built with ❤️ for the Zama Ecosystem**
+**Built for the Zama Ecosystem**
 
-[Live Demo](https://macetz.vercel.app) · [GitHub](https://github.com/pramadanif/macetz) · [Zama Docs](https://docs.zama.ai)
+[Live Demo](https://www.macetz.web.id) · [GitHub](https://github.com/pramadanif/macetz) · [Zama Docs](https://docs.zama.ai)
 
 </div>

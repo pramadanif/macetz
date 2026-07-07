@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: 'Macetz dApp — Zama Wrappers Registry: Wrap, Decrypt & Faucet',
     description:
       'Wrap, unwrap, and decrypt confidential ERC-7984 tokens, plus the Zama Sepolia faucet — all in one dApp.',
-    url: 'https://macetz.vercel.app/app',
+    url: 'https://www.macetz.web.id/app',
   },
 };
 

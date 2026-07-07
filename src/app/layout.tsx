@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import '../index.css';
 import { Web3Provider } from '@/providers/Web3Provider';
 
-const SITE_URL = 'https://macetz.vercel.app';
+const SITE_URL = 'https://www.macetz.web.id';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -67,10 +67,6 @@ export const metadata: Metadata = {
     description:
       'The canonical dApp for the Zama Wrappers Registry — wrap ERC-20 into confidential ERC-7984, decrypt via EIP-712, and claim the Zama Sepolia faucet.',
     images: ['/icons/logo.png'],
-  },
-  icons: {
-    icon: '/icons/logo.png',
-    apple: '/icons/logo.png',
   },
   robots: {
     index: true,

@@ -1,24 +1,28 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useChainId, useSwitchChain, useAccount } from "wagmi";
+import { useChainId, useAccount, useConfig } from "wagmi";
+import { switchChain } from "wagmi/actions";
 import { SEPOLIA_CHAIN_ID, MAINNET_CHAIN_ID, isMainnet } from "@/lib/config";
 
 export function NetworkSwitchButton() {
+  const config = useConfig();
   const chainId = useChainId();
-  const { isConnected } = useAccount();
-  const { switchChain, isPending } = useSwitchChain();
+  const { isConnected, connector } = useAccount();
+  const [mounted, setMounted] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const [declinedMsg, setDeclinedMsg] = useState<string | null>(null);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Clear declined message after 3s
+  useEffect(() => setMounted(true), []);
+
   useEffect(() => {
     if (!declinedMsg) return;
     const t = setTimeout(() => setDeclinedMsg(null), 3000);
     return () => clearTimeout(t);
   }, [declinedMsg]);
 
-  if (!isConnected) return null;
+  if (!mounted || !isConnected) return null;
 
   const onMainnet = isMainnet(chainId);
   const targetChainId = onMainnet ? SEPOLIA_CHAIN_ID : MAINNET_CHAIN_ID;
@@ -28,18 +32,25 @@ export function NetworkSwitchButton() {
 
   const handleSwitch = async () => {
     setDeclinedMsg(null);
+    if (!connector) {
+      setDeclinedMsg("Reconnect wallet to switch networks");
+      return;
+    }
+    setIsPending(true);
     try {
-      await switchChain({ chainId: targetChainId });
+      await switchChain(config, { chainId: targetChainId, connector });
     } catch {
       setDeclinedMsg(`Declined — still on ${currentLabel}`);
+    } finally {
+      setIsPending(false);
     }
   };
 
   return (
     <div className="px-1 space-y-1">
-      {/* Network indicator card */}
       <button
         id="network-switch-btn"
+        type="button"
         onClick={handleSwitch}
         disabled={isPending}
         onMouseEnter={() => setIsHovered(true)}
@@ -49,9 +60,7 @@ export function NetworkSwitchButton() {
           border-gray-200/70 bg-white/60 hover:bg-white/90 hover:border-gray-300/80 hover:shadow-sm"
         style={{ backdropFilter: "blur(8px)" }}
       >
-        {/* Live network indicator dot */}
         <span className="relative flex items-center justify-center w-5 h-5 shrink-0">
-          {/* Outer ping ring */}
           <span
             className={`absolute inline-flex h-full w-full rounded-full opacity-40 ${
               isPending
@@ -61,7 +70,6 @@ export function NetworkSwitchButton() {
                 : "bg-[#5C728A] animate-ping"
             }`}
           />
-          {/* Inner solid dot */}
           <span
             className={`relative inline-flex rounded-full h-2.5 w-2.5 shadow-sm ${
               isPending
@@ -73,7 +81,6 @@ export function NetworkSwitchButton() {
           />
         </span>
 
-        {/* Network label */}
         <div className="flex-1 text-left min-w-0">
           {isPending ? (
             <span className="flex items-center gap-1.5 text-[12px] font-semibold text-[#D4A600]">
@@ -92,7 +99,6 @@ export function NetworkSwitchButton() {
           )}
         </div>
 
-        {/* Switch arrow — revealed on hover */}
         <div
           className={`shrink-0 flex items-center gap-1 text-[10px] font-semibold transition-all duration-200 ${
             isHovered && !isPending
@@ -101,7 +107,6 @@ export function NetworkSwitchButton() {
           }`}
         >
           <span>{targetLabel}</span>
-          {/* Double arrow icon */}
           <svg
             width="12"
             height="12"
@@ -118,12 +123,8 @@ export function NetworkSwitchButton() {
         </div>
       </button>
 
-      {/* Rejection message — non-alarming, auto-clears */}
       {declinedMsg && (
-        <p
-          className="text-[10px] text-gray-400 text-center px-2 leading-tight"
-          style={{ animation: "fadeIn 0.15s ease-out" }}
-        >
+        <p className="text-[10px] text-gray-400 text-center px-2 leading-tight">
           {declinedMsg}
         </p>
       )}

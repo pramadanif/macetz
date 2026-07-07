@@ -1,9 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useChainId } from "wagmi";
-import { AnimatePresence, motion } from "motion/react";
-import { CoinPlaceholder } from "@/components/CoinPlaceholder";
 import { WalletButton } from "@/components/app/WalletButton";
 import { NetworkSwitchButton } from "@/components/app/NetworkSwitchButton";
 import { isMainnet } from "@/lib/config";
@@ -100,14 +98,6 @@ const FAUCET_ITEM: NavItem = {
   ),
 };
 
-/** Shared animation config — matches existing `transition-all duration-200` baseline. */
-const FAUCET_VARIANTS = {
-  initial: { opacity: 0, height: 0, marginTop: 0 },
-  animate: { opacity: 1, height: "auto", marginTop: 0 },
-  exit: { opacity: 0, height: 0, marginTop: 0 },
-};
-const FAUCET_TRANSITION = { duration: 0.2, ease: "easeInOut" as const };
-
 interface Props {
   activeTab: Tab;
   onTabChange: (tab: Tab) => void;
@@ -140,8 +130,11 @@ function NavButton({
 
 export function AppSidebar({ activeTab, onTabChange }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const chainId = useChainId();
-  const onMainnet = isMainnet(chainId);
+  const onMainnet = mounted && isMainnet(chainId);
+
+  useEffect(() => setMounted(true), []);
 
   const handleTabChange = (tab: Tab) => {
     onTabChange(tab);
@@ -152,7 +145,7 @@ export function AppSidebar({ activeTab, onTabChange }: Props) {
     <div className="flex flex-col h-full">
       {/* Wordmark */}
       <div className="flex items-center gap-2.5 px-5 py-6">
-        <CoinPlaceholder type="silver" size="sm" className="w-8 h-8 shadow-sm" />
+        <img src="/icons/logo.png" alt="Macetz Logo" className="w-8 h-8 object-contain mix-blend-multiply" />
         <span className="font-bold text-[20px] tracking-tight text-[#16171C]">
           Macetz
         </span>
@@ -171,26 +164,16 @@ export function AppSidebar({ activeTab, onTabChange }: Props) {
             </li>
           ))}
 
-          {/* Faucet — conditionally shown with smooth animated transition */}
-          <AnimatePresence initial={false}>
-            {!onMainnet && (
-              <motion.li
-                key="faucet-nav"
-                variants={FAUCET_VARIANTS}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={FAUCET_TRANSITION}
-                style={{ overflow: "hidden" }}
-              >
-                <NavButton
-                  item={FAUCET_ITEM}
-                  isActive={activeTab === "faucet"}
-                  onClick={() => handleTabChange("faucet")}
-                />
-              </motion.li>
-            )}
-          </AnimatePresence>
+          {/* Faucet — Sepolia only; plain <li> after mount avoids motion SSR style drift */}
+          {mounted && !onMainnet && (
+            <li>
+              <NavButton
+                item={FAUCET_ITEM}
+                isActive={activeTab === "faucet"}
+                onClick={() => handleTabChange("faucet")}
+              />
+            </li>
+          )}
         </ul>
       </nav>
 

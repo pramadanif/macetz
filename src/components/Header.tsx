@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Menu, X, ArrowUpRight } from "lucide-react";
-import { CoinPlaceholder } from "./CoinPlaceholder";
 
 const NAV_LINKS = [
   { label: "Registry", href: "#registry" },
@@ -83,10 +82,10 @@ export function Header() {
         {/* Brand */}
         <a href="/" className="flex items-center gap-2.5 shrink-0 group z-10 pl-2">
           <div className="relative">
-            <CoinPlaceholder 
-              type="silver" 
-              size="sm" 
-              className="w-8 h-8 transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110 shadow-sm" 
+            <img 
+              src="/icons/logo.png"
+              alt="Macetz Logo"
+              className="w-8 h-8 object-contain mix-blend-multiply transition-transform duration-500 group-hover:rotate-[15deg] group-hover:scale-110" 
             />
           </div>
           <span className="font-bold text-[22px] tracking-tight text-[#16171C]">

@@ -39,63 +39,72 @@ const queryClient = new QueryClient({
   },
 });
 
+type ZamaConfig = ReturnType<typeof createZamaConfig>;
+
+/** Survives dev HMR remounts — avoids re-init + startup flash on every save. */
+let zamaCache: ZamaConfig | "failed" | null = null;
+
+function buildZamaConfig(): ZamaConfig {
+  const mySepolia = {
+    ...sepoliaFhe,
+    relayerUrl: getRelayerUrl(SEPOLIA_CHAIN_ID),
+  } as const satisfies FheChain;
+
+  const myMainnet = {
+    ...mainnetFhe,
+    relayerUrl: getRelayerUrl(MAINNET_CHAIN_ID),
+  } as const satisfies FheChain;
+
+  return createZamaConfig({
+    chains: [mySepolia, myMainnet],
+    wagmiConfig,
+    relayers: {
+      [mySepolia.id]: web(),
+      [myMainnet.id]: web(),
+    },
+  });
+}
+
+function resolveZamaInit(): { config: ZamaConfig | null; failed: boolean } {
+  if (typeof window === "undefined") {
+    return { config: null, failed: false };
+  }
+  if (zamaCache === "failed") {
+    return { config: null, failed: true };
+  }
+  if (zamaCache) {
+    return { config: zamaCache, failed: false };
+  }
+  try {
+    zamaCache = buildZamaConfig();
+    return { config: zamaCache, failed: false };
+  } catch (err) {
+    console.error("[Macetz] FHE relayer init failed, running in browse-only mode:", err);
+    zamaCache = "failed";
+    return { config: null, failed: true };
+  }
+}
+
 export function Web3Provider({ children }: { children: ReactNode }) {
-  const [zamaConfig, setZamaConfig] = useState<ReturnType<
-    typeof createZamaConfig
-  > | null>(null);
-  const [zamaFailed, setZamaFailed] = useState(false);
+  const [zamaInit, setZamaInit] = useState<{ config: ZamaConfig | null; failed: boolean }>({
+    config: null,
+    failed: false,
+  });
 
   useEffect(() => {
-    try {
-      const mySepolia = {
-        ...sepoliaFhe,
-        relayerUrl: getRelayerUrl(SEPOLIA_CHAIN_ID),
-      } as const satisfies FheChain;
-
-      const myMainnet = {
-        ...mainnetFhe,
-        relayerUrl: getRelayerUrl(MAINNET_CHAIN_ID),
-      } as const satisfies FheChain;
-
-      // Must use the same wagmiConfig as WagmiProvider — Zama's signer reads
-      // getConnection(wagmiConfig); a separate config never receives the connect().
-      const config = createZamaConfig({
-        chains: [mySepolia, myMainnet],
-        wagmiConfig,
-        relayers: {
-          [mySepolia.id]: web(),
-          [myMainnet.id]: web(),
-        },
-      });
-      setZamaConfig(config);
-    } catch (err) {
-      // Zama SDK failed to initialize (e.g., chain mismatch).
-      // Fall back to no-FHE mode — registry browse and EIP-712 decrypt still work.
-      console.error("[Macetz] FHE relayer init failed, running in browse-only mode:", err);
-      setZamaFailed(true);
-    }
+    setZamaInit(resolveZamaInit());
   }, []);
 
-  const isReady = zamaConfig !== null || zamaFailed;
+  const inner =
+    zamaInit.config ? (
+      <ZamaProvider config={zamaInit.config}>{children}</ZamaProvider>
+    ) : (
+      children
+    );
 
   return (
     <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        {!isReady ? (
-          // Brief initialization splash — should resolve within ~100ms
-          <div className="min-h-screen flex items-center justify-center">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-8 h-8 border-2 border-gray-200 border-t-[#16171C] rounded-full animate-spin" />
-              <p className="text-[13px] text-gray-400 font-medium">Starting up...</p>
-            </div>
-          </div>
-        ) : zamaConfig ? (
-          <ZamaProvider config={zamaConfig}>{children}</ZamaProvider>
-        ) : (
-          // FHE unavailable — render without ZamaProvider (browse + decrypt still work via wagmi)
-          <>{children}</>
-        )}
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{inner}</QueryClientProvider>
     </WagmiProvider>
   );
 }

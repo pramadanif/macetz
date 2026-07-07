@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef, type ReactNode } from "react";
-import { useConnection, useSwitchChain } from "wagmi";
+import { useConnection, useConfig, useAccount } from "wagmi";
+import { switchChain } from "wagmi/actions";
 import { isSupportedChain, SEPOLIA_CHAIN_ID } from "@/lib/config";
 
 export function NetworkGuard({ children }: { children: ReactNode }) {
+  const config = useConfig();
   const { isConnected, chainId } = useConnection();
-  const { switchChain, isPending } = useSwitchChain();
+  const { connector } = useAccount();
   const [mounted, setMounted] = useState(false);
+  const [isPending, setIsPending] = useState(false);
   const promptedRef = useRef(false);
 
   useEffect(() => setMounted(true), []);
@@ -20,15 +23,27 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
     !isSupportedChain(chainId);
 
   useEffect(() => {
-    if (!wrongNetwork) {
+    if (!wrongNetwork || !connector) {
       promptedRef.current = false;
       return;
     }
     if (promptedRef.current) return;
     promptedRef.current = true;
-    // Default prompt: switch to Sepolia (the safe/recommended starting point)
-    switchChain({ chainId: SEPOLIA_CHAIN_ID });
-  }, [wrongNetwork, switchChain]);
+    setIsPending(true);
+    switchChain(config, { chainId: SEPOLIA_CHAIN_ID, connector })
+      .catch(() => {})
+      .finally(() => setIsPending(false));
+  }, [wrongNetwork, connector, config]);
+
+  const handleSwitchSepolia = async () => {
+    if (!connector) return;
+    setIsPending(true);
+    try {
+      await switchChain(config, { chainId: SEPOLIA_CHAIN_ID, connector });
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   // Supported network (Sepolia or Mainnet) or not connected — render children
   if (!mounted || !isConnected || !wrongNetwork) {
@@ -65,7 +80,7 @@ export function NetworkGuard({ children }: { children: ReactNode }) {
             to continue.
           </p>
           <button
-            onClick={() => switchChain({ chainId: SEPOLIA_CHAIN_ID })}
+            onClick={handleSwitchSepolia}
             disabled={isPending}
             className="inline-flex items-center gap-2 bg-[#16171C] hover:bg-black text-white font-semibold text-sm px-7 py-3.5 rounded-full transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50"
           >

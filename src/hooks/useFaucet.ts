@@ -48,7 +48,7 @@ export function useFaucet() {
         await publicClient.waitForTransactionReceipt({ hash });
         return hash;
       } catch (e) {
-        setError(formatWalletError(e));
+        setError(formatWalletError(e, chainId));
         throw e;
       } finally {
         setIsPending(false);

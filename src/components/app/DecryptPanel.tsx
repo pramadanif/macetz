@@ -14,12 +14,15 @@ import { TokenSelect } from "@/components/app/TokenSelect";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import { formatWalletError } from "@/lib/errors";
 import { isOperationalPair } from "@/lib/pair-utils";
+import { MainnetFheBanner } from "@/components/app/MainnetFheBanner";
+import { useChainId } from "wagmi";
 
 type DecryptMode = "registry" | "custom";
 
 function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
   const { address } = useAccount();
-  const { data: meta, isLoading: metaLoading } = useMetadata(tokenAddress);
+  const chainId = useChainId();
+  const { data: meta, isLoading: metaLoading, isError: metaError } = useMetadata(tokenAddress);
   const {
     data: balance,
     isLoading: balanceLoading,
@@ -49,11 +52,12 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
       <AlertMessage
         type="error"
         title="Decryption Failed"
-        message={formatWalletError(error)}
+        message={formatWalletError(error, chainId)}
       />
     );
   }
 
+  const metadataAvailable = !metaError && meta?.decimals !== undefined && meta?.symbol !== undefined;
   const decimals = meta?.decimals ?? 6;
   const symbol = meta?.symbol ?? "???";
 
@@ -61,13 +65,26 @@ function DecryptResult({ tokenAddress }: { tokenAddress: `0x${string}` }) {
     <div className="emboss-card p-5">
       <div className="relative z-10">
         <p className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Decrypted Balance</p>
-        <p className="text-3xl font-mono font-semibold text-[#16171C] tracking-tight">
-          {balance !== undefined ? formatUnits(balance, decimals) : "0"}
-        </p>
-        <div className="flex items-center gap-2 mt-1">
-          <TokenIcon symbol={symbol} size={20} />
-          <span className="text-sm text-gray-500">{symbol}</span>
-        </div>
+        {metadataAvailable ? (
+          <>
+            <p className="text-3xl font-mono font-semibold text-[#16171C] tracking-tight">
+              {balance !== undefined ? formatUnits(balance, decimals) : "0"}
+            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <TokenIcon symbol={symbol} size={20} />
+              <span className="text-sm text-gray-500">{symbol}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="text-3xl font-mono font-semibold text-[#16171C] tracking-tight">
+              {balance !== undefined ? balance.toString() : "0"}
+            </p>
+            <p className="text-[11px] text-amber-600 mt-2">
+              raw units — metadata unavailable
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
@@ -121,7 +138,6 @@ function CustomAddressValidator({
 
 export function DecryptPanel() {
   const { data: pairs } = useRegistryPairs();
-
   const [mode, setMode] = useState<DecryptMode>("registry");
   const [selectedToken, setSelectedToken] = useState("");
   const [customAddress, setCustomAddress] = useState("");
@@ -149,6 +165,7 @@ export function DecryptPanel() {
 
   return (
     <div className="max-w-lg mx-auto">
+      <MainnetFheBanner />
       <div className="emboss-card p-6 sm:p-8 space-y-6">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">Decrypt Balance</h2>

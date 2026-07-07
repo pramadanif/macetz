@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAccount, usePublicClient } from "wagmi";
+import { useAccount, usePublicClient, useChainId } from "wagmi";
 import { formatUnits } from "viem";
 import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { useFaucet } from "@/hooks/useFaucet";
@@ -15,6 +15,7 @@ import type { TokenPair } from "@/lib/types";
 
 export function FaucetPanel() {
   const { address } = useAccount();
+  const chainId = useChainId();
   const publicClient = usePublicClient();
   const { data: pairs, isLoading: isLoadingPairs } = useRegistryPairs();
   const { mint, isPending, error, txHash } = useFaucet();
@@ -59,7 +60,7 @@ export function FaucetPanel() {
       try {
         await mint(pair.erc20Address, pair.erc20Decimals);
       } catch (e) {
-        setMintAllError(formatWalletError(e));
+        setMintAllError(formatWalletError(e, chainId));
         setMintAllProgress(null);
         return;
       }

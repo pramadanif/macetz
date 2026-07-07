@@ -1,4 +1,30 @@
-export function formatWalletError(error: unknown): string {
+import { MAINNET_CHAIN_ID, SEPOLIA_CHAIN_ID } from "./config";
+
+function networkLabel(chainId?: number): string {
+  if (chainId === MAINNET_CHAIN_ID) return "Ethereum mainnet";
+  if (chainId === SEPOLIA_CHAIN_ID) return "Sepolia testnet";
+  return "Sepolia testnet or Ethereum mainnet";
+}
+
+function nativeCurrencyLabel(chainId?: number): string {
+  if (chainId === MAINNET_CHAIN_ID) return "ETH";
+  return "Sepolia ETH";
+}
+
+function isWrongNetworkMessage(msg: string): boolean {
+  return (
+    msg.includes("wrong network") ||
+    msg.includes("unsupported chain") ||
+    msg.includes("chain mismatch") ||
+    msg.includes("network mismatch") ||
+    msg.includes("please switch") ||
+    msg.includes("network changed") ||
+    msg.includes("chainid") ||
+    msg.includes("chain id")
+  );
+}
+
+export function formatWalletError(error: unknown, chainId?: number): string {
   const raw = error instanceof Error ? error.message : String(error);
   const msg = raw.toLowerCase();
 
@@ -22,8 +48,8 @@ export function formatWalletError(error: unknown): string {
     return "Token approval required. Please approve the spending amount first.";
   }
 
-  if (msg.includes("network") || msg.includes("chain")) {
-    return "Please switch to Sepolia testnet to continue.";
+  if (isWrongNetworkMessage(msg)) {
+    return `Please switch to ${networkLabel(chainId)} to continue.`;
   }
 
   if (msg.includes("nonce")) {
@@ -31,7 +57,7 @@ export function formatWalletError(error: unknown): string {
   }
 
   if (msg.includes("gas")) {
-    return "Transaction requires more gas. Ensure you have enough Sepolia ETH.";
+    return `Transaction requires more gas. Ensure you have enough ${nativeCurrencyLabel(chainId)}.`;
   }
 
   if (msg.includes("reverted") || msg.includes("revert")) {

@@ -81,11 +81,24 @@ export function getMonogramColor(symbol: string): [string, string] {
   return MONOGRAM_COLORS[idx] as [string, string];
 }
 
+/**
+ * On-chain token symbols aren't always clean — some contracts embed the
+ * "Mock" marker as literal text like "csteakcUSDC (Mock)" instead of the
+ * "csteakcUSDCMock" suffix convention. Strip both forms + surrounding
+ * whitespace so icon/monogram lookups aren't tripped up by formatting.
+ */
+function stripMockMarker(symbol: string): string {
+  return symbol
+    .replace(/\s*\(mock\)\s*$/i, "")
+    .replace(/mock$/i, "")
+    .trim();
+}
+
 export function getMonogramText(symbol: string): string {
-  const currency = CURRENCY_SYMBOL_MAP[symbol];
+  const currency = CURRENCY_SYMBOL_MAP[symbol] ?? CURRENCY_SYMBOL_MAP[stripMockMarker(symbol)];
   if (currency) return currency;
 
-  const clean = symbol.replace(/^c/i, "").replace(/Mock$/i, "");
+  const clean = stripMockMarker(symbol).replace(/^c/i, "");
   return clean.slice(0, 2).toUpperCase();
 }
 
@@ -97,7 +110,7 @@ export function resolveTokenIcon(
     return { type: "url", url: iconUrl };
   }
 
-  const knownUrl = KNOWN_TOKEN_ICONS[symbol];
+  const knownUrl = KNOWN_TOKEN_ICONS[symbol] ?? KNOWN_TOKEN_ICONS[stripMockMarker(symbol)];
   if (knownUrl) {
     return { type: "url", url: knownUrl };
   }

@@ -12,6 +12,7 @@ import { sepolia as sepoliaFhe, type FheChain } from "@zama-fhe/sdk/chains";
 import {
   ConfidentialDisperseClient,
   ERC7984_OPERATOR_MAX_DEADLINE,
+  type Encryptor,
 } from "@tokenops/sdk/fhe-disperse";
 
 const ERC20_USDC_MOCK = "0x9b5Cd13b8eFbB58Dc25A05CF411D8056058aDFfF" as const;
@@ -119,7 +120,7 @@ async function main() {
       },
     ],
     functionName: "setOperator",
-    args: [DISPERSE_SINGLETON, ERC7984_OPERATOR_MAX_DEADLINE],
+    args: [DISPERSE_SINGLETON, Number(ERC7984_OPERATOR_MAX_DEADLINE)],
   });
   await publicClient.waitForTransactionReceipt({ hash: operatorHash });
   console.log("   setOperatorTx:", operatorHash);
@@ -141,7 +142,7 @@ async function main() {
         inputProof: hexToBytes(result.inputProof as `0x${string}`),
       };
     },
-  };
+  } as unknown as Encryptor;
 
   const disperseClient = new ConfidentialDisperseClient({
     publicClient,

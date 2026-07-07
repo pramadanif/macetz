@@ -9,6 +9,7 @@ import { sepolia as sepoliaFhe, type FheChain } from "@zama-fhe/sdk/chains";
 import {
   ConfidentialDisperseClient,
   ERC7984_OPERATOR_MAX_DEADLINE,
+  type Encryptor,
 } from "@tokenops/sdk/fhe-disperse";
 
 const WRAPPER = "0x7c5BF43B851c1dff1a4feE8dB225b87f2C223639" as const;
@@ -54,7 +55,7 @@ async function main() {
         inputProof: hexToBytes(result.inputProof as `0x${string}`),
       };
     },
-  };
+  } as unknown as Encryptor;
 
   const opHash = await walletClient.writeContract({
     chain: sepolia,
@@ -73,7 +74,7 @@ async function main() {
       },
     ],
     functionName: "setOperator",
-    args: [SINGLETON, ERC7984_OPERATOR_MAX_DEADLINE],
+    args: [SINGLETON, Number(ERC7984_OPERATOR_MAX_DEADLINE)],
   });
   await publicClient.waitForTransactionReceipt({ hash: opHash });
   console.log("setOperator:", opHash);

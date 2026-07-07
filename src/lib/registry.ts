@@ -93,8 +93,10 @@ export function runIntegrityChecks(pairs: PairBeforeIntegrity[]): TokenPair[] {
       );
     }
 
+    // Unreadable-metadata pairs all share the "???" placeholder symbol —
+    // they are already flagged above, so exclude them from duplicate grouping.
     const base = pair.erc7984Symbol.replace(/Mock$/, "");
-    const siblings = baseSymbolMap.get(base) ?? [];
+    const siblings = pair.metadataUnreadable ? [] : baseSymbolMap.get(base) ?? [];
     if (siblings.length > 1) {
       const hasMock = siblings.some((s) =>
         s.erc7984Symbol.toLowerCase().endsWith("mock")

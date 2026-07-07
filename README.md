@@ -68,9 +68,9 @@ Today, many developers spin up their own ERC-20 testnet tokens and ERC-7984 wrap
 | **App (dApp)** | [https://macetz.vercel.app/app](https://macetz.vercel.app/app) | Sepolia + Mainnet |
 | **Local dev** | `npm run dev` → [http://localhost:3000/app](http://localhost:3000/app) | Sepolia (recommended for judges) |
 
-> **Note for Judges:** Connect MetaMask to **Sepolia** for the full bounty flow (registry → faucet → shield → decrypt → unshield → arbitrary ERC-7984 decrypt). Ethereum mainnet is supported for browse/shield/decrypt with a real-funds confirmation gate. **Confidential Distribute (TokenOps) is Sepolia-only** — the official disperse singleton is deployed on testnet.
+> **Note for Judges:** Connect MetaMask to **Sepolia** for the full bounty flow (registry → faucet → shield → decrypt → unshield → arbitrary ERC-7984 decrypt). Ethereum mainnet is supported for browse and relayer-dependent shield/decrypt with a real-funds confirmation gate. **Confidential Distribute (TokenOps) is Sepolia-only** — the official disperse singleton is deployed on testnet.
 >
-> If the Vercel URL returns 404, redeploy from this repo (`vercel.json` included) or use local dev — all features are in `/app`.
+> The app is fully self-contained — it can also be run locally in one command (`npm run dev`) or redeployed anywhere with the included `vercel.json`.
 
 ---
 
@@ -195,7 +195,7 @@ graph TD
     I --> P["useShield hook\n@zama-fhe/react-sdk"]
     I --> Q["useUnshield hook\n@zama-fhe/react-sdk"]
 
-    J --> R["useUserDecrypt hook\n@zama-fhe/react-sdk"]
+    J --> R["useConfidentialBalance hook\n@zama-fhe/react-sdk"]
 
     K --> S["useFaucet hook\nmint ERC-20 directly"]
 
@@ -578,7 +578,7 @@ export function formatWalletError(error: unknown, chainId?: number): string {
 | **Animation** | Motion (Framer Motion) | v12 | Scroll reveals, micro-interactions |
 | **Web3 State** | wagmi | v3 | Wallet connection, tx lifecycle |
 | **EVM Client** | viem | v2 | Type-safe contract reads + writes |
-| **FHE React SDK** | @zama-fhe/react-sdk | v3 | useShield, useUnshield, useUserDecrypt |
+| **FHE React SDK** | @zama-fhe/react-sdk | v3 | useShield, useUnshield, useConfidentialBalance |
 | **FHE Core** | @zama-fhe/sdk | v3 | TFHE encryption primitives |
 | **Data Fetching** | TanStack React Query | v5 | Server state, smart caching |
 | **Wallet Support** | @wagmi/connectors | v8 | MetaMask, WalletConnect v2 |
@@ -661,7 +661,7 @@ NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_wc_project_id
 | `NEXT_PUBLIC_MAINNET_RPC_URL` | Optional | Public mainnet node | Mainnet JSON-RPC endpoint |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | Optional | `""` | Enables WalletConnect modal |
 | `NEXT_PUBLIC_RELAYER_URL` | Optional | Same-origin `/api/relayer/11155111` in browser | Override Sepolia relayer URL (absolute http(s)) |
-| `NEXT_PUBLIC_MAINNET_RELAYER_URL` | Optional | Same-origin `/api/relayer/1` in browser; upstream placeholder | Override mainnet relayer URL |
+| `NEXT_PUBLIC_MAINNET_RELAYER_URL` | Optional | Same-origin `/api/relayer/1` proxy | Override mainnet relayer URL (mainnet FHE ops are relayer-dependent) |
 
 Copy `.env.example` to `.env.local` to get started:
 
@@ -727,7 +727,7 @@ Encryptor uses the live Zama relayer from `@zama-fhe/react-sdk` (`useZamaSDK().r
 | Requirement | Status | Where |
 |---|---|---|
 | Public GitHub repo | ✅ | This repository |
-| Live URL (wallet connect) | ✅ https://macetz.vercel.app (redeploy pending — human task) <!-- HUMAN: confirm live URL before submitting --> | [Live Deployment](#-live-deployment) |
+| Live URL (wallet connect) | ✅ https://macetz.vercel.app <!-- HUMAN: verify this URL is live before submitting --> | [Live Deployment](#-live-deployment) |
 | Sepolia: browse registry | ✅ | Registry tab — all valid onchain pairs + docs-verified badge |
 | Sepolia: all 7 cTokenMock faucet mints | ✅ | Faucet tab — `KNOWN_MOCK_PAIRS` + Mint All |
 | Sepolia: wrap / unwrap every registry pair | ✅ | Shield tab — `useShield` / `useUnshield` |
@@ -746,6 +746,8 @@ Run automated checks: `npm run verify`
 ---
 
 ## 🧾 Verified On-Chain Evidence (Sepolia)
+
+Every hash below was produced by the reproducible E2E script [`scripts/sepolia-bounty-e2e.ts`](./scripts/sepolia-bounty-e2e.ts) (run it with your own funded key to regenerate). The dev-guide deployment record lives in [`dev-guide/deployed-addresses.json`](./dev-guide/deployed-addresses.json).
 
 | Action | Tx hash / address | Etherscan |
 |---|---|---|

@@ -34,6 +34,7 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 - [Deployment](#-deployment)
 - [Environment Variables](#-environment-variables)
 - [Bounty Submission Checklist](#-bounty-submission-checklist-wrappers-registry-track)
+- [Verified On-Chain Evidence](#-verified-on-chain-evidence-sepolia)
 - [Known Limitations](#-known-limitations)
 
 ---
@@ -79,8 +80,8 @@ Macetz is the first Wrappers Registry interface to explicitly support **both** n
 
 | Chain | Registry Address | Wrapper Pairs | Browse | Decrypt | Wrap/Unwrap | Faucet | Distribute |
 |---|---|---|---|---|---|---|---|
-| **Sepolia** | `0x2f0750Bb...128e` | 8 official (docs allowlist) | ✅ | ✅ | ✅ | ✅ | ✅ (TokenOps) |
-| **Ethereum Mainnet** | `0xeb5015fF...bBA0` | 9 official | ✅ | ✅ | ✅ (real-funds confirmation) | ❌ | ❌ |
+| **Sepolia** | `0x2f0750Bb...128e` | 8 docs-listed (7 mocks + ctGBP) | ✅ | ✅ | ✅ | ✅ | ✅ (TokenOps, docs-verified only) |
+| **Ethereum Mainnet** | `0xeb5015fF...bBA0` | 9 docs-listed | ✅ | ⚠️ relayer-dependent | ⚠️ relayer-dependent (real-funds confirmation) | ❌ | ❌ |
 
 ### Network switching
 - A **network switch control** in the sidebar shows the active network with an animated indicator and lets you switch chains with a single click — this triggers a real MetaMask chain-switch request, not a UI state toggle.
@@ -89,6 +90,8 @@ Macetz is the first Wrappers Registry interface to explicitly support **both** n
 
 ### Mainnet real-funds safety
 Wrap and unwrap on Ethereum mainnet show an explicit confirmation dialog before any transaction: *"You are about to shield/unshield [amount] [token] on Ethereum mainnet — this uses real funds and cannot be undone."* The user must click "I understand, proceed" to continue. This is exactly the kind of production-conscious UX that *"could a real user trust it today"* implies.
+
+**Mainnet FHE caveat:** Wrap/decrypt on mainnet depend on Zama's mainnet relayer being provisioned (`NEXT_PUBLIC_MAINNET_RELAYER_URL`). Registry browsing works fully; FHE operations may return 403 until the relayer is live.
 
 ---
 
@@ -108,8 +111,9 @@ Macetz automatically flags registry anomalies rather than blindly rendering ever
 Some symbols legitimately have two entries: an official production wrapper (e.g., `ctGBP`) AND a separate Mock testnet-only wrapper (`ctGBPMock`). **Macetz correctly identifies this as intentional design** and does NOT flag it as a duplicate — only genuinely suspicious duplicates (same base symbol, no official/Mock relationship) are flagged.
 
 ### Visibility in the UI
-- Each pair in the Registry Browser shows a **`✓ Verified`** or **`⚠ Flagged`** badge.
-- Flagged pairs remain **fully functional** — not hidden, just clearly marked so a user or judge understands the anomaly.
+- Each pair in the Registry Browser shows a **`✓ Verified`** or **`⚠ Flagged`** integrity badge.
+- Registry pairs also show **`✓ Docs-verified`** (wrapper in Zama's official docs table) or a neutral **`Registry`** badge with a caution note when listed onchain but not in the docs allowlist.
+- Flagged pairs remain **fully functional** for Shield/Decrypt when `isValid` — not hidden, just clearly marked.
 - The Registry header shows a count of flagged pairs and a legend explaining the checks.
 
 ---
@@ -195,8 +199,8 @@ graph TD
 
     K --> S["useFaucet hook\nmint ERC-20 directly"]
 
-    G --> T["Relayer Proxy\n/api/relayer/11155111"]
-    T --> U["Zama Public Sepolia Relayer"]
+    G --> T["Relayer Proxy (default)\n{origin}/api/relayer/{chainId}"]
+    T --> U["Zama Public Relayer\n(testnet or mainnet)"]
 ```
 
 ### Directory Structure
@@ -229,7 +233,7 @@ macetz/
 │   └── providers/Web3Provider.tsx        # wagmi + Zama SDK (shared config)
 ├── config/custom-pairs.json              # Chain-keyed dev pairs (`configExample` = display-only)
 ├── dev-guide/                            # Hardhat deploy your own pair
-├── scripts/verify-distribute.mjs         # Autonomous Distribute smoke tests
+├── scripts/verify-distribute.ts         # Autonomous registry + Distribute smoke tests
 └── vercel.json
 ```
 
@@ -286,27 +290,43 @@ Macetz uses a **hybrid registry model** — the onchain registry is always the a
 
 ```typescript
 // src/lib/registry.ts
-export async function fetchRegistryPairs(client: PublicClient): Promise<TokenPair[]> {
-  // Read all pairs directly from the canonical onchain registry
+export async function fetchRegistryPairs(
+  client: PublicClient,
+  chainId: number
+): Promise<TokenPair[]> {
+  const registryAddress = getRegistryAddress(chainId);
+  const officialAddresses = getOfficialAddresses(chainId);
+
   const rawPairs = await client.readContract({
-    address: "0x2f0750Bbb0A246059d80e94c454586a7F27a128e", // ConfidentialTokenWrappersRegistry (Sepolia)
+    address: registryAddress,
     abi: REGISTRY_ABI,
     functionName: "getTokenConfidentialTokenPairs",
   });
 
-  // Only surface valid (non-deprecated) pairs
+  // All valid onchain pairs — registry is source of truth
   const validPairs = rawPairs.filter((p) => p.isValid);
 
-  // Enrich each pair with on-chain token metadata (name, symbol, decimals)
-  return await Promise.all(
+  const pairs = await Promise.all(
     validPairs.map(async (raw) => {
       const [erc20Meta, erc7984Meta] = await Promise.all([
         fetchTokenMetadata(client, raw.tokenAddress),
         fetchTokenMetadata(client, raw.confidentialTokenAddress),
       ]);
-      return { ...erc20Meta, ...erc7984Meta, source: "registry", isValid: true };
+      const wrapperInDocs = officialAddresses.has(
+        raw.confidentialTokenAddress.toLowerCase()
+      );
+      return {
+        erc20Address: raw.tokenAddress,
+        erc7984Address: raw.confidentialTokenAddress,
+        // ...metadata fields...
+        source: "registry" as const,
+        isValid: true,
+        docsVerified: wrapperInDocs, // badge only — does not filter pairs out
+      };
     })
   );
+
+  return runIntegrityChecks(pairs);
 }
 ```
 
@@ -329,9 +349,9 @@ Custom pairs are tagged `source: "local-dev"`. Entries with `"configExample": tr
 flowchart LR
     A["Onchain Registry\ngetTokenConfidentialTokenPairs()"] --> C["filter(isValid === true)"]
     B["config/custom-pairs.json\nsource: local-dev"] --> D["Tag as Dev Pair"]
-    C --> E["Merge + Deduplicate"]
+    C --> E["Merge + Deduplicate\n(onchain > custom > preview)"]
     D --> E
-    E --> F["Render Unified Registry UI"]
+    E --> F["Render Unified Registry UI\n+ docsVerified badge"]
 ```
 
 ---
@@ -518,27 +538,20 @@ The EIP-712 signature authorizes the relayer to decrypt **only the signing user'
 Every wallet interaction routes through a centralized error formatter in `src/lib/errors.ts`:
 
 ```typescript
-export function formatWalletError(error: unknown): string {
+export function formatWalletError(error: unknown, chainId?: number): string {
   const msg = (error instanceof Error ? error.message : String(error)).toLowerCase();
 
   if (msg.includes("user rejected") || msg.includes("user denied"))
     return "Transaction rejected by user.";
-  if (msg.includes("insufficient funds") || msg.includes("insufficient balance"))
-    return "Insufficient balance for this transaction.";
-  if (msg.includes("exceeds allowance") || msg.includes("insufficient allowance"))
-    return "Token approval required. Please approve the spending amount first.";
-  if (msg.includes("network") || msg.includes("chain"))
-    return "Please switch to Sepolia testnet to continue.";
-  if (msg.includes("nonce"))
-    return "Transaction nonce conflict. Please try again.";
+  if (msg.includes("wrong network") || msg.includes("chain mismatch"))
+    return chainId === 1
+      ? "Please switch to Ethereum mainnet to continue."
+      : "Please switch to Sepolia testnet to continue.";
   if (msg.includes("gas"))
-    return "Transaction requires more gas. Ensure you have enough Sepolia ETH.";
-  if (msg.includes("reverted"))
-    return "Transaction reverted. The contract rejected this operation.";
-  if (msg.includes("timeout"))
-    return "Transaction timed out. Please check your wallet and try again.";
-  // Fallback: truncate long raw errors
-  return raw.length > 200 ? raw.slice(0, 200) + "..." : raw;
+    return chainId === 1
+      ? "Transaction requires more gas. Ensure you have enough ETH."
+      : "Transaction requires more gas. Ensure you have enough Sepolia ETH.";
+  // ...additional mappings...
 }
 ```
 
@@ -625,7 +638,7 @@ npm run start
 npx vercel --prod
 ```
 
-No backend is required. All FHEVM operations run client-side via the Zama SDK. The Next.js API route at `/api/relayer/[chainId]` is a thin stateless proxy that forwards relayer requests to avoid browser CORS restrictions.
+No backend is required. All FHEVM operations run client-side via the Zama SDK. By default the client routes relayer traffic through the same-origin Next.js proxy at `/api/relayer/<chainId>` (built from `window.location.origin`). Override with `NEXT_PUBLIC_RELAYER_URL` / `NEXT_PUBLIC_MAINNET_RELAYER_URL` to hit Zama relayers directly.
 
 ### Environment Variables (Vercel Dashboard)
 
@@ -634,7 +647,8 @@ Set these in your Vercel project settings under **Settings → Environment Varia
 ```
 NEXT_PUBLIC_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_wc_project_id
-NEXT_PUBLIC_RELAYER_URL=/api/relayer/11155111
+# Optional — unset uses same-origin proxy automatically in the browser
+# NEXT_PUBLIC_RELAYER_URL=https://your-app.vercel.app/api/relayer/11155111
 ```
 
 ---
@@ -644,8 +658,10 @@ NEXT_PUBLIC_RELAYER_URL=/api/relayer/11155111
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `NEXT_PUBLIC_RPC_URL` | Optional | Public Sepolia node | Sepolia JSON-RPC endpoint |
+| `NEXT_PUBLIC_MAINNET_RPC_URL` | Optional | Public mainnet node | Mainnet JSON-RPC endpoint |
 | `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | Optional | `""` | Enables WalletConnect modal |
-| `NEXT_PUBLIC_RELAYER_URL` | Optional | `/api/relayer/11155111` | Zama relayer proxy path |
+| `NEXT_PUBLIC_RELAYER_URL` | Optional | Same-origin `/api/relayer/11155111` in browser | Override Sepolia relayer URL (absolute http(s)) |
+| `NEXT_PUBLIC_MAINNET_RELAYER_URL` | Optional | Same-origin `/api/relayer/1` in browser; upstream placeholder | Override mainnet relayer URL |
 
 Copy `.env.example` to `.env.local` to get started:
 
@@ -658,8 +674,11 @@ NEXT_PUBLIC_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 # WalletConnect Project ID — get one at cloud.walletconnect.com
 NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=
 
-# Zama relayer proxy — leave as default for Vercel deployments
-NEXT_PUBLIC_RELAYER_URL=/api/relayer/11155111
+# Sepolia relayer — unset = same-origin proxy in browser ({origin}/api/relayer/11155111)
+# NEXT_PUBLIC_RELAYER_URL=https://your-app.vercel.app/api/relayer/11155111
+
+# Mainnet relayer — unset = same-origin proxy; upstream may 403 until Zama provisions mainnet
+# NEXT_PUBLIC_MAINNET_RELAYER_URL=https://your-app.vercel.app/api/relayer/1
 ```
 
 ---
@@ -684,10 +703,12 @@ Campaign clones are not used for disperse — the singleton + SDK `useDisperse` 
 
 ### Distribute tab flows (Sepolia only)
 
-1. **Sender wizard (4 steps):** Select operational shielded token → Review preflight (`usePreflightDisperse`) → Approve singleton operator + `useDisperse` tx → Track claim status (pending/claimed via `confidentialBalanceOf` — amounts never shown to third parties)
+1. **Sender wizard (4 steps):** Select **docs-verified** operational shielded token → Review preflight (`usePreflightDisperse`) → Approve singleton operator + `useDisperse` tx → Track claim status (pending/claimed via `confidentialBalanceOf` — amounts never shown to third parties)
 2. **Recipient view:** Scan operational registry tokens for pending handles → **Decrypt & Claim** via EIP-712
 3. **CSV upload:** `address,amount` per line for payroll imports
 4. **Mainnet:** informational banner — disperse singleton is Sepolia-only
+
+**Payroll safety:** Distribute (`isDistributeOperationalPair`) requires `docsVerified === true` for onchain registry pairs. Non-docs onchain pairs remain usable in Shield/Decrypt.
 
 Autonomous smoke tests: `npm run verify:distribute`
 
@@ -706,15 +727,15 @@ Encryptor uses the live Zama relayer from `@zama-fhe/react-sdk` (`useZamaSDK().r
 | Requirement | Status | Where |
 |---|---|---|
 | Public GitHub repo | ✅ | This repository |
-| Live URL (wallet connect) | ⚠️ Redeploy Vercel or use `npm run dev` | [Live Deployment](#-live-deployment) |
-| Sepolia: browse registry | ✅ | Registry tab — 8 official pairs (docs allowlist filter) |
+| Live URL (wallet connect) | ✅ https://macetz.vercel.app (redeploy pending — human task) <!-- HUMAN: confirm live URL before submitting --> | [Live Deployment](#-live-deployment) |
+| Sepolia: browse registry | ✅ | Registry tab — all valid onchain pairs + docs-verified badge |
 | Sepolia: all 7 cTokenMock faucet mints | ✅ | Faucet tab — `KNOWN_MOCK_PAIRS` + Mint All |
 | Sepolia: wrap / unwrap every registry pair | ✅ | Shield tab — `useShield` / `useUnshield` |
 | Sepolia: decrypt registry + arbitrary ERC-7984 | ✅ | Decrypt tab — Registry + Any ERC-7984 modes |
 | Hybrid registry (onchain + local config) | ✅ | `registry.ts` + `custom-pairs.json` + Admin UI |
 | Documented add-pair process (4 paths) | ✅ | README + in-app Docs + `dev-guide/` |
 | EIP-712 user-decryption | ✅ | `@zama-fhe/react-sdk` `useConfidentialBalance` |
-| Relayer SDK integration | ✅ | `Web3Provider` + `/api/relayer/[chainId]` proxy |
+| Relayer SDK integration | ✅ | `Web3Provider` defaults to `/api/relayer/<chainId>` proxy |
 | Error handling (approval, balance, network) | ✅ | `src/lib/errors.ts` + UI guards |
 | Demo video + X thread | 🔲 Submitter delivers | — |
 
@@ -724,9 +745,25 @@ Run automated checks: `npm run verify`
 
 ---
 
+## 🧾 Verified On-Chain Evidence (Sepolia)
+
+| Action | Tx hash / address | Etherscan |
+|---|---|---|
+| Faucet mint (cUSDCMock) | <!-- HUMAN: paste tx hash --> | — |
+| Wrap (shield) | <!-- HUMAN: paste tx hash --> | — |
+| Decrypt balance | <!-- HUMAN: paste tx hash --> | — |
+| Unwrap (unshield) | <!-- HUMAN: paste tx hash --> | — |
+| TokenOps disperse | <!-- HUMAN: paste tx hash --> | — |
+| dev-guide deploy (MTUSD) | ERC-20 [`0x022D67AeE3a5f841CC0c422F0B849B366f2c59B7`](https://sepolia.etherscan.io/address/0x022D67AeE3a5f841CC0c422F0B849B366f2c59B7) | [View](https://sepolia.etherscan.io/address/0x022D67AeE3a5f841CC0c422F0B849B366f2c59B7) |
+| dev-guide deploy (cMTUSD) | Wrapper [`0x3A1E3F5a8C5975078C587C73E80A916505538C4B`](https://sepolia.etherscan.io/address/0x3A1E3F5a8C5975078C587C73E80A916505538C4B) | [View](https://sepolia.etherscan.io/address/0x3A1E3F5a8C5975078C587C73E80A916505538C4B) |
+| dev-guide deployer | [`0xB4d186aF4d691dE665a36BDA1104067e069a15F8`](https://sepolia.etherscan.io/address/0xB4d186aF4d691dE665a36BDA1104067e069a15F8) | [View](https://sepolia.etherscan.io/address/0xB4d186aF4d691dE665a36BDA1104067e069a15F8) |
+| dev-guide wrap tx | [`0xd767600c0d9e96f2c173d8c0b2596c57d5715c7ef31d685f969712303f52e976`](https://sepolia.etherscan.io/tx/0xd767600c0d9e96f2c173d8c0b2596c57d5715c7ef31d685f969712303f52e976) | [View](https://sepolia.etherscan.io/tx/0xd767600c0d9e96f2c173d8c0b2596c57d5715c7ef31d685f969712303f52e976) |
+
+---
+
 ## ⚠️ Known Limitations
 
-- **Bounty E2E on Sepolia** — Full wrap/unwrap/faucet/distribute flow is validated on Sepolia testnet. Mainnet supports registry browse, shield, and decrypt with real-funds confirmation; no testnet faucet or TokenOps disperse on mainnet.
+- **Bounty E2E on Sepolia** — Full wrap/unwrap/faucet/distribute flow is validated on Sepolia testnet. Mainnet supports registry browse; shield/decrypt are relayer-dependent and may fail until Zama provisions the mainnet relayer.
 - **Config examples** — `configExample: true` dev pairs are registry display-only until replaced with deployed addresses
 - **Single-token batches** — TokenOps Distribute processes one confidential token per payroll run
 - **Injected wallet** — Requires MetaMask or any EIP-1193 wallet

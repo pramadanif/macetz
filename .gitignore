@@ -9,7 +9,6 @@ coverage/
 .env*
 !.env.example
 dev-guide/.env
-dev-guide/deployed-addresses.json
 dev-guide/node_modules/
 dev-guide/cache/
 dev-guide/artifacts/

@@ -1,0 +1,19 @@
+{
+  "chainId": 11155111,
+  "network": "sepolia",
+  "deployer": "0xB4d186aF4d691dE665a36BDA1104067e069a15F8",
+  "deployedAt": "2026-07-06T00:00:00.000Z",
+  "erc20": {
+    "address": "0x022D67AeE3a5f841CC0c422F0B849B366f2c59B7",
+    "name": "Macetz Test USD",
+    "symbol": "MTUSD",
+    "decimals": 6
+  },
+  "wrapper": {
+    "address": "0x3A1E3F5a8C5975078C587C73E80A916505538C4B",
+    "name": "Confidential MTUSD",
+    "symbol": "cMTUSD",
+    "uri": "https://macetz.vercel.app/metadata/cmtusd.json"
+  },
+  "wrapTxHash": "0xd767600c0d9e96f2c173d8c0b2596c57d5715c7ef31d685f969712303f52e976"
+}

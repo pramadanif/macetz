@@ -92,12 +92,12 @@ export function FeaturesGrid() {
             </div>
           </div>
 
-          <button
-            type="button"
+          <a
+            href="/app"
             className="shrink-0 self-start bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] shadow-inset-dark hover:-translate-y-0.5 flex items-center gap-2"
           >
             Explore the Registry <span className="text-gray-400">→</span>
-          </button>
+          </a>
         </motion.div>
 
         {/* Center — faucet fills entire card */}

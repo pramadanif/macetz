@@ -58,7 +58,9 @@ export function ExtensibilitySection() {
           <div className="flex items-center justify-between px-6 py-4 border-b border-[#2A2A2A]">
             <span className="text-[13px] text-[#A1A1AA]">config/custom-pairs.json</span>
             <a
-              href="#"
+              href="https://github.com/pramadanif/macetz#readme"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center bg-[#FFD600] text-black text-xs font-bold px-3 py-1.5 rounded hover:bg-[#FFD600]/90 transition-colors"
             >
               Docs ↗
@@ -87,7 +89,7 @@ export function ExtensibilitySection() {
               {/* Code Content */}
               <div className="flex flex-col whitespace-pre">
                    <span><span className="text-[#E5E7EB]">{"{"}</span></span>
-                   <span><span className="text-[#E5E7EB]">  </span><span className="text-[#86EFAC]">"pairs"</span><span className="text-[#E5E7EB]">{": ["}</span></span>
+                   <span><span className="text-[#E5E7EB]">  </span><span className="text-[#86EFAC]">"11155111"</span><span className="text-[#E5E7EB]">{": ["}</span></span>
                    <span><span className="text-[#E5E7EB]">    {"{"}</span></span>
                    <span><span className="text-[#E5E7EB]">      </span><span className="text-[#86EFAC]">"erc20"</span><span className="text-[#E5E7EB]">{": "}</span><span className="text-[#EAB308]">"0xYourTestToken..."</span><span className="text-[#E5E7EB]">{","}</span></span>
                    <span><span className="text-[#E5E7EB]">      </span><span className="text-[#86EFAC]">"erc7984"</span><span className="text-[#E5E7EB]">{": "}</span><span className="text-[#EAB308]">"0xYourWrappedToken..."</span><span className="text-[#E5E7EB]">{","}</span></span>
@@ -105,11 +107,16 @@ export function ExtensibilitySection() {
 
         <div className="flex flex-col items-center mt-16 max-w-2xl mx-auto">
           <p className="text-center text-[#A1A1AA] font-medium text-[15px] mb-8 leading-[1.7]">
-            Upon server initialization, custom pairs instantly populate the Registry with complete wrap/unwrap functionality. They are automatically labeled as developer instances, ensuring strict separation from official assets.
+            On the next load, custom pairs populate the Registry with a clear Dev badge — validated pairs get full wrap/unwrap functionality, kept strictly separate from official registry assets.
           </p>
-          <button className="bg-white text-black rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-200 transition-all hover:shadow-[0_8px_20px_rgba(255,255,255,0.15)] shadow-inset-light flex items-center gap-2">
+          <a
+            href="https://github.com/pramadanif/macetz/tree/main/dev-guide"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white text-black rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-200 transition-all hover:shadow-[0_8px_20px_rgba(255,255,255,0.15)] shadow-inset-light flex items-center gap-2"
+          >
             Read the Extensibility Guide <ArrowRight className="w-4 h-4 text-gray-500" />
-          </button>
+          </a>
         </div>
 
       </motion.div>

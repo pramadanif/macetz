@@ -47,9 +47,9 @@ export function HowItWorks() {
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-medium tracking-[-0.03em] text-[#0A0A0A] mb-8 leading-[1.1]">
           End-to-End Confidentiality.<br className="hidden lg:block"/> In Three Steps.
         </h2>
-        <button className="bg-[#0A0A0A] text-white rounded-full px-6 py-3 text-[14px] font-medium hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)] shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
+        <a href="/app" className="bg-[#0A0A0A] text-white rounded-full px-6 py-3 text-[14px] font-medium hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.12)] shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
           Explore the Registry <ArrowRight className="w-4 h-4 text-gray-400" />
-        </button>
+        </a>
       </motion.div>
 
       <div className="w-full max-w-5xl mx-auto px-4 lg:px-0">

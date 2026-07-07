@@ -32,7 +32,7 @@ export const HERO_COPY_VARIANTS = [
   {
     headline: "Encrypt. Decrypt.",
     subtext:
-      "Wrap any ERC-20 into ERC-7984, decrypt your balance in one click, and send private payouts without leaking a single number.",
+      "Wrap any registry ERC-20 into ERC-7984, decrypt your balance in one click, and send private payouts without leaking a single amount.",
   },
   {
     headline: "Hide. Reveal, only to you.",

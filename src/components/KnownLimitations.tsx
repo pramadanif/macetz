@@ -7,8 +7,8 @@ import { AlertTriangle, TestTube2, GitBranch, Layers } from "lucide-react";
 const LIMITATIONS = [
   {
     icon: TestTube2,
-    title: "Testnet Environment",
-    desc: "Currently deployed and tested on Sepolia testnet only. Mainnet support is architecturally ready but not yet audited.",
+    title: "Sepolia-First, Mainnet Relayer-Dependent",
+    desc: "The full bounty flow is validated on Sepolia. Ethereum mainnet supports registry browsing today; mainnet wrap/decrypt depend on Zama's mainnet relayer availability and sit behind a real-funds confirmation gate.",
   },
   {
     icon: GitBranch,

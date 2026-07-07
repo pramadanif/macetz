@@ -5,10 +5,10 @@ import { Check } from "lucide-react";
 import { motion } from "motion/react";
 
 const FEATURES = [
-  "Automatic detection of supported ERC-7984 tokens within your wallet.",
-  "Streamlined manual entry for unlisted contract addresses.",
-  "Instantaneous decryption powered by Zama's public relayer network.",
-  "Zero-knowledge client-side computation ensures absolute data privacy.",
+  "Every official registry pair available straight from the dropdown.",
+  "Paste any ERC-7984 address — validated onchain via ERC-165 before decrypting.",
+  "One EIP-712 signature decrypts via Zama's public relayer network.",
+  "Your signature authorizes decryption of your own balance only — no one else can read it.",
 ];
 
 export function UniversalDecryptSection() {
@@ -35,9 +35,9 @@ export function UniversalDecryptSection() {
         <p className="text-[#6B7280] font-medium text-[15px] md:text-[16px] mb-8 leading-[1.7] max-w-2xl mx-auto lg:mx-0">
           Gone are the days of complex signature orchestration just to view your own funds. Macetz provides a unified EIP-712 decryption gateway.
         </p>
-        <button className="bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
+        <a href="/app" className="bg-[#0A0A0A] text-white rounded-full px-7 py-3.5 text-[15px] font-semibold hover:bg-gray-800 transition-all hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)] shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
           Try Decrypting a Balance <span className="text-gray-400">→</span>
-        </button>
+        </a>
       </motion.div>
 
       <motion.div 

@@ -83,16 +83,21 @@ export function Hero() {
             >
               {/* Elegant Buttons */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
-                <button className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
+                <a href="/app" className="bg-[#16171C] hover:bg-black text-white font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-dark hover:-translate-y-0.5 inline-flex items-center gap-2">
                   Launch Registry <ArrowUpRight className="w-4 h-4 opacity-70" />
-                </button>
-                <button className="bg-white/70 hover:bg-white backdrop-blur-md border border-white/80 text-gray-800 font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-light inline-flex items-center gap-2">
-                  View Live Demo
-                </button>
+                </a>
+                <a
+                  href="https://github.com/pramadanif/macetz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/70 hover:bg-white backdrop-blur-md border border-white/80 text-gray-800 font-medium text-[15px] px-8 py-4 rounded-full transition-all duration-300 shadow-inset-light inline-flex items-center gap-2"
+                >
+                  View on GitHub
+                </a>
               </div>
 
               <p className="text-[11px] font-semibold text-gray-400 tracking-[0.1em] uppercase mt-2 opacity-80 text-left">
-                Built on Zama Protocol • FHEVM • Live on Sepolia
+                Built on Zama Protocol • FHEVM • Sepolia + Mainnet
               </p>
             </motion.div>
           </div>

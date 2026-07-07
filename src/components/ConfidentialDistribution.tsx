@@ -72,10 +72,9 @@ export function ConfidentialDistribution() {
           <p className="text-[#6B7280] font-medium text-[15px] md:text-[16px] mb-10 max-w-[95%] leading-[1.7]">
             Payroll, airdrops, and investor distributions all share the same
             problem onchain: everyone can see who got paid and how much. Macetz&apos;s
-            distribution layer, built on the TokenOps SDK, keeps amounts and
-            recipient lists encrypted end-to-end — while every recipient can
-            independently verify and decrypt exactly their own allocation, in one
-            click.
+            distribution layer, built on the TokenOps SDK, keeps every amount
+            encrypted end-to-end — recipients are visible onchain, but only each
+            recipient can decrypt exactly their own allocation, in one click.
           </p>
           
           <div className="flex flex-col items-start gap-4">

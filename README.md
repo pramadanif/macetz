@@ -749,11 +749,12 @@ Run automated checks: `npm run verify`
 
 | Action | Tx hash / address | Etherscan |
 |---|---|---|
-| Faucet mint (cUSDCMock) | <!-- HUMAN: paste tx hash --> | — |
-| Wrap (shield) | <!-- HUMAN: paste tx hash --> | — |
-| Decrypt balance | <!-- HUMAN: paste tx hash --> | — |
-| Unwrap (unshield) | <!-- HUMAN: paste tx hash --> | — |
-| TokenOps disperse | <!-- HUMAN: paste tx hash --> | — |
+| Faucet mint (cUSDCMock) | [`0x587c256bf57262a1f355aa724dcd1f115f0314a99c9954cc7a281b724c96da9b`](https://sepolia.etherscan.io/tx/0x587c256bf57262a1f355aa724dcd1f115f0314a99c9954cc7a281b724c96da9b) | [View](https://sepolia.etherscan.io/tx/0x587c256bf57262a1f355aa724dcd1f115f0314a99c9954cc7a281b724c96da9b) |
+| Wrap (shield cUSDCMock) | [`0xa17bdde962fcddcc9a63310110714ad846d3e36982782740339a4e51fc0fd6ac`](https://sepolia.etherscan.io/tx/0xa17bdde962fcddcc9a63310110714ad846d3e36982782740339a4e51fc0fd6ac) | [View](https://sepolia.etherscan.io/tx/0xa17bdde962fcddcc9a63310110714ad846d3e36982782740339a4e51fc0fd6ac) |
+| Decrypt balance | EIP-712 relayer (no on-chain tx) — cUSDCMock + cMTUSD verified 2026-07-07 | — |
+| Unwrap (unshield phase 1) | [`0x8d90e5c42548484d9e55abe2c2be6b97b23973211402a902fe3f9e4f13e7069f`](https://sepolia.etherscan.io/tx/0x8d90e5c42548484d9e55abe2c2be6b97b23973211402a902fe3f9e4f13e7069f) | [View](https://sepolia.etherscan.io/tx/0x8d90e5c42548484d9e55abe2c2be6b97b23973211402a902fe3f9e4f13e7069f) |
+| Unwrap finalize (phase 2) | [`0xc6101c96c5c6ed3751b6586cad8f848ea64c9d5934142e6959da3ffa42889d65`](https://sepolia.etherscan.io/tx/0xc6101c96c5c6ed3751b6586cad8f848ea64c9d5934142e6959da3ffa42889d65) | [View](https://sepolia.etherscan.io/tx/0xc6101c96c5c6ed3751b6586cad8f848ea64c9d5934142e6959da3ffa42889d65) |
+| TokenOps disperse | [`0x41d71ac3f1d8f701f9a85d8d0a3d4b58bae1ba238a6d0fae7ce1d16c3f74f9d1`](https://sepolia.etherscan.io/tx/0x41d71ac3f1d8f701f9a85d8d0a3d4b58bae1ba238a6d0fae7ce1d16c3f74f9d1) | [View](https://sepolia.etherscan.io/tx/0x41d71ac3f1d8f701f9a85d8d0a3d4b58bae1ba238a6d0fae7ce1d16c3f74f9d1) |
 | dev-guide deploy (MTUSD) | ERC-20 [`0x022D67AeE3a5f841CC0c422F0B849B366f2c59B7`](https://sepolia.etherscan.io/address/0x022D67AeE3a5f841CC0c422F0B849B366f2c59B7) | [View](https://sepolia.etherscan.io/address/0x022D67AeE3a5f841CC0c422F0B849B366f2c59B7) |
 | dev-guide deploy (cMTUSD) | Wrapper [`0x3A1E3F5a8C5975078C587C73E80A916505538C4B`](https://sepolia.etherscan.io/address/0x3A1E3F5a8C5975078C587C73E80A916505538C4B) | [View](https://sepolia.etherscan.io/address/0x3A1E3F5a8C5975078C587C73E80A916505538C4B) |
 | dev-guide deployer | [`0xB4d186aF4d691dE665a36BDA1104067e069a15F8`](https://sepolia.etherscan.io/address/0xB4d186aF4d691dE665a36BDA1104067e069a15F8) | [View](https://sepolia.etherscan.io/address/0xB4d186aF4d691dE665a36BDA1104067e069a15F8) |

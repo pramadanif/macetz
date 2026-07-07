@@ -7,7 +7,8 @@
     "compile": "hardhat compile",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
     "deploy:mainnet": "hardhat run scripts/deploy.ts --network mainnet",
-    "wrap-verify": "hardhat run scripts/wrap-and-verify.ts --network sepolia"
+    "wrap-verify": "hardhat run scripts/wrap-and-verify.ts --network sepolia",
+    "bounty-e2e": "node --env-file=.env --import tsx ../scripts/sepolia-bounty-e2e.ts"
   },
   "devDependencies": {
     "@fhevm/hardhat-plugin": "^0.4.2",

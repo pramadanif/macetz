@@ -24,6 +24,7 @@ import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { TokenSelect } from "@/components/app/TokenSelect";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
+import { TxLink } from "@/components/app/TxLink";
 import { formatWalletError } from "@/lib/errors";
 import { isDistributeOperationalPair } from "@/lib/pair-utils";
 import { isMainnet } from "@/lib/config";
@@ -706,15 +707,7 @@ export function DistributePanel() {
                   title="Payroll dispersed"
                   message={
                     <>
-                      Transaction confirmed.{" "}
-                      <a
-                        href={`https://sepolia.etherscan.io/tx/${lastTxHash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline font-medium"
-                      >
-                        View on Etherscan
-                      </a>
+                      Transaction confirmed. <TxLink hash={lastTxHash} chainId={chainId} />
                     </>
                   }
                 />

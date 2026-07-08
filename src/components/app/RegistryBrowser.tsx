@@ -6,15 +6,8 @@ import { useRegistryPairs } from "@/hooks/useRegistryPairs";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
 import { AddPairSection } from "@/components/app/AddPairSection";
-import { isMainnet } from "@/lib/config";
+import { isMainnet, explorerAddressUrl } from "@/lib/config";
 import type { TokenPair } from "@/lib/types";
-
-/** Returns the appropriate Etherscan block explorer URL for the current chain. */
-function explorerUrl(chainId: number, address: string): string {
-  return isMainnet(chainId)
-    ? `https://etherscan.io/address/${address}`
-    : `https://sepolia.etherscan.io/address/${address}`;
-}
 
 /** Integrity badge component — renders ✓ Verified or ⚠ Flagged per pair. */
 function IntegrityBadge({ status, reason }: { status: "verified" | "flagged"; reason?: string }) {
@@ -252,7 +245,7 @@ export function RegistryBrowser() {
                 </div>
                 <div className="pt-2.5 mt-2.5 border-t border-gray-100 flex justify-between text-gray-400">
                   <a
-                    href={explorerUrl(chainId, pair.erc20Address)}
+                    href={explorerAddressUrl(chainId, pair.erc20Address)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-mono text-[10px] hover:text-[#d4a600] transition-colors"
@@ -261,7 +254,7 @@ export function RegistryBrowser() {
                   </a>
                   <span className="text-gray-300">→</span>
                   <a
-                    href={explorerUrl(chainId, pair.erc7984Address)}
+                    href={explorerAddressUrl(chainId, pair.erc7984Address)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-mono text-[10px] hover:text-[#d4a600] transition-colors"

@@ -11,6 +11,7 @@ import { FAUCET_MINT_CAP } from "@/lib/config";
 import { formatWalletError } from "@/lib/errors";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { AlertMessage } from "@/components/app/AlertMessage";
+import { TxLink } from "@/components/app/TxLink";
 import type { TokenPair } from "@/lib/types";
 
 export function FaucetPanel() {
@@ -18,13 +19,18 @@ export function FaucetPanel() {
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const { data: pairs, isLoading: isLoadingPairs } = useRegistryPairs();
-  const { mint, isPending, error, txHash } = useFaucet();
+  const { mint, isPending, error } = useFaucet();
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
   const [mintAllProgress, setMintAllProgress] = useState<{
     current: number;
     total: number;
+    symbol: string;
   } | null>(null);
   const [mintAllError, setMintAllError] = useState<string | null>(null);
+  /** Completed mints (single mint or Mint All) — each links to its Etherscan tx. */
+  const [mintResults, setMintResults] = useState<
+    { symbol: string; hash: `0x${string}` }[]
+  >([]);
 
   const mockPairs = pairs?.filter((p) => p.isMock && p.source === "registry") ?? [];
 
@@ -45,20 +51,30 @@ export function FaucetPanel() {
 
   const handleMint = async () => {
     if (!selectedPair) return;
-    await mint(selectedPair.erc20Address, selectedPair.erc20Decimals);
-    refetchBalance();
+    setMintAllError(null);
+    try {
+      const hash = await mint(selectedPair.erc20Address, selectedPair.erc20Decimals);
+      setMintResults([{ symbol: selectedPair.erc20Symbol, hash }]);
+      refetchBalance();
+    } catch {
+      // error surfaced via useFaucet().error
+    }
   };
 
   const handleMintAll = async () => {
     if (mockPairs.length === 0) return;
     setMintAllError(null);
-    setMintAllProgress({ current: 0, total: mockPairs.length });
+    setMintResults([]);
+    const results: { symbol: string; hash: `0x${string}` }[] = [];
 
     for (let i = 0; i < mockPairs.length; i++) {
       const pair = mockPairs[i]!;
-      setMintAllProgress({ current: i + 1, total: mockPairs.length });
+      // Track the token currently minting so the progress message updates each step.
+      setMintAllProgress({ current: i + 1, total: mockPairs.length, symbol: pair.erc20Symbol });
       try {
-        await mint(pair.erc20Address, pair.erc20Decimals);
+        const hash = await mint(pair.erc20Address, pair.erc20Decimals);
+        results.push({ symbol: pair.erc20Symbol, hash });
+        setMintResults([...results]); // surface each tx + Etherscan link as it lands
       } catch (e) {
         setMintAllError(formatWalletError(e, chainId));
         setMintAllProgress(null);
@@ -69,20 +85,6 @@ export function FaucetPanel() {
     setMintAllProgress(null);
     refetchBalance();
   };
-
-  const successMessage = txHash ? (
-    <>
-      Minted {FAUCET_MINT_CAP.toString()} {selectedPair?.erc20Symbol ?? "tokens"}.{" "}
-      <a
-        href={`https://sepolia.etherscan.io/tx/${txHash}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="underline font-medium hover:text-green-900"
-      >
-        View on Etherscan
-      </a>
-    </>
-  ) : null;
 
   return (
     <div className="max-w-lg mx-auto">
@@ -136,9 +138,24 @@ export function FaucetPanel() {
             </div>
           )}
 
-          {successMessage && (
+          {mintResults.length > 0 && (
             <div className="mb-5">
-              <AlertMessage type="success" title="Success" message={successMessage} />
+              <AlertMessage
+                type="success"
+                title={mintResults.length === 1 ? "Mint successful" : `Minted ${mintResults.length} tokens`}
+                message={
+                  <ul className="space-y-1.5">
+                    {mintResults.map((r) => (
+                      <li key={r.hash} className="flex items-center justify-between gap-3">
+                        <span>
+                          {FAUCET_MINT_CAP.toString()} {r.symbol}
+                        </span>
+                        <TxLink hash={r.hash} chainId={chainId} />
+                      </li>
+                    ))}
+                  </ul>
+                }
+              />
             </div>
           )}
 
@@ -153,7 +170,7 @@ export function FaucetPanel() {
               <AlertMessage
                 type="loading"
                 title="Minting all mocks"
-                message={`Minting ${mintAllProgress.current} of ${mintAllProgress.total}...`}
+                message={`Minting ${mintAllProgress.symbol} — ${mintAllProgress.current} of ${mintAllProgress.total}...`}
               />
             </div>
           )}

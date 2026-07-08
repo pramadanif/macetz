@@ -16,6 +16,7 @@ import { isMainnet } from "@/lib/config";
 import { TokenIcon } from "@/components/app/TokenIcon";
 import { TokenSelect } from "@/components/app/TokenSelect";
 import { AlertMessage } from "@/components/app/AlertMessage";
+import { TxLink } from "@/components/app/TxLink";
 import { MainnetFheBanner } from "@/components/app/MainnetFheBanner";
 import type { TokenPair } from "@/lib/types";
 import { isOperationalPair } from "@/lib/pair-utils";
@@ -33,6 +34,8 @@ export function WrapUnwrapPanel() {
   const [selectedPair, setSelectedPair] = useState<TokenPair | null>(null);
   const [amount, setAmount] = useState("");
   const [success, setSuccess] = useState<string | null>(null);
+  /** Tx hash of the last shield/unshield, for the Etherscan link. */
+  const [successHash, setSuccessHash] = useState<`0x${string}` | null>(null);
   /** Mainnet real-funds confirmation state */
   const [mainnetConfirmPending, setMainnetConfirmPending] = useState<"wrap" | "unwrap" | null>(null);
 
@@ -86,9 +89,11 @@ export function WrapUnwrapPanel() {
     if (!isConnected || !address) return;
     setMainnetConfirmPending(null);
     setSuccess(null);
+    setSuccessHash(null);
     const parsedAmount = parseUnits(amount, selectedPair.erc20Decimals);
-    await shield.mutateAsync({ amount: parsedAmount });
+    const result = await shield.mutateAsync({ amount: parsedAmount });
     setSuccess("Tokens shielded successfully! Your confidential balance has been updated.");
+    setSuccessHash(result.txHash);
     setAmount("");
   };
 
@@ -97,9 +102,11 @@ export function WrapUnwrapPanel() {
     if (!isConnected || !address) return;
     setMainnetConfirmPending(null);
     setSuccess(null);
+    setSuccessHash(null);
     const parsedAmount = parseUnits(amount, selectedPair.erc7984Decimals);
-    await unshield.mutateAsync({ amount: parsedAmount });
+    const result = await unshield.mutateAsync({ amount: parsedAmount });
     setSuccess("Tokens unshielded successfully! The underlying ERC-20 has been returned to your wallet.");
+    setSuccessHash(result.txHash);
     setAmount("");
   };
 
@@ -159,7 +166,7 @@ export function WrapUnwrapPanel() {
       {/* Mode toggle */}
       <div className="flex gap-1 p-1 bg-gray-100/80 rounded-full">
         <button
-          onClick={() => { setMode("wrap"); setSuccess(null); shield.reset(); unshield.reset(); }}
+          onClick={() => { setMode("wrap"); setSuccess(null); setSuccessHash(null); shield.reset(); unshield.reset(); }}
           className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
             mode === "wrap"
               ? "bg-white shadow-sm text-[#16171C]"
@@ -169,7 +176,7 @@ export function WrapUnwrapPanel() {
           Shield
         </button>
         <button
-          onClick={() => { setMode("unwrap"); setSuccess(null); shield.reset(); unshield.reset(); }}
+          onClick={() => { setMode("unwrap"); setSuccess(null); setSuccessHash(null); shield.reset(); unshield.reset(); }}
           className={`flex-1 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
             mode === "unwrap"
               ? "bg-white shadow-sm text-[#16171C]"
@@ -203,6 +210,7 @@ export function WrapUnwrapPanel() {
                     setSelectedPair(pair ?? null);
                     setAmount("");
                     setSuccess(null);
+                    setSuccessHash(null);
                     shield.reset();
                     unshield.reset();
                   }}
@@ -281,7 +289,20 @@ export function WrapUnwrapPanel() {
 
       {/* Status messages */}
       {success && (
-        <AlertMessage type="success" title="Success" message={success} />
+        <AlertMessage
+          type="success"
+          title="Success"
+          message={
+            <>
+              {success}
+              {successHash && (
+                <span className="block mt-1.5">
+                  <TxLink hash={successHash} chainId={chainId} />
+                </span>
+              )}
+            </>
+          }
+        />
       )}
 
       {error && (

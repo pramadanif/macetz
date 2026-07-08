@@ -233,3 +233,22 @@ export function isSupportedChain(chainId: number): boolean {
 export function isMainnet(chainId: number): boolean {
   return chainId === MAINNET_CHAIN_ID;
 }
+
+// ─── Block explorer (network-aware) ───────────────────────────────────────────
+
+/** Etherscan base URL for the given chain (defaults to Sepolia). */
+export function explorerBaseUrl(chainId?: number): string {
+  return chainId === MAINNET_CHAIN_ID
+    ? "https://etherscan.io"
+    : "https://sepolia.etherscan.io";
+}
+
+/** Full Etherscan URL for a transaction hash. */
+export function explorerTxUrl(chainId: number | undefined, hash: string): string {
+  return `${explorerBaseUrl(chainId)}/tx/${hash}`;
+}
+
+/** Full Etherscan URL for an address. */
+export function explorerAddressUrl(chainId: number | undefined, address: string): string {
+  return `${explorerBaseUrl(chainId)}/address/${address}`;
+}

@@ -845,7 +845,7 @@ Encryptor uses the live Zama relayer from `@zama-fhe/react-sdk` (`useZamaSDK().r
 | Relayer SDK integration | ✅ | `Web3Provider` defaults to `/api/relayer/<chainId>` proxy |
 | Error handling (approval, balance, network) | ✅ | `src/lib/errors.ts` + UI guards |
 | Demo video | ✅ [youtu.be/IfY9iK8THK8](https://youtu.be/IfY9iK8THK8) | Full narrated walkthrough |
-| X thread | 🔲 Submitter delivers | — |
+| X thread | (https://x.com/bagus_firza/status/2074526228846137352?s=20) | X thread submission |
 
 **Judge quick path (Sepolia):** Faucet mint `cUSDCMock` → Shield wrap → Decrypt balance → Unshield → Decrypt tab paste arbitrary wrapper from `dev-guide` deploy.
 

@@ -90,10 +90,21 @@ const FAUCET_ITEM: NavItem = {
   id: "faucet",
   label: "Faucet",
   icon: (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10 3c-1 2-3 3.5-3 5.5a3 3 0 006 0C13 6.5 11 5 10 3z" />
-      <path d="M10 11v3" />
-      <path d="M7 17c0-1.5 1.3-3 3-3s3 1.5 3 3" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 3.2c-.5.7-6.2 7.4-6.2 11.6a6.2 6.2 0 0 0 12.4 0c0-4.2-5.7-10.9-6.2-11.6z"
+        fill="currentColor"
+        fillOpacity="0.14"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.1 15a2.9 2.9 0 0 0 2.3 3"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   ),
 };

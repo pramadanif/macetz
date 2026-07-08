@@ -7,6 +7,7 @@
 **The canonical interface for the Zama Wrappers Registry.**  
 Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero friction.
 
+[![CI](https://github.com/pramadanif/macetz/actions/workflows/ci.yml/badge.svg)](https://github.com/pramadanif/macetz/actions/workflows/ci.yml)
 [![Live Demo](https://img.shields.io/badge/Live-www.macetz.web.id-black?style=for-the-badge&logo=vercel)](https://www.macetz.web.id)
 [![Demo Video](https://img.shields.io/badge/Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/IfY9iK8THK8)
 [![Network](https://img.shields.io/badge/Network-Sepolia_%2B_Mainnet-627EEA?style=for-the-badge&logo=ethereum)](https://etherscan.io)
@@ -833,9 +834,42 @@ Every hash below was produced by the reproducible E2E script [`scripts/sepolia-b
 
 ---
 
+## Contributing
+
+Contributions are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for
+the development setup, the checks your PR must pass (`npm run verify`), and the
+pull-request guidelines. Bug reports and feature ideas belong in
+[GitHub Issues](https://github.com/pramadanif/macetz/issues).
+
+## Continuous Integration
+
+Every push and pull request to `main` runs the
+[CI workflow](./.github/workflows/ci.yml) on GitHub Actions: TypeScript
+typecheck (`tsc --noEmit`), a production `next build`, and the registry /
+distribute / error-handling smoke tests (`npm run verify:distribute`). The build
+must be green before anything is merged.
+
+## Security
+
+Macetz is **unaudited** and built for testnet use — do not use it with real
+funds you cannot afford to lose. To report a vulnerability, follow the
+[Security Policy](./SECURITY.md) and use GitHub's private vulnerability
+reporting rather than a public issue.
+
+## Support
+
+- Issues and questions: [GitHub Issues](https://github.com/pramadanif/macetz/issues)
+- Zama protocol, FHEVM, and SDK docs: [docs.zama.ai](https://docs.zama.ai)
+- Zama community: [Zama Discord](https://discord.gg/zama) · [@zama on X](https://x.com/zama)
+
 ## License
 
-[MIT](./LICENSE)
+Macetz is released under the [MIT License](./LICENSE).
+
+This project builds on Zama's FHEVM stack and the `@zama-fhe/*` SDKs, and on the
+TokenOps `@tokenops/sdk` — each retains its own license. The example contracts
+in `dev-guide/` use Zama and OpenZeppelin confidential-contracts libraries under
+their respective licenses.
 
 ---
 
@@ -843,6 +877,6 @@ Every hash below was produced by the reproducible E2E script [`scripts/sepolia-b
 
 **Built for the Zama Ecosystem**
 
-[Live Demo](https://www.macetz.web.id) · [GitHub](https://github.com/pramadanif/macetz) · [Zama Docs](https://docs.zama.ai)
+[Live Demo](https://www.macetz.web.id) · [Demo Video](https://youtu.be/IfY9iK8THK8) · [GitHub](https://github.com/pramadanif/macetz) · [Zama Docs](https://docs.zama.ai)
 
 </div>

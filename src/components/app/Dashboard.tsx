@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useChainId } from "wagmi";
 import { Shield, Database, Key, Droplet, Users } from "lucide-react";
 import { WalletButton } from "@/components/app/WalletButton";
+import { useRegistryPairs } from "@/hooks/useRegistryPairs";
+import { isMainnet } from "@/lib/config";
 
 interface DashboardProps {
   onNavigate: (tab: string) => void;
@@ -20,7 +22,7 @@ const features = [
   },
   {
     title: "Registry",
-    description: "Browse all registered wrapper pairs on Sepolia testnet.",
+    description: "Browse every wrapper pair from the onchain Zama registry.",
     tab: "registry",
     icon: Database,
     color: "text-[#16171C]",
@@ -41,6 +43,7 @@ const features = [
     icon: Droplet,
     color: "text-[#16171C]",
     bg: "bg-gray-200/60",
+    sepoliaOnly: true,
   },
   {
     title: "Distribute Payroll",
@@ -54,6 +57,14 @@ const features = [
 
 export function Dashboard({ onNavigate }: DashboardProps) {
   const { isConnected, address } = useAccount();
+  const chainId = useChainId();
+  const onMainnet = isMainnet(chainId);
+  const networkLabel = onMainnet ? "Ethereum Mainnet" : "Sepolia Testnet";
+  const { data: pairs } = useRegistryPairs();
+  const pairCount = pairs?.length ?? 0;
+
+  // Faucet is Sepolia-only — drop the card on mainnet so nothing dead-ends.
+  const visibleFeatures = features.filter((f) => !(f.sepoliaOnly && onMainnet));
 
   return (
     <div className="space-y-6">
@@ -64,8 +75,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             Your assets. Now confidential.
           </h1>
           <p className="text-sm md:text-base text-gray-500 tracking-tight max-w-md">
-            Shield, decrypt, and manage your confidential tokens on Sepolia
-            testnet.
+            Shield, decrypt, and manage your confidential tokens on {networkLabel}.
           </p>
         </div>
         <div className="flex-shrink-0">
@@ -84,7 +94,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
       {/* 2x2 Feature Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {features.map((feature) => (
+        {visibleFeatures.map((feature) => (
           <button
             key={feature.tab}
             type="button"
@@ -110,11 +120,13 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
       {/* Quick Stats Row */}
       <div className="flex items-center gap-3">
+        {pairCount > 0 && (
+          <span className="glass-pill px-4 py-1.5 text-xs font-medium text-gray-600 tracking-tight">
+            {pairCount} Token {pairCount === 1 ? "Pair" : "Pairs"}
+          </span>
+        )}
         <span className="glass-pill px-4 py-1.5 text-xs font-medium text-gray-600 tracking-tight">
-          9 Token Pairs
-        </span>
-        <span className="glass-pill px-4 py-1.5 text-xs font-medium text-gray-600 tracking-tight">
-          Sepolia Testnet
+          {networkLabel}
         </span>
       </div>
     </div>

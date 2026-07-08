@@ -2,6 +2,7 @@
   "name": "macetz",
   "private": true,
   "version": "0.0.0",
+  "license": "BSD-3-Clause-Clear",
   "type": "module",
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0 --port 3000",

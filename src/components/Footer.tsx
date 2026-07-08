@@ -29,7 +29,7 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "GitHub", href: "https://github.com/pramadanif/macetz", external: true },
       { label: "README", href: "https://github.com/pramadanif/macetz#readme", external: true },
       { label: "Deploy Your Own Pair", href: "https://github.com/pramadanif/macetz/tree/main/dev-guide", external: true },
-      { label: "MIT License", href: "https://github.com/pramadanif/macetz/blob/main/LICENSE", external: true },
+      { label: "BSD-3-Clause-Clear License", href: "https://github.com/pramadanif/macetz/blob/main/LICENSE", external: true },
     ],
   },
   {

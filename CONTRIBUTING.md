@@ -66,4 +66,4 @@ ecosystem; assume good faith and keep discussions technical.
 ## License
 
 By contributing, you agree that your contributions are licensed under the
-[MIT License](./LICENSE) that covers this repository.
+[BSD 3-Clause Clear License](./LICENSE) that covers this repository.

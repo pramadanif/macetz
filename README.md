@@ -11,7 +11,7 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 [![Live Demo](https://img.shields.io/badge/Live-www.macetz.web.id-black?style=for-the-badge&logo=vercel)](https://www.macetz.web.id)
 [![Demo Video](https://img.shields.io/badge/Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/IfY9iK8THK8)
 [![Network](https://img.shields.io/badge/Network-Sepolia_%2B_Mainnet-627EEA?style=for-the-badge&logo=ethereum)](https://etherscan.io)
-[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
+[![License](https://img.shields.io/badge/License-BSD--3--Clause--Clear-yellow?style=for-the-badge)](./LICENSE)
 [![Built with Zama](https://img.shields.io/badge/Built_with-Zama_FHEVM-ff6b35?style=for-the-badge)](https://www.zama.ai)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 
@@ -864,7 +864,7 @@ reporting rather than a public issue.
 
 ## License
 
-Macetz is released under the [MIT License](./LICENSE).
+Macetz is released under the [BSD 3-Clause Clear License](./LICENSE) — the same license Zama uses for FHEVM.
 
 This project builds on Zama's FHEVM stack and the `@zama-fhe/*` SDKs, and on the
 TokenOps `@tokenops/sdk` — each retains its own license. The example contracts

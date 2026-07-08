@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-07-08T04:45:35.872Z",
+  "total": 37,
+  "passed": 37,
+  "failed": 0,
+  "success": true,
+  "suiteCount": 7,
+  "durationMs": 26,
+  "categories": [
+    {
+      "name": "Add-a-Pair Config Snippet",
+      "file": "tests/config-snippet.test.ts",
+      "passed": 3,
+      "failed": 0,
+      "total": 3,
+      "durationMs": 1
+    },
+    {
+      "name": "Chain-Aware Error Handling",
+      "file": "tests/errors.test.ts",
+      "passed": 4,
+      "failed": 0,
+      "total": 4,
+      "durationMs": 1
+    },
+    {
+      "name": "Distribute CSV & Singleton",
+      "file": "tests/disperse-csv.test.ts",
+      "passed": 4,
+      "failed": 0,
+      "total": 4,
+      "durationMs": 5
+    },
+    {
+      "name": "Operational Pair Gating",
+      "file": "tests/pair-gating.test.ts",
+      "passed": 7,
+      "failed": 0,
+      "total": 7,
+      "durationMs": 2
+    },
+    {
+      "name": "Registry Integrity Checks",
+      "file": "tests/integrity.test.ts",
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "durationMs": 1
+    },
+    {
+      "name": "Registry Sourcing & Merge",
+      "file": "tests/registry-merge.test.ts",
+      "passed": 7,
+      "failed": 0,
+      "total": 7,
+      "durationMs": 7
+    },
+    {
+      "name": "Token Icon Resolution",
+      "file": "tests/token-icons.test.ts",
+      "passed": 6,
+      "failed": 0,
+      "total": 6,
+      "durationMs": 9
+    }
+  ]
+}

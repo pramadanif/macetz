@@ -410,6 +410,7 @@ cp .env.example .env
         items: [
           "Testnet focus — Sepolia is the primary supported network for this bounty; Mainnet registry browse works; Shield/Decrypt are relayer-dependent.",
           "Distribute payroll safety — TokenOps Distribute on Sepolia accepts docs-verified registry pairs only (isDistributeOperationalPair). Non-docs onchain pairs remain usable in Shield/Decrypt.",
+          "Distribute privacy model — amounts are FHE-encrypted end-to-end and only the intended recipient can decrypt their own amount, but recipient addresses are visible on-chain. This is a property of the underlying TokenOps Disperse mechanism (transfers route to plaintext addresses), not an oversight in Macetz.",
           "Single-token batches — TokenOps Distribute processes one token per operation; multi-token batches are roadmapped.",
           "Injected wallet — Requires MetaMask or any EIP-1193 wallet; hardware wallets via WalletConnect.",
           "Relayer latency — Unwrap finalization depends on Zama's relayer (~30–90s on Sepolia).",

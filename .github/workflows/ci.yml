@@ -34,5 +34,5 @@ jobs:
       - name: Production build
         run: npm run build
 
-      - name: Smoke tests (registry / distribute / errors)
-        run: npm run verify:distribute
+      - name: Test suite (Vitest)
+        run: npm run test

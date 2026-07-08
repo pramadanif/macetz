@@ -2,13 +2,18 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { AlertTriangle, TestTube2, GitBranch, Layers } from "lucide-react";
+import { AlertTriangle, TestTube2, GitBranch, Layers, Eye } from "lucide-react";
 
 const LIMITATIONS = [
   {
     icon: TestTube2,
     title: "Sepolia-First, Mainnet Relayer-Dependent",
     desc: "The full bounty flow is validated on Sepolia. Ethereum mainnet supports registry browsing today; mainnet wrap/decrypt depend on Zama's mainnet relayer availability and sit behind a real-funds confirmation gate.",
+  },
+  {
+    icon: Eye,
+    title: "Recipient Addresses Are Public",
+    desc: "Confidential Distribution FHE-encrypts amounts end-to-end — only each recipient can decrypt their own amount, and no third party sees individual figures. Recipient addresses, however, remain visible onchain: this is a property of the underlying TokenOps Disperse mechanism, which routes transfers to plaintext addresses, not an oversight in Macetz.",
   },
   {
     icon: GitBranch,

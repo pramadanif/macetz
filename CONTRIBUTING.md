@@ -40,11 +40,12 @@ npm run verify         # tsc --noEmit + next build + smoke tests
 
 - `npm run lint` — TypeScript strict mode, zero type errors.
 - `npm run build` — production build must succeed.
-- `npm run verify:distribute` — registry / distribute / error-handling smoke
-  tests (currently 21 assertions) run against the **real** app modules. If you
-  change behaviour in `src/lib/registry.ts`, `src/lib/pair-utils.ts`,
-  `src/lib/disperse.ts`, or `src/lib/errors.ts`, add or update an assertion in
-  `scripts/verify-distribute.ts`.
+- `npm run test` — the Vitest suite (37 tests) runs against the **real** app
+  modules. If you change behaviour in `src/lib/registry.ts`,
+  `src/lib/pair-utils.ts`, `src/lib/disperse.ts`, `src/lib/errors.ts`,
+  `src/lib/token-icons.ts`, or `src/lib/preview-pairs.ts`, add or update a test
+  in `tests/`. After changing tests, run `npm run test:report` to refresh the
+  `/test-report` page data, and commit `src/lib/test-report.json`.
 
 ## Pull request guidelines
 

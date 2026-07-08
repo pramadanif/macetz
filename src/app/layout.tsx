@@ -82,7 +82,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body className="min-h-screen bg-[#F5F4F0] text-[#16171C] font-telegraf selection:bg-yellow-200">
         <Web3Provider>
           {children}

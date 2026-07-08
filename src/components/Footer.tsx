@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
+import { HoverScrambleText } from "./HoverScrambleText";
 
 type FooterLink = {
   label: string;
@@ -67,12 +68,12 @@ function FooterLinkItem({ link }: { link: FooterLink }) {
   return (
     <a
       href={link.href}
-      className="inline-flex items-center gap-1 text-sm text-[#16171C] hover:text-[#16171C]/70 transition-colors"
+      className="inline-flex items-center gap-1 text-sm text-[#16171C] hover:text-[#16171C]/70 transition-colors group"
       {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
-      {link.label}
+      <HoverScrambleText text={link.label} />
       {link.external ? (
-        <ArrowUpRight className="w-3.5 h-3.5 shrink-0 opacity-70" strokeWidth={2} />
+        <ArrowUpRight className="w-3.5 h-3.5 shrink-0 opacity-70 transition-colors" strokeWidth={2} />
       ) : null}
     </a>
   );
@@ -114,8 +115,8 @@ export function Footer() {
               { label: "Docs", href: "https://docs.zama.ai" },
               { label: "GitHub", href: "https://github.com/pramadanif/macetz" },
             ].map((link) => (
-              <a key={link.label} href={link.href} className="hover:text-[#16171C]/70 transition-colors">
-                {link.label}
+              <a key={link.label} href={link.href} className="hover:text-[#16171C]/70 transition-colors group">
+                <HoverScrambleText text={link.label} />
               </a>
             ))}
           </div>

@@ -39,6 +39,7 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 - [Official Sepolia cTokenMocks](#official-sepolia-ctokenmocks)
 - [Technical Deep Dive](#technical-deep-dive)
 - [Tech Stack](#tech-stack)
+- [Code Quality & Production Readiness](#code-quality--production-readiness)
 - [Local Development](#local-development)
 - [Deployment](#deployment)
 - [Environment Variables](#environment-variables)
@@ -264,33 +265,54 @@ graph TD
 ```
 macetz/
 ├── src/
-│   ├── app/
-│   │   ├── page.tsx                      # Landing page
-│   │   ├── app/page.tsx                  # dApp shell (Registry/Shield/Decrypt/Faucet/Distribute/Docs)
-│   │   └── api/relayer/[...path]/route.ts # Relayer proxy (Sepolia + Mainnet)
-│   ├── components/app/
-│   │   ├── RegistryBrowser.tsx           # Browse pairs + Add a Pair admin UI
-│   │   ├── WrapUnwrapPanel.tsx           # Shield / Unshield
-│   │   ├── DecryptPanel.tsx              # Registry + Any ERC-7984 decrypt
-│   │   ├── FaucetPanel.tsx               # cTokenMock mints (Sepolia)
-│   │   ├── DistributePanel.tsx           # TokenOps payroll wizard (Sepolia)
-│   │   └── DocsPanel.tsx                 # In-app documentation
-│   ├── hooks/
-│   │   ├── useRegistryPairs.ts           # Onchain + custom + preview merge
-│   │   └── useFaucet.ts
-│   ├── lib/
-│   │   ├── config.ts                     # KNOWN_MOCK_PAIRS, registry addresses
-│   │   ├── registry.ts                   # Onchain fetch + custom-pairs loader
-│   │   ├── pair-utils.ts                 # Operational-pair gate (Shield/Decrypt/Distribute)
-│   │   ├── pair-validation.ts            # Add Pair on-chain validation
-│   │   ├── preview-pairs.ts              # Browser localStorage previews
-│   │   ├── disperse.ts                   # TokenOps campaign helpers
-│   │   └── docs-content.ts               # In-app docs (structured data)
-│   └── providers/Web3Provider.tsx        # wagmi + Zama SDK (shared config)
+│   ├── app/                              # Next.js 15 App Router
+│   │   ├── page.tsx                      # Landing page (+ WebApplication JSON-LD)
+│   │   ├── layout.tsx                    # Root layout + SEO metadata (OG, Twitter, canonical)
+│   │   ├── icon.png                      # Favicon (file-convention)
+│   │   ├── robots.ts / sitemap.ts        # Auto-generated /robots.txt + /sitemap.xml
+│   │   ├── app/
+│   │   │   ├── layout.tsx                # /app metadata + canonical
+│   │   │   └── page.tsx                  # dApp shell (tab router)
+│   │   └── api/relayer/[...path]/route.ts # Same-origin relayer proxy (Sepolia + Mainnet)
+│   ├── components/
+│   │   ├── *.tsx                         # Landing-page sections (Hero, Features, Docs sections…)
+│   │   └── app/                          # dApp UI (one component per concern)
+│   │       ├── Dashboard.tsx             # Network-aware overview + quick actions
+│   │       ├── RegistryBrowser.tsx       # Browse pairs, integrity + docs-verified badges
+│   │       ├── AddPairSection.tsx        # In-app admin: validate + preview a new pair
+│   │       ├── WrapUnwrapPanel.tsx       # Shield / Unshield (two-phase unwrap)
+│   │       ├── DecryptPanel.tsx          # Registry + Any-ERC-7984 decrypt
+│   │       ├── FaucetPanel.tsx           # cTokenMock mints + Mint All (Sepolia)
+│   │       ├── DistributePanel.tsx       # TokenOps confidential payroll wizard
+│   │       ├── DocsPanel.tsx             # In-app documentation (copyable code)
+│   │       ├── OnboardingTutorial.tsx    # Spotlight guided tour
+│   │       ├── NetworkGuard.tsx / NetworkSwitchButton.tsx / MainnetFheBanner.tsx
+│   │       └── AppSidebar.tsx / AppHeader.tsx / TokenSelect.tsx / TokenIcon.tsx …
+│   ├── hooks/                            # Data layer (React Query)
+│   │   ├── useRegistryPairs.ts           # Onchain + custom + preview merge & dedup
+│   │   └── useFaucet.ts                  # cTokenMock mint lifecycle
+│   ├── lib/                              # Pure logic — no React, unit-testable
+│   │   ├── config.ts                     # Registry addresses, KNOWN_MOCK_PAIRS, relayer URLs
+│   │   ├── registry.ts                   # Onchain fetch + integrity checks + merge
+│   │   ├── pair-utils.ts                 # Operational gates (Shield/Decrypt vs Distribute)
+│   │   ├── pair-validation.ts            # Add-Pair on-chain validation (ERC-165 + decimals)
+│   │   ├── preview-pairs.ts              # Browser localStorage previews (chain-scoped)
+│   │   ├── disperse.ts                   # TokenOps campaign + CSV helpers
+│   │   ├── errors.ts                     # Centralized, chain-aware wallet-error formatter
+│   │   ├── abis.ts / types.ts / token-icons.ts / docs-content.ts
+│   └── providers/Web3Provider.tsx        # wagmi v3 + Zama SDK (shared config, SSR-safe)
 ├── config/custom-pairs.json              # Chain-keyed dev pairs (`configExample` = display-only)
-├── dev-guide/                            # Hardhat deploy your own pair
-├── scripts/verify-distribute.ts         # Autonomous registry + Distribute smoke tests
-└── vercel.json
+├── dev-guide/                            # Standalone Hardhat project — deploy your own pair
+│   ├── contracts/MacetzConfidentialWrapper.sol
+│   ├── scripts/deploy.ts, wrap-and-verify.ts
+│   └── deployed-addresses.json           # Real Sepolia deployment record (committed)
+├── scripts/
+│   ├── verify-distribute.ts              # Offline smoke tests (imports the REAL lib modules)
+│   └── sepolia-bounty-e2e.ts             # Reproducible on-chain E2E → README tx hashes
+├── .github/workflows/ci.yml              # CI: typecheck + build + tests on every push/PR
+├── .npmrc                                # legacy-peer-deps so `npm install` works clean
+├── CONTRIBUTING.md · SECURITY.md · LICENSE (BSD-3-Clause-Clear)
+└── vercel.json                           # Zero-config deploy
 ```
 
 ### Data Flow
@@ -638,6 +660,32 @@ export function formatWalletError(error: unknown, chainId?: number): string {
 | **FHE Core** | @zama-fhe/sdk | v3 | TFHE encryption primitives |
 | **Data Fetching** | TanStack React Query | v5 | Server state, smart caching |
 | **Wallet Support** | @wagmi/connectors | v8 | MetaMask, WalletConnect v2 |
+
+---
+
+## Code Quality & Production Readiness
+
+Macetz is written to be judged as a product, not a prototype.
+
+### Architecture & code quality
+- **Strict separation of concerns.** `lib/` holds pure, React-free logic (registry fetch, integrity checks, pair gating, error formatting) that is directly unit-testable; `hooks/` is the data layer (React Query); `components/` is presentation only. One component per concern.
+- **TypeScript strict mode, zero type errors.** `npm run lint` (`tsc --noEmit`) is clean; the build fails on any type error.
+- **Minimal trusted surface.** There is **no custom application contract** — all FHE cryptography is delegated to the official, audited `@zama-fhe/*` SDKs and the TokenOps singleton. Less bespoke crypto means less to get wrong.
+- **Single source of truth for config.** Registry addresses, known pairs, and relayer URLs all live in `lib/config.ts`, keyed by `chainId`; nothing network-specific is hardcoded in components.
+- **Centralized, chain-aware error handling.** Every wallet interaction routes through `lib/errors.ts`, which maps raw reverts to human messages and adapts wording to the connected network.
+
+### Testing & CI
+- **CI on every push and PR** ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)): `npm ci` → typecheck → production build → smoke tests. Nothing merges red.
+- **Tests exercise the real modules.** `scripts/verify-distribute.ts` imports the actual `registry.ts` / `pair-utils.ts` / `disperse.ts` / `errors.ts` (not copies) and asserts registry merge/dedup, integrity checks, docs-verified gating, and chain-aware errors — 21 assertions, offline, wallet-free.
+- **Reproducible on-chain proof.** `scripts/sepolia-bounty-e2e.ts` runs the full flow on Sepolia and emits the exact transaction hashes published in the [Verified On-Chain Evidence](#verified-on-chain-evidence-sepolia) table. Claims are clickable, not asserted.
+
+### Production hardening
+- **SSR-safe.** Client-only signals (`window`, `sessionStorage`, `chainId`) are read behind mount/effect guards to avoid hydration mismatches; the Zama config is built in an effect, never at module init.
+- **Stateless & backend-free.** All FHE runs client-side; the only server surface is a thin same-origin relayer proxy (`/api/relayer/<chainId>`) that forwards requests and injects no secrets.
+- **Real-funds safety.** Mainnet shield/unshield sit behind an explicit confirmation gate, and mainnet FHE is honestly labeled relayer-dependent rather than overclaimed.
+- **Secret hygiene.** No secrets in the repo; the optional deployer key (`dev-guide/.env`) is git-ignored. Environment is `.env.example`-documented and fully optional (sane public defaults).
+- **Registry integrity checks** on every load (decimals, zero-address, suspicious duplicates) surface bad data instead of blindly rendering it.
+- **Zero-config deploy** via `vercel.json`; discoverable out of the box (sitemap, robots, canonical, JSON-LD, favicon).
 
 ---
 

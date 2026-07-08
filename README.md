@@ -8,6 +8,7 @@
 Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero friction.
 
 [![CI](https://github.com/pramadanif/macetz/actions/workflows/ci.yml/badge.svg)](https://github.com/pramadanif/macetz/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-37_passing-3fb950?style=for-the-badge)](https://www.macetz.web.id/test-report)
 [![Live Demo](https://img.shields.io/badge/Live-www.macetz.web.id-black?style=for-the-badge&logo=vercel)](https://www.macetz.web.id)
 [![Demo Video](https://img.shields.io/badge/Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/IfY9iK8THK8)
 [![Network](https://img.shields.io/badge/Network-Sepolia_%2B_Mainnet-627EEA?style=for-the-badge&logo=ethereum)](https://etherscan.io)
@@ -307,8 +308,11 @@ macetz/
 │   ├── contracts/MacetzConfidentialWrapper.sol
 │   ├── scripts/deploy.ts, wrap-and-verify.ts
 │   └── deployed-addresses.json           # Real Sepolia deployment record (committed)
+├── tests/                                # Vitest suite — imports the REAL lib modules
+│   ├── integrity / registry-merge / pair-gating / errors / token-icons / …
+│   └── (37 tests → summarized to src/lib/test-report.json → /test-report page)
 ├── scripts/
-│   ├── verify-distribute.ts              # Offline smoke tests (imports the REAL lib modules)
+│   ├── generate-test-report.ts           # Vitest JSON → committed test-report summary
 │   └── sepolia-bounty-e2e.ts             # Reproducible on-chain E2E → README tx hashes
 ├── .github/workflows/ci.yml              # CI: typecheck + build + tests on every push/PR
 ├── .npmrc                                # legacy-peer-deps so `npm install` works clean
@@ -677,7 +681,7 @@ Macetz is written to be judged as a product, not a prototype.
 
 ### Testing & CI
 - **CI on every push and PR** ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml)): `npm ci` → typecheck → production build → smoke tests. Nothing merges red.
-- **Tests exercise the real modules.** `scripts/verify-distribute.ts` imports the actual `registry.ts` / `pair-utils.ts` / `disperse.ts` / `errors.ts` (not copies) and asserts registry merge/dedup, integrity checks, docs-verified gating, and chain-aware errors — 21 assertions, offline, wallet-free.
+- **Tests exercise the real modules.** A [Vitest](https://vitest.dev) suite (`npm run test`) imports the actual `registry.ts` / `pair-utils.ts` / `disperse.ts` / `errors.ts` / `token-icons.ts` / `preview-pairs.ts` (not copies) and covers registry sourcing/merge/dedup, integrity checks (including the tGBP/tGBPMock split vs. a fabricated duplicate), docs-verified gating, chain-aware errors, icon resolution, and Add-a-Pair config-snippet validity — **37 tests across 7 suites**, offline and wallet-free. Live results: **[/test-report](https://www.macetz.web.id/test-report)**.
 - **Reproducible on-chain proof.** `scripts/sepolia-bounty-e2e.ts` runs the full flow on Sepolia and emits the exact transaction hashes published in the [Verified On-Chain Evidence](#verified-on-chain-evidence-sepolia) table. Claims are clickable, not asserted.
 
 ### Production hardening
@@ -817,7 +821,9 @@ Campaign clones are not used for disperse — the singleton + SDK `useDisperse` 
 
 **Payroll safety:** Distribute (`isDistributeOperationalPair`) requires `docsVerified === true` for onchain registry pairs. Non-docs onchain pairs remain usable in Shield/Decrypt.
 
-Autonomous smoke tests: `npm run verify:distribute`
+**Privacy model (be explicit):** distribution **amounts** are FHE-encrypted end-to-end and only the intended recipient can decrypt their own amount — no third party sees individual figures. **Recipient addresses are visible on-chain**, however: the TokenOps Disperse singleton routes `confidentialTransferFrom` to plaintext addresses, so the recipient list is public by construction. This is a property of the underlying Disperse mechanism, not an oversight — see [Known Limitations](#known-limitations).
+
+Automated test suite: `npm run test` (see [test report](#code-quality--production-readiness))
 
 ### TokenOps SDK wiring
 
@@ -876,6 +882,7 @@ Every hash below was produced by the reproducible E2E script [`scripts/sepolia-b
 
 - **Bounty E2E on Sepolia** — Full wrap/unwrap/faucet/distribute flow is validated on Sepolia testnet. Mainnet supports registry browse; shield/decrypt are relayer-dependent and may fail until Zama provisions the mainnet relayer.
 - **Config examples** — `configExample: true` dev pairs are registry display-only until replaced with deployed addresses
+- **Recipient lists are public** — Confidential Distribution FHE-encrypts **amounts** end-to-end (only the recipient can decrypt their own), but **recipient addresses are visible on-chain**. This is a property of the underlying TokenOps Disperse mechanism, which routes transfers to plaintext addresses — not an oversight in Macetz.
 - **Single-token batches** — TokenOps Distribute processes one confidential token per payroll run
 - **Injected wallet** — Requires MetaMask or any EIP-1193 wallet
 - **Relayer latency** — Unwrap finalization depends on Zama's relayer (~30–90s on Sepolia)
@@ -894,9 +901,10 @@ pull-request guidelines. Bug reports and feature ideas belong in
 
 Every push and pull request to `main` runs the
 [CI workflow](./.github/workflows/ci.yml) on GitHub Actions: TypeScript
-typecheck (`tsc --noEmit`), a production `next build`, and the registry /
-distribute / error-handling smoke tests (`npm run verify:distribute`). The build
-must be green before anything is merged.
+typecheck (`tsc --noEmit`), a production `next build`, and the Vitest suite
+(`npm run test` — 37 tests). The build must be green before anything is merged,
+and the public [test report](https://www.macetz.web.id/test-report) reflects the
+same suite.
 
 ## Security
 

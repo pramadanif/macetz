@@ -13,3 +13,6 @@ dev-guide/node_modules/
 dev-guide/cache/
 dev-guide/artifacts/
 tsconfig.tsbuildinfo
+
+# Vitest raw JSON output (transient — summarized into src/lib/test-report.json)
+.vitest-report.json

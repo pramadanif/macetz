@@ -73,17 +73,18 @@ export function ConfidentialDistribution() {
             Payroll, airdrops, and investor distributions all share the same
             problem onchain: everyone can see who got paid and how much. Macetz&apos;s
             distribution layer, built on the TokenOps SDK, keeps every amount
-            encrypted end-to-end — recipients are visible onchain, but only each
-            recipient can decrypt exactly their own allocation, in one click.
+            encrypted end-to-end — recipient addresses stay visible onchain, but
+            only each recipient can decrypt exactly their own amount, in one click.
           </p>
-          
+
           <div className="flex flex-col items-start gap-4">
             <button className="bg-white hover:bg-gray-50 border border-black/10 shadow-sm px-6 py-3 rounded-full text-sm font-medium text-gray-800 transition-colors inline-flex items-center gap-2">
               Try Confidential Distribution <ArrowRight className="w-4 h-4" />
             </button>
             <p className="text-xs text-gray-400 max-w-sm">
-              No plaintext amounts. No public recipient list. Just a provable total
-              and private claims.
+              Amounts are FHE-encrypted end-to-end. Recipient addresses are visible
+              onchain — a known property of the TokenOps Disperse mechanism, not an
+              oversight.
             </p>
           </div>
         </div>

@@ -12,6 +12,7 @@ Browse, wrap, unwrap, and decrypt ERC-7984 confidential tokens with zero frictio
 [![Demo Video](https://img.shields.io/badge/Demo_Video-YouTube-FF0000?style=for-the-badge&logo=youtube)](https://youtu.be/IfY9iK8THK8)
 [![Network](https://img.shields.io/badge/Network-Sepolia_%2B_Mainnet-627EEA?style=for-the-badge&logo=ethereum)](https://etherscan.io)
 [![License](https://img.shields.io/badge/License-BSD--3--Clause--Clear-yellow?style=for-the-badge)](./LICENSE)
+[![Contribute](https://img.shields.io/badge/Contribute-Zama_Bounty_Program-ffd200?style=for-the-badge)](https://github.com/zama-ai/bounty-program)
 [![Built with Zama](https://img.shields.io/badge/Built_with-Zama_FHEVM-ff6b35?style=for-the-badge)](https://www.zama.ai)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 

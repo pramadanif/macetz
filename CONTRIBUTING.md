@@ -60,8 +60,9 @@ npm run verify         # tsc --noEmit + next build + smoke tests
 
 ## Code of conduct
 
-Be respectful and constructive. This is a community project in the Zama
-ecosystem; assume good faith and keep discussions technical.
+This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md).
+Be respectful and constructive, assume good faith, and keep discussions
+technical.
 
 ## License
 
